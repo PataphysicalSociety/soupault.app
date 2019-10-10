@@ -1,0 +1,202 @@
+<h1 id="title">How to...</h1>
+
+<div id="generated-toc"></div>
+
+<p>
+This is a simple &ldquo;how to&rdquo; page to help new users get started with soupault.
+For advanced usage such as automatic section indexing, external scripts, and Lua plugins,
+consult the <a href="https://baturin.org/projects/soupault">reference manual</a>.
+</p>
+
+<h2 id="getting-started">Getting started</h2>
+
+<h3 id="project-setup">How to setup a basic project</h3>
+<p>
+Run <code>soupault --init</code> in an empty directory. It will create the following directory structure and files:
+</p>
+<pre>
+.
+├── site
+│   └── index.html
+├── soupault.conf
+└── templates
+    └── main.html
+</pre>
+<p>
+The <code>site/</code> directory is where your page content files go. The <code>templates/main.html</code> is
+the page template. The <code>soupault.conf</code> file is the configuration file for soupault, in the TOML format.
+</p>
+<p>
+If you run <code>soupault</code> in that directory, it will build your website and place the processed pages in
+the <code>build/</code> directory. You can then deploy your website with any tool of your choice, like
+<code>neocities push</code>, rsync, or anything else.
+</p>
+
+<h3 id="clean-urls">How to disable clean URLs</h3>
+<p>
+Soupault uses &ldquo;clean URLs&rdquo; by default. This means a page like <code>site/about.html</code>
+turns into <code>build/about/index.html</code>, so that on deployed website it can be accessed as
+<code>http://example.com/about</code>.
+<p>
+<p>
+For a new website, the choice between <code>/about/</code> and <code>/about.html</code> is purely aesthetic,
+but for people who already have a website and want to switch to managing it with soupault, it can be a real
+show stopper since it can break all their links. For this reason, soupault has a <code>clean_urls</code>
+option. Use <code>clean_urls = false</code> if you want to disable it.
+</p>
+<p>
+With <code>clean_urls = false</code>, soupault preserves file names exactly, e.g. <code>site/about.htm</code>
+becomes <code>build/about.htm</code>, and <code>site/projects/soupault.html</code> becomes
+<code>build/projects/soupault.html</code>.
+</p>
+
+<h2 id="building">Building your site from pieces</h2>
+
+<h3 id="content-selector">Where the page content goes</h3>
+<p>
+When soupault builds your website, it takes the empty page template from <code>templates/main.html</code>,
+reads content from files in <code>site/</code> such as <code>site/about.html</code>, and inserts it in the template.
+</p>
+<p>
+By default, it will insert the page content into the <code>&lt;body&gt;</code> element of the page template.
+</p>
+<p>
+However, you can insert page content into any element using the <code>content_selector</code> option
+in the <code>[settings]</code> section.
+Suppose you want your page content to go to <code>&lt;div id="content"&gt;</code>. Then add that div
+to <code>templates/main.html</code>, find that option in <code>soupault.conf</code>,
+and set it to <code>content_selector = "div#content"</code>.
+</p>
+
+<h3 id="include-file">How to include external files in pages</h3>
+<p>
+Suppose all your pages have the same header and footer, and you want to keep them in separate files,
+e.g. <code>templates/header.html</code> and <code>templates/footer.html</code>. Suppose your header should be in a
+<code>&lt;div id="header"&gt;</code> and the footer should be in the <code>&lt;div id="footer"&gt;</code>.
+</p>
+<p>
+First, add <code>div</code>'s with those ids to your <code>templates/main.html</code>.
+Then add this to your <code>soupault.conf</code>:
+</p>
+<pre>
+[widgets.header]
+  widget = "include"
+  selector = "div#header"
+  file = "templates/header.html"
+
+[widgets.footer]
+  widget = "include"
+  selector = "div#footer"
+  file = "templates/footer.html"  
+</pre>
+
+<h3 id="include-html">How to insert an HTML snippet</h3>
+
+<p>
+Sometimes you just need a small snippet that makes no sense to keep in a separate file.
+Suppose you want to add an analytics script to your pages, just one <code>&lt;script&gt;</code> tag
+in the head. You can do it like this:
+</p>
+<pre>
+[widgets.analytics-script]
+  widget = "insert_html"
+  selector = "head"
+  html = '&lt;script src="/scripts/evil-analytics.js"&gt; &lt;/script&gt;'
+</pre>
+
+<h2 id="enhancing">Enhancing your pages</h2>
+
+<h3 id="set-title">How to automatically set page title</h3>
+<p>
+A website where every page has the same <code>&lt;title&gt;</code> is a sad sight.
+Soupault can set the page title from an element of your choice. This is the config
+for this page, that takes the title from an element with <code>id="title"</code>.
+In this page it's a <code>h1</code>, but it could be anything.
+</p>
+<pre>
+[widgets.page-title]
+  widget = "title"
+  selector = "#title"
+  default = "soupault"
+  append = " &mdash; soupault"
+</pre>
+
+<h3 id="toc">How to add a table of contents</h3>
+<p>
+Soupault can automatically generate tables of contents from heading tags.
+This is the config for this very page:
+</p>
+<pre>
+[widgets.table-of-contents]
+  widget = "toc"
+  selector = "#generated-toc"
+
+  min_level = 2
+
+  toc_list_class = "toc"
+  toc_class_levels = false
+
+  numbered_list = true
+
+  heading_links = true
+  heading_link_text = "→ "
+  heading_link_class = "here"
+
+  use_heading_slug = true
+</pre>
+<p>
+Remember to add a <code>&lt;div id="generated-toc"&gt;</code> to <code>templates/main.html</code>
+if you want a ToC in every page, or just to pages where you want it.
+</p>
+
+<h3 id="footnotes">How to add footnotes</h3>
+<p>
+If you like footnotes, you can add them to your pages easily. This is the config for this website:
+</p>
+<pre>
+[widgets.footnotes]
+  widget = "footnotes"
+  selector = "div#footnotes"
+  footnote_selector = ".footnote"
+  footnote_link_class = "footnote"
+  back_links = true
+  link_id_prepend = "footnote-"
+  back_link_id_append = "-ref"
+</pre>
+<p>
+It assumes that there's a <code>&lt;div id="footnotes"&gt;</code> in the page.
+If you forget to include it in the page, footnotes will not appear.
+</p>
+<p>
+It considers elements with <code>class="footnote"</code> footnotes and moves them
+to that div. The <code>back_links</code> option creates links back from footnotes
+to their original location, you can set it to <code>false</code> if you don't like
+those links back.
+</p>
+
+<h2 id="extending">Extending soupault's capabilities</h2>
+
+<h3 id="preprocessors">How to use Markdown and other formats</h3>
+<p>
+Unlike many other static website generators, soupault treats HTML as a first-class citizen.
+In fact, it's the only format it treats that way, there's no built-in support for any other
+format. If you are switching from another generator like Jekyll, or simply want to use Markdown
+for some pages that don't need advanced markup, it can be quite limiting though.
+</p>
+<p>
+The good news is that you can write pages in any format as long as you have a program that converts
+it to HTML. You just need to specify a preprocessor program for a file extension, and soupault
+will call it automatically.
+</p>
+<p>
+For Markdown, I suggest the <a href="https://github.com/commonmark/cmark">cmark</a> program.
+To use it, just add this to your <code>soupault.conf</code> file:
+</p>
+<pre>
+[preprocessors]
+  md = "cmark"
+</pre>
+<p>
+Make sure the program is in your <code>PATH</code>. If it's not, you can specify an absolute path there,
+like <code>md = '/opt/cmark/bin/cmark'</code> or <code>md = 'C:\cmark\cmark.exe'</code>.
+</p>

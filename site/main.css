@@ -1,0 +1,77 @@
+/** Fixups */
+
+/* Avoid elements wider than screen on mobile */
+img
+{
+    display: inline-block;
+    max-width: 100%;
+}
+
+pre, code, sample
+{
+    white-space: pre-wrap;
+    hyphens: none;
+}
+
+table
+{
+    max-width: 100%;
+}
+
+
+body
+{
+    margin: 0;
+}
+
+/** Structural blocks */
+
+#page-wrapper
+{
+    max-width: 1000px;
+
+    padding-top: 2%;
+    padding-bottom: 4%;
+    
+    margin-left:  auto; 
+    margin-right: auto;
+}
+
+/* Visual styles */
+#logo { font-variant-caps: small-caps; }
+
+a { color: #d65906; }
+
+a.here { text-decoration: none; }
+
+hr
+{
+    border: 0 none;
+    color: #d65906;
+    background-color: #d65906;
+    height: 2px;
+}
+
+a.footnote
+{
+    text-decoration: none;
+}
+
+ul.toc { list-style: none; }
+
+/** Typography */
+
+@supports (hyphens: auto) or (-ms-hyphens: auto)
+{
+    #content
+    {
+        text-align: justify;
+        hyphens: auto;
+    }
+}
+
+body
+{
+    font-family: sans-serif;
+}
+

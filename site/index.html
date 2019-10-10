@@ -1,0 +1,114 @@
+<p>Soupault (<em>soup-oh</em>) is a static website generator for the Web 1.0 revival.</p>
+<p>
+It takes an empty page and a directory with page content files and makes a website from it. However, unlike classic
+website generators like Jekyll and Hugo, it lets you decide how much is the &ldquo;theme&rdquo; and how much is the content,
+and doesn't make you learn a template language since it can extract all metadata from the HTML itself and find target elements
+using CSS selectors.
+</p>
+<p>
+It's more like an automated HTML editor that can help you with tedious tasks, but doesn't limit you to pages looking all the same and doesn't impose a particular
+workflow on you. Nothing prevents you from making a website with pages that all look different, but share the same meta tags and a copyright footer, for example.
+With soupault, you can have the freedom of Web 1.0 but without its usual hassles.
+</p>
+<p>
+As a human webmaster, you open an HTML file and edit it. You can see the tags and their content,
+and perform steps like &ldquo;copy the content of the first <code>&lt;h1&gt;</code> to the <code>&lt;title&gt;</code>&rdquo;
+for example. You can find the <code>h1</code> tag no matter where is it in the page.
+</p>
+<p>
+&ldquo;Classic&rdquo; website generators don't have that ability since they rely on template macros
+like <code>{{title}}</code> or <code>{{content}}</code> to find where to
+insert something. The HTML itself is opaque to them, they simply don't know what a <code>h1</code> is or how to find it
+and extract its content. That is why they have to use a different workflow that requires external metadata.
+If you want two pages look different, you have to use different themes/templates for them.
+</p>
+<p>
+Soupault parses HTML and manipulates elements, so it knows the structure of your page. You decide how much is the template/theme and how much is the content.
+If you are familiar with DOM manipulation in JavaScript (<code>getElementById</code> etc.), it's pretty much the same thing,
+except it's done once and produces static pages, so it doesn't require any client-side scripts.
+</p>
+<p>Despite this seemingly heavy-handed approach, soupault is reasonably fast and can build a site with a hundred pages in under a second.</p>
+
+<h2>What can you do with it?</h2>
+<ul>
+  <li>Include files, HTML snippets, or output of external programs/scripts in your pages</li>
+  <li>Specify target elements with any CSS3 selectors like <code>p</code> (first <code>&lt;p&gt;</code> tag), <code>#myid</code> (element with <code>id="myid"</code>),
+      or <code>.myclass</code> (element with <code>class="myclass"</code>).</li>
+  <li>Automatically create tables of contents, footnotes, and breadcrumbs (fully static, no JS).</li>
+  <li>Add your own functionality with external scripts and plugins.</li>
+</ul>
+<p>Here's a screencast of basic usage:</p>
+<div> <script id="asciicast-271350" src="https://asciinema.org/a/271350.js" async></script> <br /></div>
+<p>
+You can also download the <a href="https://github.com/dmbaturin/soupault.neocities.org">source</a> of this website and play with it.
+</p>
+
+<h2>Installing</h2>
+<p>Soupault is a single, self-contained executable (~6MB). Just unpack the archive and you are ready to go.</p>
+<p>Downloads:</p>
+<dl>
+  <dt>Linux (x86-64, statically linked)</dt>
+  <dd><a href="/files/soupault-1.3.2-linux-x86_64.tar.gz">soupault-1.3.2-linux-x86_64.tar.gz</a></dd>
+  <dt>Microsoft Windows (7 and newer, 32-bit)</dt>
+  <dd><a href="/files/soupault-1.3.2-win32.zip">soupault-1.3.2-win32.zip</a></dd>
+  <dt>macOS</dt>
+  <dd><a href="/files/soupault-1.3.2-macos.tar.gz">soupault-1.3.2-macos.tar.gz</a></dd>
+</dl>
+<p>
+Alternatively, you can download it from <a href="https://github.com/dmbaturin/soupault/releases/latest">Github</a>,
+along with GPG signatures.
+</p>
+<p>
+Soupault is free software published under the <a href="https://mit-license.org/">MIT license</a>. You can build it from source for any
+platform supported by the <a href="https://ocaml.org">OCaml</a> programming language and contribute to it.
+The source code is available from <a href="https://github.com/dmbaturin/soupault">github.com/dmbaturin/soupault</a>.
+</p>
+
+<h2>Extensibility</h2>
+<p>Apart from built-in functionality, soupault offers a few ways to add your own.</p>
+<h3>Running external scripts</h3>
+<p>
+Soupault can run external scripts and include their output in the page. It can also pass arguments to scripts, so that you can run
+a script on the page source file (e.g. add automatically add last modification date to the page).
+</p>
+<h3>Index generators</h3>
+<p>
+While soupault, by itself, is not &ldquo;blog-aware&rdquo;, it can extract data from elements matching certain selectors in each page
+(e.g. title from a <code>&lt;h1 id="title"&gt;</code> and date from <code>&lt;time&gt;</code>) and feed it to an external script.
+This way you can make a blog, an Atom feed, or simply a list of all pages in a site section. You decide what data is extracted,
+from which elements, and what the script does with it.
+</p>
+<h3>Lua plugins</h3>
+<p>
+If you want new ways to modify the HTML tree of your pages, you can do it with Lua plugins. There are Lua functions for creating elements,
+deleting them, and setting attributes.
+The only downside is that the extension language is Lua 2.5 rather than modern 5.x.<span class="footnote" id="lua-ml">That's because
+soupault uses a research implementation named Lua-ML that includes many embedded interpreter design breakthroughs, but sadly
+isn't up to date with the official Lua spec.</span>
+</p>
+
+<h2>Why it's named soupault?</h2>
+<p>
+Soupault is named after the French dadaist and surrealist writer Philippe Soupault
+because it's based on the <a href="https://github.com/aantron/lambdasoup">lambdasoup</a> library.
+Its development is sponsored by the <a href="http://www.college-de-pataphysique.org/">College of 'Pataphysics</a>.<span class="footnote" id="pataphysics">Not really.</span>
+</p>
+
+<h2>How to use it?</h2>
+<p>The <a href="/howto">HOWTO</a> should be a good start. Then read the <a href="https://baturin.org/projects/soupault">reference manual</a> for details.</p>
+
+<h2>Who's behind it?</h2>
+<p>
+So far just me, <a href="https://baturin.org">Daniil Baturin</a>, but everyone is welcome to send a pull request or a suggestion.
+It has grown out of the bunch of ad hoc scripts that used to power my own website, and then I thought I can as well make it usable
+for everyone who finds other generators too annoying or too limiting.
+</p>
+
+<h2>News</h2>
+<dl>
+  <dt>2019-10-06</dt>
+  <dd>Soupault 1.3.2 maintenance release. External preprocessors and scripts now work on Windows as well as on UNIX-like platforms.</dd>
+  <dt>2019-09-29</dt>
+  <dd>Soupault 1.3 is released, with proper warnings
+      and suggestions for invalid config options, improved footnotes, logging functions for Lua plugins, and some bug fixes.</dd>
+</dl>
