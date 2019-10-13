@@ -1,0 +1,1378 @@
+<h1>Reference manual</h1>
+
+<p>Soupault (<em>soup-oh</em>) is a static website generator based on HTML rewriting.</p>
+<p>
+Pretty much like client-side DOM manipulation, just without the browser or interactivity.
+You can tell it to do things like &ldquo;insert contents of <code>footer.html</code> file into
+<code>&lt;div id="footer"&gt;</code> no matter where that div is in the page&rdquo;,
+or &ldquo;use the first <code>&lt;h1&gt;</code> element in the page for the page title&rdquo;.
+</p>
+
+<dl>
+  <dt><strong>Full HTML awareness</strong></dt>
+  <dd>Soupault is aware of the full page structure. It can find and manipulate any element using
+  CSS3 selectors like <code>p</code>, <code>div#content</code>, or <code>a.nav</code>,
+  no matter where it is in the page. There is no need &ldquo;front matter&rdquo;&mdash; all metadata
+  can be extracted from HTML itself.</dd>
+  <dt><strong>No themes</strong></dt>
+  <dd>Any page can be a soupault theme, you just tell it where to insert the content.
+      By default it inserts page content into the <code>&lt;body&gt;</code> element,
+      but it can be anything identifiable with a CSS selector. You decide how much is the &ldquo;theme&rdquo;
+      and how much is the content.</dd>
+  <dt><strong>Built for text-heavy, nested websites</strong></dt>
+  <dd>Tables of contents, footnotes, and breadcrumbs are supported out of the box.
+      Existing element id's are respected, so you can make table of contents and footenote links
+      permanent and immune to link rot, even if you change the heading text or page structure.</dd>
+  <dt><strong>Preserves your content structure</strong></dt>
+  <dd>Soupault can mirror your directory structure exactly, down to file extensions.
+      You can migrate from an old handcrafted website without breaking any links.</dd>
+  <dt><strong>Any input format</strong></dt>
+  <dd>HTML is the primary format, but you can use anything that can be converted to HTML. Just specify
+      preprocessors for files with certain extensions.</dd>
+  <dt><strong>Easy to install</strong></dt>
+  <dd>Soupault is a single executable file with no dependencies. Just unpack the archive and it's ready to use.</dd>
+  <dt><strong>Fast</strong></dt>
+  <dd>Soupault is written in <a href="https://ocaml.org">OCaml</a> and compiled to native code on all platforms.
+      This website takes less than 0.5 second to build.</dd>
+  <dt><strong>Extensible</strong></dt>
+  <dd>You can add your own HTML rewriting logic with Lua scripts.</dd>
+</dl>
+
+<p>
+For a <em>very</em> quick start:
+</p>
+<ol>
+  <li>Create a directory for your site.</li>
+  <li>Create a page layout with empty <code>&lt;body&gt;</code> in <code>templates/main.html</code></li>
+  <li>Create some files with content to insert inside <code>&lt;body&gt;</code> and drop them to <code>site/</code></li>
+  <li>Run <code>soupault</code> in that directory.</li>
+  <li>Look in <code>build/</code>.</li>
+</ol>
+
+<p>For details, read the documentation below.</p>
+
+<h2>Contents</h2>
+<div id="generated-toc"> </div>
+
+<h2>Overview</h2>
+<p>
+Soupault is named after the French dadaist and surrealist writer Philippe Soupault
+because it's based on the <a href="https://github.com/aantron/lambdasoup">Lambda Soup</a>
+library, which is a reference to the <a href="https://www.crummy.com/software/BeautifulSoup">Beautiful Soup</a>
+library, which is a reference to the Mock Turtle chapter from Alice in Wonderland
+(the best book on programming for the layman according to Alan Perlis),
+which is a reference to an actual turtle soup imitation recipe, and also a reference
+to <a href="https://en.wikipedia.org/wiki/Tag_soup">tag soup</a>, a derogatory term
+for malformed HTML, which is a reference to... in any case, soupault is not the French
+for a stick horse, for better or worse, and this paragraph is the only nod to dadaism
+in this document.
+</p>
+<p>Soupault is quite different from other website generators. Its design goals are:</p>
+<ol>
+  <li>No special syntax inside pages, only plain old semantic HTML.</li>
+  <li>No templates or themes. Any HTML page can be a soupault theme.</li>
+  <li>No front matter.</li>
+</ol>
+<p>
+People have written lots of static website generators, but most of them are variations
+on a single theme: take a file with some metadata (<em>front matter</em>) followed by content in a limited
+markup format such as Markdown and feed it to a template processor.
+</p>
+<p>
+This approach works well in many cases, but has its limitations. A template processor is only aware of its
+own tags, but not of the full page structure. The front matter metadata is the only part of the
+page source it can use, and it can only insert it into fixed locations in the template.
+The part below the front matter is effectively opaque, and formats like Markdown simply don't allow you to
+add machine-readable annotations anyway.
+</p>
+<p>
+Well-formed HTML, however, is a machine-readable format, and the libraries that can handle it existed for a long time.
+As shown by <a href="http://microformats.org/">microformats</a>, you can embed a lot of information in it. More importantly,
+unlike front matter metadata, HTML metadata is multi-purpose: for example, you can use the <code>id</code>
+attribute for CSS styling and as a page anchor, as well as a unique element identifier for data extraction
+or HTML manipulation programs.
+</p>
+<p>
+With soupault, it's possible to take advantage of the full HTML markup and even make every page on your website
+look different rather than built from the same template, and still have an automated workflow.
+</p>
+<p>
+You can also use Markdown/reStructuredText/whatever if you specify preprocessors. Soupault will
+automatically run a preprocessor before parsing your page, though you'll miss some finer points like footnotes
+if you go that way.
+</p>
+<h3>How soupault works</h3>
+<p>
+Soupault takes a page &ldquo;template&rdquo;&mdash; an HTML file devoid of content,
+parses it into an element tree, and locates the <em>content container</em> element inside it.
+</p>
+<p>
+By default the content container is <code>&lt;body&gt;</code>, but you can use any selector:
+<code>div#content</code> (a <code>&lt;div id="content"&gt;</code> element), <code>article</code> (an HTML5 article element),
+<code>#post</code> (any element with <code>id="post"</code>) or any other valid CSS selector.
+</p>
+<p>
+Then it traverses your <em>site directory</em> where page source files are stored, takes a page file, parses it into an HTML element tree too,
+and inserts it into the <em>content container</em> element of the template.
+</p>
+<p>
+The new HTML tree is then passed to <em>widgets</em>&mdash;HTML rewriting modules that manipulate it in different ways:
+incude other files or outputs of external programs into specific elements, create breadcrumbs for your page,
+they may delete unwanted elements too.
+</p>
+<p>
+Processed pages are then written to disk, into a directory structure that mirrors your source
+directory structure.
+</p>
+
+<h3>Performance</h3>
+<p>
+Despite its heavy-handed approach, soupault is reasonably fast. With a config that includes ToC, footnotes, file inclusion,
+breadcrumbs, and built-in section index generator, it can process 1000 copies of its own documentation page
+in about 14 seconds.<span class="footnote" id="benchmark-machine">On my desktop with an i5-7260U CPU and a magnetic drive.</span>
+Small websites take less than a second to build.
+</p>
+<p>
+For comparison, in a simplified &ldquo;read-parse-prettify-write&rdquo; test with 1000 copies of this document, 
+CPython/BeautifulSoup takes about 20 seconds to complete.
+</p>
+
+<h3>Why use soupault?</h3>
+
+<h4>If you are starting a website</h4>
+<p>
+All website generators provide a default theme, but making new themes can be tricky.
+With soupault, there are no intermediate steps between writing your page layout and building
+your website from it.
+</p>
+<p>
+In the simplest case you can just create a page skeleton in <code>templates/main.html</code> with an empty <code>&lt;body&gt;</code>,
+add a bunch of pages to <code>site/</code> (<code>site/about.html</code>, <code>site/cv.html</code>, ...)
+and run the <code>soupault</code> command in that directory.
+</p>
+
+<h4>If you already have a website</h4>
+<p>
+If you have a website made of handwritten pages, you can use soupault as a drop-in automation tool.
+Just take your existing page skeleton, strip the other pages down to their content,
+and you are good to go.
+</p>
+<p>
+If you have an existing directory structure that you don't want to change because it will break links,
+soupault can mirror it exactly, with the <code>clean_urls = false</code> config option.
+It also preseves original file names and extensions in that mode.
+</p>
+
+<h3>What kind of rewriting it can do</h3>
+<p>
+Soupalt comes with a bunch of built-in widgets that can:
+</p>
+<ul>
+  <li>Include external files, HTML snippets, or output of external programs into an element.</li>
+  <li>Set the page title from text in some element.</li>
+  <li>Generate breadcrumbs.</li>
+  <li>Move footnotes out of the text.</li>
+  <li>Insert a table of contents</li>
+  <li>Delete unwanted elements</li>
+</ul>
+<p>For example, here's a config for the <code>title</code> widget that sets the page title.</p>
+<pre>
+[widgets.page-title]
+  widget = "title"
+  selector = "#title"
+  default = "My Website"
+  append = " &amp;mdash; My Website"
+</pre>
+<p>
+It takes the text from the element with <code>id="title"</code> and copies it to the <code>&lt;title&gt;</code>
+tag of the generated page. It can be any element, and it can be a different element in every page.
+If you use <code>&lt;h1 id="title"&gt;</code> in <code>site/foo.html</code> and <code>&lt;strong id="title"&gt;</code>
+in another, soupault will still find it.
+</p>
+<p>It's just as simple to prevent something from appearing on a particular page. Just don't use an element
+that a widget uses for its target, and the widget will not run on that page.
+</p>
+<p>
+Another example: to automatically include content of a <code>templates/nav-menu.html</code> into
+the <code>&lt;nav&gt;</code> element, you can put this into your <code>soupault.conf</code> file:
+</p>
+<pre>
+[widgets.nav-menu]
+  widget = "include"
+  selector = "nav"
+  file = "templates/nav-menu.html"
+</pre>
+
+<h3>What soupault does not include</h3>
+
+<p>By design:</p>
+<dl>
+  <dt>Development web server</dt>
+  <dd>There are plenty of those, even <code>python3 -m http.server</code> is perfectly
+      good for previews.</dd>
+  <dt>Deployment automation</dt>
+  <dd>Same reason, there are lots of tools for it.</dd>
+</dl>
+
+<p>Because I don't need it and I'm not sure if anyone wants it or how it will fit:</p>
+<dl>
+  <dt>Asset management</dt>
+  <dt>Incremental builds</dt>
+  <dt>Multilingual sites</dt>
+</dl>
+
+<h2>Installation</h2>
+<h3>Binary release packages</h3>
+<p>
+Soupault is distributed as a single, self-contained executable, so installing it from a binary release package
+it trivial.
+</p>
+<p>
+You can download the latest release
+from <a href="https://github.com/dmbaturin/soupault/releases/latest">github.com/dmbaturin/soupault/releases/latest</a>.
+Prebuilt executables are available for Linux (x86-64, statically linked), macOS (x86-64), and Microsoft Windows (32-bit, Windows 7 and newer).
+</p>
+<p>
+Just unpack the archive and copy the executable wherever you want.
+</p>
+<p>
+Soupault is now stable enough to build this website, but hasn't received much testing from other people yet.
+Prebuilt binaries are compiled with debug symbols, which makes them a couple of megabytes larger than they could be, but you can get better
+error messages if something goes wrong. If you encounter an internal error, you can get an exception trace
+by running it with <code>OCAMLRUNPARAM=b</code> environment variable.
+</p>
+
+<h3>Building from source</h3>
+<p>
+If you are familiar with the <a href="https://ocaml.org">OCaml</a> programming language, you may want to install
+from source.
+</p>
+<p>
+Since Lua-ML, the Lua interpreter that soupault uses for executing plugins, it not in the OPAM repository yet,
+you need to install it first.
+<pre>
+opam pin add lua-ml git+https://github.com/lindig/lua-ml
+opam pin add soupault git+https://github.com/dmbaturin/soupault
+</pre>
+
+<h2>Getting started</h2>
+<h3>Create your first website</h3>
+<p>
+Soupault has only one file of its own: the config file <code>soupault.conf</code>.
+It does not impose any particular directory layout on you. However, it has default
+settings that allow you to run it unconfigured.
+</p>
+<p>You can initialize a simple project with default configuration using this command:</p>
+<pre>
+$ soupault --init
+</pre>
+<p>It will create the following directory structure:</p>
+<pre>
+.
+├── site
+│   └── index.html
+├── templates
+│   └── main.html
+└── soupault.conf
+</pre>
+<ul>
+  <li>The <code>site/</code> is a <em>site directory</em> where page files are stored.</li>
+  <li>The <code>templates/</code> directory is just a convention, soupault uses <code>templates/main.html</code>
+      as the default page template.</li>
+  <li><code>soupault.conf</code> is the config file.</li>
+</ul>
+<p>
+Now you can build your website. Just run <code>soupault</code> in your website directory,
+and it will put the generated pages in <code>build/</code>. Your index page will become
+<code>build/index.html</code>.
+</p>
+<p>
+By default, soupault inserts page content into the <code>&lt;body&gt;</code> element
+of the page template. Therefore, from the default template:
+</p>
+<pre>
+&lt;html&gt;
+  &lt;head&gt;&lt;/head&gt;
+  &lt;body&gt;
+  &lt;!-- your page content here --&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+and the default index page source that is <code>&lt;p&gt;Site powered by soupault&lt;/p&gt;</code>
+it will make this page:
+</p>
+<pre>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+ &lt;head&gt;&lt;/head&gt;
+ &lt;body&gt;
+  &lt;p&gt;
+   Site powered by soupault
+  &lt;/p&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>
+You can use any CSS selector to determine where your content goes. For example,
+you can tell soupault to insert it into <code>&lt;div id="content&gt;</code>
+by changing the <code>content_selector</code> in <code>soupault.conf</code>
+to <code>content_selector = "div#content"</code>.
+
+<h3>Page files</h3>
+<p>
+Soupault assumes that with extensions <code>.html, .htm, .md, .rst</code> are pages
+and processes them. All other files are simply copied to the build directory.
+</p>
+<p>
+If you want to use other extensions, you can change it in <code>soupault.conf</code>.
+For example, to add <code>.txt</code> to the page extension list, use this option:
+</p>
+<pre>
+[settings]
+  page_file_extensions = ["htm", "html", "md", "rst", "txt"]
+</pre>
+
+<h3>Clean URLs</h3>
+<p>
+Soupault uses clean URLs by default. If you add another page to <code>site/</code>,
+for example, <code>site/about.html</code>, it will turn into <code>build/about/index.html</code>
+so that it can be accessed as <code>https://mysite.example.com/about</code>.
+</p>
+<p>
+Index files, by default files whose name is <code>index</code> are simply copied to the target
+directory.
+</p>
+<pre>
+site/index.html → build/index.html
+site/about.html → build/about/index.html
+site/papers/theorems-for-free.html → build/papers/theorems-for-free/index.html
+</pre>
+<div class="info">
+<p>
+Note: a page named <code>foo.html</code> and a section directory named <code>foo/</code> is
+undefined behaviour when clean URLs are used. Don't do that to avoid unpredictable results.
+</p>
+</div>
+<p>This is what soupault will make from a source directory:</p>
+<pre>
+$ tree site/
+site/
+├── about.html
+├── cv.html
+└── index.html
+
+$ tree build/
+build/
+├── about
+│   └── index.html
+├── cv
+│   └── index.html
+└── index.html
+</pre>
+
+<h4>Disabling clean URLs</h4>
+<p>
+If you've had a website for a long time and there are links to your page that will
+break if you change the URLs, you can make soupault mirror your site directory structure
+exactly and preserve original file names.
+</p>
+<p>
+Just add <code>clean_urls = false</code> to the <code>[settings]</code> table of your
+<code>soupault.conf</code> file.
+</p>
+<pre>
+[settings]
+  clean_urls = false
+</pre>
+
+<h3>Nested structures</h3>
+<p>
+A flat layout is not always desirable. If you want to create site sections, just add some
+directories to <code>site/</code>. Subdirectories are subsections, their subdirectories
+are subsubsections and so on&mdash;they can go as deep as you want. Soupault will process
+them all recursively and recreate the directories in <code>build/</code>.
+</p>
+
+<pre>
+site/
+├── articles
+│   ├── goto-considered-harmful.html
+│   ├── index.html
+│   └── theorems-for-free.html
+├── about.html
+├── cv.html
+└── index.html
+
+build/
+├── about
+│   └── index.html
+├── articles
+│   ├── goto-considered-harmful
+│   │   └── index.html
+│   ├── theorems-for-free
+│   │   └── index.html
+│   └── index.html
+├── cv
+│   └── index.html
+└── index.html
+</pre>
+<div class="info">
+<p>
+Note that if your section does not have an index page, soupault will not create it automatically.
+If you want a page to exist, you need to make it.
+</p>
+</div>
+
+<h2>Configuration</h2>
+<p>
+The default directory and file paths <code>soupault --init</code> creates are
+not fixed, you can change any of them. If you prefer different names, or you
+have an existing directory structure you want soupault to use, just edit
+the <code>soupault.conf</code> file.
+</p>
+<pre>
+[settings]
+  # Where generated files go
+  build_dir = "build"
+
+  # Where page files are stored
+  site_dir = "site"
+
+  # Where to insert the content in the page template
+  content_selector = "#content"
+
+  default_template = "templates/main.html"
+
+  # Name of the page used as a section index,
+  # without extension
+  index_page = "index"
+
+  # Output file name for the "clean URLs" page files
+  # site/foo.html → build/foo/index.html
+  index_file = "index.html"
+
+  doctype = "&lt;!DOCTYPE html&gt;"
+
+  # Don't print debugging information
+  verbose = false
+
+  # Don't fail on page processing errors
+  strict = false
+
+  # Create a directory per page, site/foo.html → build/foo/$index_file
+  clean_urls = true
+
+  # What files are considered pages and processed
+  page_extensions = ["htm", "html", "md", "rst"]
+</pre>
+
+<p>
+Note that if you create <code>soupault.conf</code> file before running
+<code>soupault --init</code>, it will use settings from that file instead
+of default settings.
+</p>
+<p>
+In this document, whenever a specific site or build dir has to be mentioned,
+we'll use default values.
+</p>
+<div class="info">
+<p>
+Note that there is no check for invalid fields. Soupault will simply ignore
+fields it doesn't know about. A downside is that it doesn't detect misspellt
+options, so check your spelling carefully.
+</p>
+<p>
+The config is also typed and wrong value type has the same effect as a missing
+option. All boolean values must be <code>true</code> or <code>false</code>
+(without quotes), all integer values must not have quotes around numbers,
+and all strings must be in single or double quotes.
+</p>
+</div>
+
+<h2>Page preprocessors</h2>
+<p>
+Soupault has no built-in support for formats other than HTML, but you can use
+any format with it if you specify an appropriate page preprocessor.
+</p>
+<p>
+Any preprocessor that takes page file as its argument and outputs the result to
+<code>stdout</code> can be used.
+</p>
+<p>
+For example, this configuration will make soupault call a program called
+<code>cmark</code> on the page file if its extension is <code>.md</code>.
+<pre>
+[preprocessors]
+  md = "cmark"
+</pre>
+<p>
+The table key can be any extension (without the dot), and the value is a command.
+You can specify as many extensions as you want.
+</p>
+<p>
+Preprocessor commands are executed in shell, so it's fine to use relative
+paths and add arguments. Page file name will be appended to the command string.
+</p>
+
+<h2 id="indexing">Automatic section and site index</h2>
+<p>
+Having to add links to all pages by hand can be a tedious task. Nothing beats
+a carefully written and annotated section index, but it's not always practical.
+</p>
+<p>
+Soupault can automatically generate a section index for you. While it's not a blog
+generator and doesn't have built-in features for generateing indices of pages by date, category etc.,
+it can save you time writing a section index pages by hand.
+</p>
+<p>
+Metadata is extracted directly from pages using selectors you specify in the
+config. It's more than possible to use a different element for excerpt in every page,
+not just the first paragraph, without having to duplicate it in the &ldquo;front matter&rdquo;.
+It doesn't even have to be text either. Same goes for other fields.
+</p>
+<p>
+To use automatic indexing, you still need an index page in your section.
+It can be empty, but it must be there. Default index page name is <code>index</code>,
+so you should make a page like <code>site/articles/index.html</code> first.
+</p>
+<p>Then enable indexing in the config. All indexing options are in tne <code>[index]</code> table.</p>
+<pre>
+[index]
+  index = true
+</pre>
+<p>
+By default, soupault will append the index to the <code>&lt;body&gt;</code> element.
+You can tell it to insert it anywhere you want with the <code>index_selector</code>
+option, e.g. <code>index_selector = "div#index"</code>.
+</p>
+<p>
+There are a few configurable options. You can specify element selectors for page title,
+excerpt, date, and author.
+</p>
+<p>These are all available options:</p>
+<pre>
+[index]
+  # Whether to generate indices or not
+  # Default is false, set to true to enable
+  index = false
+
+  # Where to insert the index
+  index_selector = "body"
+
+  # Page title selector
+  index_title_selector = "h1"
+
+  # Page excerpt selector
+  index_excerpt_selector = "p"
+
+  # Page date selector
+  index_date_selector = "time"
+
+  # Date format for sorting
+  # Default %F means YYYY-MM-DD
+  # For other formats, see http://calendar.forge.ocamlcore.org/doc/Printer.html
+  index_date_format = "%F"
+
+  # Page author selector
+  index_author_selector = "#author"
+
+  # Wrapper element for index entries
+  index_item_template = "&lt;div&gt; &lt;/div&gt;"
+
+  # External index generator
+  # There is no default
+  index_processor =
+</pre>
+<h3>Using external index generators</h3>
+<p>
+The built-in index generator simply copies elements from the page to the index.
+You can easily end up with a rather odd-looking index, especially if you are
+using different elements on every page and identify them by <code>id</code>
+rather than element name.
+</p>
+<p>
+Generating indices and blog feeds is where template processors really shine.
+Everyone has different preferences though, so instead of having a built-in
+template processor, soupault supports exporting the index to JSON and
+feeding it to an external program.
+</p>
+<p>
+JSON-encoded index is written to program's standard input, as a single line.<span class="footnote" id="pipe-newlines">
+Newline as end of message is a horrible protocol, but since there's no universally
+agreed upon alternative for sending structured data to stdin, that's what we've got.</span>
+It's a list of objects with following fields:
+</p>
+<dl>
+  <dt><code>url</code></dt>
+  <dd>Absolute page URL path, like <code>/papers/simple-imperative-polymorphism</code></dd>
+  <dt><code>nav_path</code><dt>
+  <dd>A list of strings that represents the logical section path, e.g. for <code>/pictures/cats/grumpy</code>
+  it will be <code>["pictures", "cats"]</code>.</dd>
+  <dt><code>title, date, excerpt, author</code><dt>
+  <dd>Metadata extracted from the page. Any of them can be <code>null</code>.</dd>
+</dl>
+<p>
+Here's an example of very simple indexing setup that will take the first <code>h1</code>
+of every page in a section and make an unordered list of links to them. The external
+processor will use Python and <a href="https://mustache.github.io/">Mustache</a>
+templates.
+</p>
+<p>
+First, create an <code>index.html</code> page in every section and include a
+<code>&lt;div id="index"&gt;</code> element in it.
+</p>
+<p>Then write this to your config file:</p>
+<pre>
+[index]
+  index = true
+  index_selector = "#index"
+  index_processor = "scripts/index.py"
+  index_title_selector = "h1"
+</pre>
+<p>
+Then install the <code>pystache</code> library and save this script to <code>scripts/index.py</code>:
+</p>
+<pre>
+#!/usr/bin/env python3
+
+import sys
+import json
+
+import pystache
+
+template = """
+&lt;li&gt;&lt;a href="{{url}}"&gt;{{title}}&lt;/a&gt;&lt;/li&gt;
+"""
+
+renderer = pystache.Renderer()
+
+input = sys.stdin.readline()
+index_entries = json.loads(input)
+
+print("&lt;ul class=\"nav\"&gt;")
+for entry in index_entries:
+    print(renderer.render(template, entry))
+print("&lt;/ul&gt;")
+</pre>
+<p>
+Index processors are not required to output anything. You can as well use
+them to save the index data somewhere and create taxonomies and custom indices from it with
+another script,
+then re-run soupault to have them included in the pages.<span class="footnote" id="tex-like-toc">TeX users are familiar with this approach.</span>
+</p>
+
+<h3>Custom fields</h3>
+<p>
+Built-in fields should be enough for a typical blog taxonomy, but it's possible
+to add custom fields to your JSON index data.
+</p>
+<p>
+Custom field queries are defined in the <code>[index.custom_fields]</code> table.
+Table keys are field names as they will appear in the exported JSON.
+Their values are inline tables with required <code>selector</code> field
+and optional <code>select_all</code> parameters.
+</p>
+<pre>
+[index.custom_fields]
+  category = { selector = "span#category" }
+
+  tags = { selector = ".tag", select_all = true }
+</pre>
+<p>
+In this example, the <code>category</code> field will contain the inner HTML
+of the first <code>&lt;span id="category"&gt;</code> element even if there's
+more than one in the page. The <code>tags</code> field will contain a list
+of contents of all elements with <code>class="tag"</code>.
+</p>
+
+<h3>Exporting global site index to a file</h3>
+<p>
+The index processor invoked with the <code>index_processor</code> option
+receives the index of the current section. It doesn't include subsections.
+Since the site directory is processed top to bottom, the <code>site/index.html</code>
+page would not get the global site index either.
+</p>
+<p>
+If you want to create your own taxonomies from the metadata imported from pages,
+create a global site index, or an index of a section and all its subsections,
+you can export the aggregated index data to a file for further processing.
+Add this option to your index config:
+</p>
+<pre>
+[index]
+  dump_json = "path/to/file.json"
+</pre>
+<p>This way you can use a TeX-like workflow:</p>
+<ol>
+  <li>Run soupault so that index file is created.</li>
+  <li>Run your custom index generator and save generated taxonomy pages to <code>site/</code>.</li>
+  <li>Run soupault one more time to have them included in the build.</li>
+</ol>
+
+<h2>Widgets</h2>
+
+<p>
+Widgets provide additional functionality. When a page is processed, its content
+is inserted into the template, and the resulting HTML element tree is passed
+through a widget pipeline.
+</p>
+<h3>Widget behaviour</h3>
+<p>
+Widgets that require a <code>selector</code> option first check if there's an element matching
+that selector in the page, and do nothing if it's not found, since they wouldn't
+have a place to insert their output.
+</p>
+<p>
+This way you can avoid having a widget run on a page simply by omitting the element
+it's looking for.
+</p>
+<p>
+If more than one element matches the selector, the first element is used.
+</p>
+
+<h3>Widget configuration</h3>
+<p>
+Widget configuration is stored in the <code>[widgets]</code> table. The TOML syntax
+for nested tables is <code>[table.subtable]</code>, therefore, you will have entries
+like <code>[widgets.foo]</code>, <code>[widgets.bar]</code> and so on.
+</p>
+<p>
+Widget subtable names are purely informational and have no effect, the widget type
+is determined by the <code>widget</code> option. Therefore, if you want to use
+a hypothetical <code>frobnicator</code> widget, your entry will look like:
+</p>
+<pre>
+[widgets.frobnicate]
+  widget = "frobnicator"
+  selector "div#frob"
+</pre>
+<p>
+It may seen confusing and redundant, but if subtable name defined the
+widget to be called, you could only have one widget of the same type,
+and would have to choose whether to include the header or the footer
+with the <code>include</code> widget for example.
+</p>
+
+<h3>Limiting widgets to specific pages or sections</h3>
+<p>
+If the widget target comes from the page content rather than the template,
+you can simply not include any elements matching its <code>selector</code>
+option.
+</p>
+<p>
+Otherwise, you can explicitly set a widget to run or not run on specific
+pages or sections.
+</p>
+<p>
+All options from this section can take either a single string, or a list
+of strings.
+</p>
+
+<h4>Limiting to pages or sections</h4>
+<p>
+There are <code>page</code> and <code>section</code> options that 
+allow you to specify exact paths to specific pages or sections.
+Paths are relative to your site directory.
+</p>
+<p>
+The <code>page</code> option limits a widget to an exact page file,
+while the <code>section</code> option applies a widget to all
+files in a subdirectory.
+</p>
+<pre>
+[widgets.site-news]
+  # only on site/index.html and site/news.html
+  page = ["index.html", "news.html"]
+
+  widget = "include"
+  file = "includes/site-news.html"
+  selector = "div#news"
+
+[widgets.cat-picture]
+  # only on site/cats/*
+  section = "cats"
+
+  widget = "insert_html"
+  html = "&lt;img src=\"/images/lolcat_cookie.gif\" /&gt;"
+  selector = "#catpic"
+</pre>
+
+<h4>Excluding sections or pages</h4>
+<p>
+It's also possible to explicitly exclude pages or sections.
+</p>
+<pre>
+[widgets.toc]
+  # Don't add a TOC to the main page
+  exlude_page = "index.html"
+  ...
+
+[widgets.evil-analytics]
+  exclude_section = "privacy"
+  ...
+</pre>
+
+<h4>Using regular expressions</h4>
+
+<p>
+When nothing else helps, <code>path_regex</code> and <code>exclude_path_regex</code> options
+may solve your problem. They take a Perl-compatible regular expression (not a glob).
+</p>
+
+<pre>
+[widgets.toc]
+  # Don't add a TOC to any section index page
+  exclude_path_regex = '^(.*)/index\.html$'
+  ...
+
+[widgets.cat-picture]
+  path_regex = 'cats/'
+</pre>
+
+<h3>Widget processing order</h3>
+<p>
+If in your <code>soupault.conf</code> one config for widget A is before widget B,
+it doesn't guarantee that widget A will be processed first. By default, soupault
+assumes that widgets are independent and can be processed in arbitrary order.
+In future versions they may even be processed in parallel, who knows.
+</p>
+<p>
+This can be an issue if one widget relies on putput from another. In that case,
+you can order widgets explicitly with the <code>after</code> parameter.
+It can be a single widget (<code>after = "mywidget"</code) or a list of widgets
+(<code>after = ["some-widget", "another-widget"]</code>).
+</p>
+<p>
+Here is an example from this website's config. In the template there's
+a <code>&lt;div id="breadcrumbs"&gt;</code> where breadcrumbs are inserted by the
+<code>add-breadcrumbs</code> widget. Since there may not be breadcrumbs if the
+page is not deep enough, the <code>div</code> may be left empty, and that's not
+<em>neat</em>, so the <code>cleanup-breadcrumbs</code> widget removes it.
+</p>
+<pre>
+## Breadcrumbs
+[widgets.add-breadcrumbs]
+  widget = "breadcrumbs"
+  selector = "#breadcrumbs"
+  # <omitted>
+
+## Remove div#breadcrumbs if the breadcrumbs widget left it empty
+[widgets.cleanup-breadcrumbs]
+  widget = "delete_element"
+  selector = "#breadcrumbs"
+  only_if_empty = true
+
+  # Important!
+  after = "add-breadcrumbs"
+</pre>
+
+<h2>Built-in widgets</h2>
+<h3>File and output inclusion widgets</h3>
+<p>These widgets include something into your page: a file, a snippet, or putput of an external program.</p>
+<h4 id="widgets-include">include</h4>
+<p>
+The <code>include</code> widget simply reads a file and inserts its content
+into some element.
+</code>
+<p>
+The following configuration will insert the content of <code>templates/header.html</code>
+into an element with <code>id="header"</code> and the content of <code>templates/footer.html</code>
+into an element with <code>id="footer"</code>.
+</p>
+<pre>
+[widgets.header]
+  widget = "include"
+  file = "templates/header.html"
+  selector = "#header"
+
+[widgets.footer]
+  widget = "include"
+  file = "templates/footer.html"
+  selector = "#footer"
+</pre>
+<p>
+This widget provides a <code>parse</code> option that controls whether the file is parsed
+or included as a text node. Use <code>parse = false</code> if you want to include a file verbatim,
+with HTML special characters escaped.
+</p>
+
+<h4 id="widgets-insert_html">insert_html</h4>
+<p>For a small HTML snippet, a separate file may be too much. The <code>insert_html</code> widget </p>
+<pre>
+[widgets.tracking-script]
+  widget = "insert_html"
+  html = '&lt;script src="/scripts/evil-analytics.js"&gt; &lt;/script&gt;'
+  selector = "head"
+</pre>
+
+<h4 id="widgets-exec">exec</h4>
+<p>
+The <code>exec</code> widget executes an external program and includes its output into
+an element. The program is executed in shell, so you can write a complete command
+with arguments in the <code>command</code> option. Like the <code>include</code>
+widget, it has a <code>parse</code> option that includes the output verbatim
+if set to <code>false</code>.
+</p>
+<p>Simple example: page generation timestamp.</p>
+<pre>
+[widgets.generated-on]
+  widget = "exec"
+  selector = "#generated-on"
+  command = "date -R"
+</pre>
+
+<h5>Environment variables</h5>
+<p>The following environment variables are passed to the external program:</p>
+<dl>
+  <dt><code>PAGE_FILE</code></dt>
+  <dd>Path to the page source file, relative to the current working directory
+      (e.g. <code>site/index.html</code></dd>
+</dl>
+<p>This is how you can include page's own source into a page, on a UNIX-like system:</p>
+<pre>
+[widgets.page-source]
+  widget = "exec"
+  selector = "#page-source"
+  parse = false
+  command = "cat $PAGE_FILE"
+</pre>
+<p>
+If you store your pages in git, you can get a page timestamp from the git log
+with a similar method (note that it's not a very fast operation for long commit
+histories):
+<pre>
+[widgets.last-modified]
+  widget = "exec"
+  selector = "#git-timestamp"
+  command = "git log -n 1 --pretty=format:%ad --date=format:%Y-%m-%d -- $PAGE_FILE"
+</pre>
+<p>
+The <code>PAGE_FILE</code> variable can be used in many different ways,
+for example, you can use it to fetch the page author and modification date
+from a revision control system like git or mercurial.
+</p>
+<p>
+In the current version you cannot uses an external program as a filter&mdash;
+only as a producer, but it can be implemented in future versions.
+</p>
+
+<h3>Content widgets</h3>
+<h4 id="widgets-title">title</h4>
+<p>
+The <code>title</code> widget sets the page title, that is, the <code>&lt;title&gt;</code>
+from an element with a certain selector. If there is no <code>&lt;title&gt;</code> element
+in the page, this widget assumes you don't want it and does nothing.
+</p>
+<p>Example:</p>
+<pre>
+[widgets.page-title]
+  widget = "title"
+  selector = "h1"
+  default = "My Website"
+  append = " on My Website"
+  prepend = "Page named "
+</pre>
+<p>
+If <code>selector</code> is not specified, it uses the first <code>&lt;h1&gt;</code>
+as the title source element by default.
+</p>
+<p>
+The <code>selector</code> option can be a list. For example, <code>selector = ["h1", "h2", "#title"]</code>
+means &ldquo;use the first <code>&lt;h1&gt;</code> if the page has it, else use <code>&lt;h2&gt;</code>,
+else use anything with <code>id="title"</code>, else use default&rdquo;.
+</p>
+<p>
+Optional <code>prepend</code> and <code>append</code> parameters allow you to insert some text
+before and after the title.
+</p>
+<p>
+If there is no element matching the <code>selector</code> in the page, it will use the
+title specified in <code>default</code> option. In that case the <code>prepend</code>
+and <code>append</code> options are ignored.
+</p>
+<p>
+If the title source element is absent and default title is not set, the title is left empty.
+</p>
+
+<h4 id="widgets-footnotes">footnotes</h4>
+<p>
+The <code>footnotes</code> widget finds all elements matching a selector,
+moves them to a designated footnotes container, and replaces them with numbered links.<span class="footnote" id="footnotes">As if anyone doesn't know what what's a footnote.</span>
+As usual, the container element can be anywhere in the page—you can have footnotes at the top if you feel like it.
+</p>
+<pre>
+[widgets.footnotes]
+  widget = "footnotes"
+
+  # Required: Where to move the footnotes
+  selector = "#footnotes"
+
+  # Required: What elements to consider footnotes
+  footnote_selector = ".footnote"
+
+  # Optional: Element to wrap footnotes in, default is &lt;p&gt;
+  footnote_template = "&lt;p&gt; &lt;/p&gt;"
+
+  # Optional: Element to wrap the footnote number in, default is &lt;sup&gt;
+  ref_template = "&lt;sup&gt; &lt;/sup&gt;"
+
+  # Optional: Class for footnote links, default is none
+  footnote_link_class = "footnote"
+
+  # Optional: do not create links back to original locations
+  back_links = true
+</pre>
+<p>
+The <code>footnote_selector</code> option can be a list, in that case all elements
+matching any of those selectors will be considered footnotes.
+</p>
+<p>
+By default, the number in front of a footnote is a hyperlink back to the original
+location. You can disable it and make footnotes one way links with <code>back_links = false</code>.
+</p>
+
+<h4 id="widgets-toc">toc</h4>
+<p>The <code>toc</code> widget generates a table of contents for your page.</p>
+<p>
+Table of contents is generated from the heading tags from <code>&lt;h1&gt;</code>
+to <code>&lt;h6&gt;</code>. 
+</p>
+<p>Here is the ToC configuration from this website:</p>
+<pre>
+[widgets.table-of-contents]
+  widget = "toc"
+
+  # Required: where to insert the ToC
+  selector = "#generated-toc"
+
+  # Optional: minimum and maximum levels, defaults are 1 and 6 respectively
+  min_level = 2
+  max_level = 6
+
+  # Optional: use &lt;ol&gt; instead of &lt;ul&gt; for ToC lists
+  # Default is false
+  numbered_list = false
+
+  # Optional: Class for the ToC list element, default is none
+  toc_list_class = "toc"
+
+  # Optional: append the heading level to the ToC list class
+  # In this example list for level 2 would be "toc-2"
+  toc_class_levels = false
+
+  # Optional: Insert "link to this section" links next to headings
+  heading_links = true
+
+  # Optional: text for the section links
+  # Default is "#"
+  heading_link_text = "→ " 
+
+  # Optional: class for the section links
+  # Default is none
+  heading_link_class = "here"
+
+  # Optional: insert the section link after the header text rather than before
+  # Default is false
+  heading_links_append = false
+
+  # Optional: use header text slugs for anchors
+  # Default is false
+  use_heading_slug = true
+
+  # Optional: use unchanged header text for anchors
+  # Default is false
+  use_heading_text = false
+</pre>
+<h5>Choosing the heading anchor options</h5>
+<p>
+For the table of contents to work, every heading needs a unique <code>id</code>
+attribute that can be used as an anchor.
+</p>
+<p>
+If a heading has an <code>id</code> attribute, it will be used for the anchor.
+If it doesn't, soupault has to generate one.
+</p>
+<p>
+By default, if a heading has no <code>id</code>, soupault will generate
+a unique numeric identifier for it.<span class="footnote">Much like the footnotes widget.</span>
+This is safe, but not very good for readers (links are non-indicative) and for people who want to share
+direct links to sections (they will change if you add more sections).
+</p>
+<p>
+If you want to find a balance between readability, permanence, and ease of maintenance,
+there are a few ways you can do it and the choice is yours.
+</p>
+<p>
+The <code>use_heading_slug = true</code> option converts the heading text
+to a valid HTML identifier. Right now, however, it's very aggressive
+and replaces everything other than ASCII letters and digits with hyphens.
+This is obviously a no go for non-ASCII languages, that is, pretty much
+all languages in the world. It may be implemented more sensibly in the future.
+</p>
+<p>
+The <code>use_heading_text = true</code> option uses unmodified heading text
+for the <code>id</code>, with whitespace and all. This is against the rules of HTML,
+but seems to work well in practice.
+</p>
+<p>
+Note that <code>use_heading_slug</code> and <code>use_heading_text</code>
+do not enforce uniqueness.
+</p>
+<p>
+All in all, for best link permanence you should give every heading a unique id
+by hand, and for best readability you may want to go with <code>use_heading_text = true</code>.
+</p>
+
+<h4 id="widgets-breadcrumbs">breadcrumbs</h4>
+<p>The <code>breadcrumbs</code> widget generates breadcrumbs for the page.</p>
+<p>The only required parameter is <code>selector</code>, the rest is optional.</p>
+<pre>
+[widgets.breadcrumbs]
+  widget = "breadcrumbs"
+
+  selector = "#breadcrumbs"
+  prepend = ".. / "
+  append = " /"
+  between = " / "
+  breadcrumb_template = "<a class=\"nav\"></a>"
+  min_depth = 1
+</pre>
+<p>
+The <code>breadcrumb_template</code> is an HTML snippet that can be used
+for styling your breadcrumbs.
+It <strong>must</strong> have an <code>&lt;a&gt;</code> element in it.
+By default, a simple unstyled link is used.
+</p>
+<p>
+The <code>min_depth</code> sets the minimum nesting depth where breadcrumbs
+appear. That's the length of the logical navigation path rather than directory path.
+</p>
+<p>
+There is a fixup that decrements the path for section index pages, that is, pages named<code>index</code>
+by default, or whatever is specified in the <code>index_page</code> option.
+Their navigation path is considered one level shorter than any other page in the section,
+when clean URLs are used. This is to prevent section index pages from having links
+to themselves.
+</p>
+<ul>
+  <li><code>site/index.html</code> → 0</li>
+  <li><code>site/foo/index.html</code> → 0 (sic!)</li>
+  <li><code>site/foo/bar.html</code> → 1</li>
+</ul>
+
+<h3>HTML manipulation widgets</h3>
+
+<h4>delete_element</h4>
+
+<p>The opposite of <code>insert_html</code>. Deletes an element with given selector. It can be useful in two situations:</p>
+<ul>
+  <li>Another widget may leave an element empty and you want to clean it up.</li>
+  <li>Your pages are generated with another tool and it inserts something you don't want.</li>
+</ul>
+<pre>
+# Who reads footers anyway?
+[widgets.delete_footer]
+  widget = "delete_element"
+  selector = "#footer"
+</pre>
+<p>
+You can limit it to deleting only empty elements with <code>only_if_empty = true</code> option.
+Element is considered empty if there's nothing but whitespace inside it.
+</p>
+
+<h2>Plugins</h2>
+
+<p>
+Since version 1.2, soupault can be extended with Lua plugins. Currently there are following limitations:
+</p>
+<ul>
+  <li>The supported language is Lua 2.5, not modern Lua 5.x. That means no closures and no <code>for</code> loops in particular.</li>
+  <li>Lua execution errors are logged to <code>stderr</code>, but don't stop processing even in strict mode.</li>
+  <li>Only string options can be passed to plugins via widget options from <code>soupault.conf</code></li>
+</ul>
+<p>
+Plugins are treated like widgets and are configured the same way.
+</p>
+
+<h3>Plugin example</h3>
+<p>
+Here is an example of a plugin that converts relative links to absolute URLs by prepending a site URL to them:
+</p>
+
+<pre>
+-- Converts relative links to absolute URLs
+-- e.g. "/about" -> "https://www.example.com/about"
+
+-- Get the URL from the widget config
+site_url = config["site_url"]
+
+if not Regex.match(site_url, "(.*)/$") then
+  site_url = site_url .. "/"
+end
+
+links = HTML.select(page, "a")
+
+-- That's Lua 2.5, hand-cranked iteration...
+index, link = next(links)
+
+while index do
+  href = HTML.get_attribute(link, "href")
+  if href then
+    -- Check if URL schema is present
+    if not Regex.match(href, "^([a-zA-Z0-9]+):") then
+      -- Remove leading slashes
+      href = Regex.replace(href, "^/*", "")
+      href = site_url .. href
+      HTML.set_attribute(link, "href", href)
+    end
+  end
+  index, link = next(links, index)
+end
+</pre>
+<h3>Configuring plugins</h3>
+<p>
+Plugin files can be placed in any directory. By convention, we'll use <code>plugins/</code>.
+So, to use that plugin, first save it to <code>plugins/site-url.lua</code>
+</p>
+<p>Then you need to configure soupault to load the plugin. Add this snippet to <code>soupault.conf</code>:</p>
+<pre>
+[plugins.site-url]
+  file = "plugins/site-url.lua"
+</pre>
+<p>It will register the plugin as a widget named <code>site-url</code>.</p>
+<p>
+Then you can use it like any other widget. Plugin subtable name becomes the name of the widget,
+in our case <code>site-url</code>. The <code>site_url</code> option from the widget config
+will be accessible to the plugin as <code>config["site_url"]</code>.
+</p>
+<pre>
+[widgets.absolute-urls]
+  widget = "site-url"
+  site_url = "https://www.example.com"
+</pre>
+
+<h3>Plugin environment</h3>
+<p>Plugins have access to the following global variables:</p>
+<dl>
+  <dt><code>page</code></dt>
+  <dd>The page element tree that can be manipulated with functions from the <code>HTML</code> module.</dd>
+  <dt><code>page_file</code></dt>
+  <dd>String containing page file path, e.g. <code>site/index.html</code></dd>
+  <dt><code>nav_path</code></dt>
+  <dd>List of strings representing the logical nativation path. For example, for <code>site/foo/bar/quux.html</code>
+      it's <code>["foo", "bar"]</code>.
+  <dt><code>config</code></dt>
+  <dd>A table with widget config options.</dd>
+</dl>
+
+<p>
+<strong>Note:</strong> only string options can be passed to plugins through the <code>config</code> table.
+As in, they must be TOML strings like <code>"foo"</code> or <code>"42.0"</code>. Lua will convert strings
+to numbers when appropriate, so you can pass numbers by writing them as strings. You <em>cannot</em> pass TOML lists
+or inline tables to plugins in the current soupault version.
+</p>
+
+<h3>Plugin API</h3>
+<p>
+Apart from the standard Lua 2.5 functions, soupault provides two additional modules: <code>HTML</code>
+for HTML element tree manipulation and <code>Regex</code> for simple regex operations.</p>
+<h4>The HTML module</h4>
+<table>
+  <tr>
+    <th>Function</th>
+    <th>Example</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>HTML.parse(string)</code></td>
+    <td><code>h = HTML.parse("&lt;p&gt;hello world&lt;p&gt;")</code></td>
+    <td>Parses a string into an HTML element tree</td>
+  </tr>
+  <tr>
+    <td><code>HTML.create_element(tag, text)</code></td>
+    <td><code>h = HTML.create_element("p", "hello world")</code></td>
+    <td>Creates an HTML element node.</td>
+  </tr>
+  <tr>
+    <td><code>HTML.inner_html(html)</code></td>
+    <td><code>h = HTML.inner_html(HTML.create_element("<p>hello world</p>"))</code></td>
+    <td>Returns element content as a string.</td>
+  </tr>
+  <tr>
+    <td><code>HTML.select(html, selector)</code></td>
+    <td><code>links = HTML.select(page, "a")</code></td>
+    <td>Returns a list of elements matching specified selector</td>
+  </tr>
+  <tr>
+    <td><code>HTML.select_one(html, selector)</code></td>
+    <td><code>content_div = HTML.select(page, "div#content")</code></td>
+    <td>Returns	the first element matching specified selector, or <code>nil</code> if none are found.</td>
+  </tr>
+  <tr>
+    <td><code>HTML.get_attribute(html_element, attribute)</code></td>
+    <td><code>href = HTML.get_attribute(link, "href")</code></td>
+    <td>Returns the value of an element attribute, or nil if the attribute is absent. The first argument must be an element reference
+        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
+  </tr>
+  <tr>
+    <td><code>HTML.set_attribute(html_element, attribute)</code></td>
+    <td><code>HTML.set_attribute(content_div, "id", "content")</code></td>
+    <td>Sets an attribute value. The first argument must be an element reference
+        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
+  </tr>
+  <tr>
+    <td><code>HTML.add_class(html_element, class_name)</code></td>
+    <td><code>HTML.add_class(p, "centered")</code></td>
+    <td>Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
+        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
+  </tr>
+  <tr>
+    <td><code>HTML.remove_class(html_element, class_name)</code></td>
+    <td><code>HTML.remove_class(p, "centered")</code></td>
+    <td>Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
+        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
+  </tr>
+  <tr>
+    <td><code>HTML.append_child(parent, child)</code></td>
+    <td><code>HTML.append_child(page, HTML.create_element("br"))</code></td>
+    <td>Appends a child element to the parent.</td>
+  </tr>
+  <tr>
+    <td><code>HTML.delete(html_element)</code></td>
+    <td><code>HTML.delete(HTML.select_one(page, "h1"))</code></td>
+    <td>Deletes an element from the page. The second argument must be an element reference returns by a select function.</td>
+  </tr>
+</table>
+
+<h4>The Regex module</h4>
+<p>
+Regular expressions used by this module are mostly Perl-compatible. Capturing groups and back references are not supported.
+</p>
+<table>
+  <tr>
+    <th>Function</th>
+    <th>Example</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>Regex.match(string, regex)</code></td>
+    <td><code>Regex.match("/foo/bar", "^/")</code></td>
+    <td>Checks if a string matches a regex.</td>
+  </tr>
+    <tr>
+    <td><code>Regex.find_all(string, regex)</code></td>
+    <td><code>matches = Regex.find_all("/foo/bar", "([a-z]+)")</code></td>
+    <td>Returns a list of substrings matching a regex.</td>
+  </tr>
+  <tr>
+    <td><code>Regex.replace(string, regex, string)</code></td>
+    <td><code>s = Regex.replace("/foo/bar", "^/", "")</code></td>
+    <td>Replaces the first occurence of a matching strings. It returns a new string and doesn't modify the argument.</td>
+  </tr>
+  <tr>
+    <td><code>Regex.replace_all(string, regex, string)</code></td>
+    <td><code>Regex.replace("/foo/bar", "/", "")</code></td>
+    <td>Replaces every matching substring. It returns a new string and doesn't modify the argument.</td>
+  </tr>
+</table>

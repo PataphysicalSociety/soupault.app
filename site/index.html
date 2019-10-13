@@ -1,40 +1,40 @@
-<p>Soupault (<em>soup-oh</em>) is a static website generator for the Web 1.0 revival.</p>
+<p>Soupault (<em>soup-oh</em>) is a static website generator.</p>
 <p>
-It takes an empty page and a directory with page content files and makes a website from it. However, unlike classic
-website generators like Jekyll and Hugo, it lets you decide how much is the &ldquo;theme&rdquo; and how much is the content,
-and doesn't make you learn a template language since it can extract all metadata from the HTML itself and find target elements
-using CSS selectors.
+It's a tool that takes a page template and a directory with page content
+files and builds a complete static website from it. This makes it easy to tweak the site layout without having to edit every page by hand.
+It can include external files in your pages, set the page title, create footnotes and tables of contents for your pages—in short, help
+you with tedious tasks that distract you from working on the site layout and content.
 </p>
 <p>
-It's more like an automated HTML editor that can help you with tedious tasks, but doesn't limit you to pages looking all the same and doesn't impose a particular
-workflow on you. Nothing prevents you from making a website with pages that all look different, but share the same meta tags and a copyright footer, for example.
-With soupault, you can have the freedom of Web 1.0 but without its usual hassles.
+If you are already familiar with static generators like Jekyll or Hugo, you are likely wondering how soupault is different from them
+and why make another one. The key difference is that soupault doesn't use a template processor. Instead of generating HTML, it
+transforms and enhances it, using HTML element tree rewriting. Instead of making you supply page metadata in the &ldquo;front matter&rdquo;,
+it can extract metadata from your pages. It's more like an automated HTML editor that can emulate a human webmaster.
 </p>
 <p>
-As a human webmaster, you open an HTML file and edit it. You can see the tags and their content,
-and perform steps like &ldquo;copy the content of the first <code>&lt;h1&gt;</code> to the <code>&lt;title&gt;</code>&rdquo;
-for example. You can find the <code>h1</code> tag no matter where is it in the page.
+This allows new possibilities such as setting page title to the first <code>&lt;h1&gt;</code> of the page, no matter where it's located in the page,
+generating footnotes and ToC links with persistent anchors based on the <code>id</code> attribute of the heading or footnote paragraph elements,
+or inserting different scripts and styles into the <code>&lt;head&gt;</code> of certain pages.
 </p>
 <p>
-&ldquo;Classic&rdquo; website generators don't have that ability since they rely on template macros
-like <code>{{title}}</code> or <code>{{content}}</code> to find where to
-insert something. The HTML itself is opaque to them, they simply don't know what a <code>h1</code> is or how to find it
-and extract its content. That is why they have to use a different workflow that requires external metadata.
-If you want two pages look different, you have to use different themes/templates for them.
+Source and target elements for content extraction and insertion are identified using CSS selectors like <code>h1</code>, <code>div#content</code>,
+or <code>.footnote</code>. The way soupault works is similar to DOM manipulation in JS, except it doesn't need a browser and produces static pages
+that don't require any client-side scripts to work.
 </p>
 <p>
-Soupault parses HTML and manipulates elements, so it knows the structure of your page. You decide how much is the template/theme and how much is the content.
-If you are familiar with DOM manipulation in JavaScript (<code>getElementById</code> etc.), it's pretty much the same thing,
-except it's done once and produces static pages, so it doesn't require any client-side scripts.
+It also removes the artificial separation of theme and content and allows you to make every page look different if you feel like it. This makes soupault
+especially suited for the Web 1.0 revival. You decide how much is the theme and how much is the content, the minimal page template
+is just <code>&lt;html&gt; &lt;body&gt; &lt;/body&gt; &lt;/html&gt;</code>.
 </p>
-<p>Despite this seemingly heavy-handed approach, soupault is reasonably fast and can build a site with a hundred pages in under a second.</p>
+<p>Despite its seemingly heavy-handed approach, soupault is reasonably fast and can build a site with a hundred pages in under a second.</p>
 
 <h2>What can you do with it?</h2>
 <ul>
-  <li>Include files, HTML snippets, or output of external programs/scripts in your pages</li>
-  <li>Specify target elements with any CSS3 selectors like <code>p</code> (first <code>&lt;p&gt;</code> tag), <code>#myid</code> (element with <code>id="myid"</code>),
-      or <code>.myclass</code> (element with <code>class="myclass"</code>).</li>
+  <li>Include files, HTML snippets, or output of external programs/scripts in your pages.</li>
   <li>Automatically create tables of contents, footnotes, and breadcrumbs (fully static, no JS).</li>
+  <li>Delete HTML elements from certain pages.</li>
+  <li>Store pages in any format (Markdown, AsciiDoc...) that can be converted to HTML, if you specify a <a href="/howto/#preprocessors">preprocessor</a> for it.</li>
+  <li>Get page metadata in JSON and generate a section index/blog feed from it.</li>
   <li>Add your own functionality with external scripts and plugins.</li>
 </ul>
 <p>Here's a screencast of basic usage:</p>
@@ -43,8 +43,8 @@ except it's done once and produces static pages, so it doesn't require any clien
 You can also download the <a href="https://github.com/dmbaturin/soupault.neocities.org">source</a> of this website and play with it.
 </p>
 
-<h2>Installing</h2>
-<p>Soupault is a single, self-contained executable (~6MB). Just unpack the archive and you are ready to go.</p>
+<h2 id="downloads">Download and install</h2>
+<p>Soupault is a single, self-contained executable (~6MB). The installation procedure is simple: just unpack the archive and you are ready to go.</p>
 <p>Downloads:</p>
 <dl>
   <dt>Linux (x86-64, statically linked)</dt>
@@ -64,6 +64,38 @@ platform supported by the <a href="https://ocaml.org">OCaml</a> programming lang
 The source code is available from <a href="https://github.com/dmbaturin/soupault">github.com/dmbaturin/soupault</a>.
 </p>
 
+<h2>How to use it?</h2>
+<p>
+The <a href="/howto">HOWTO</a> should be a good start. Then read the <a href="https://baturin.org/projects/soupault">reference manual</a> for details.
+There's also a <a href="/blog">blog</a> with tips and tricks.
+</p>
+
+<h2>Why it's named soupault?</h2>
+<p>
+Soupault is named after the French dadaist and surrealist writer Philippe Soupault
+because it's based on the <a href="https://github.com/aantron/lambdasoup">lambdasoup</a> library.
+Its development is sponsored by the <a href="http://www.college-de-pataphysique.org/">College of 'Pataphysics</a>.<span class="footnote" id="pataphysics">Not really.</span>
+</p>
+
+<h2>Graphics</h2>
+<p>
+The soupault logo is a stick horse. It's a reference to the meeting where Philippe Soupault et al. chose a name for their movement by opening a dictionary
+at a random word and landed on &ldquo;dada (n.), a colloquial for a stick horse&rdquo;, which is why they named it &ldquo;dadaism&rdquo;.
+</p>
+<img src="/images/soupault_stick_horse.png" />
+<img src="/images/powered_by_soupault.png" />
+
+<h2>Who's behind it?</h2>
+<p>
+So far just me, <a href="https://baturin.org">Daniil Baturin</a>, but everyone is welcome to send a patch/pull request or a suggestion.
+It has grown out of the bunch of ad hoc scripts that used to power my own website, and then I thought I can as well make it usable
+for everyone who finds other generators too annoying or too limiting.
+</p>
+<p>
+If you find a bug or have a feature request, create an issue on <a href="https://github.com/dmbaturin/soupault/issues">Github</a>.
+Alternatively, you can send an email to <code>daniil+soupault@[my last name].org</code>. Feel free to send me messages on Neocities as well.
+</p>
+
 <h2>Extensibility</h2>
 <p>Apart from built-in functionality, soupault offers a few ways to add your own.</p>
 <h3>Running external scripts</h3>
@@ -73,7 +105,7 @@ a script on the page source file (e.g. add automatically add last modification d
 </p>
 <h3>Index generators</h3>
 <p>
-While soupault, by itself, is not &ldquo;blog-aware&rdquo;, it can extract data from elements matching certain selectors in each page
+While soupault, by itself, is not &ldquo;blog-aware&rdquo;, it can extract data from elements matching certain selectors from each page
 (e.g. title from a <code>&lt;h1 id="title"&gt;</code> and date from <code>&lt;time&gt;</code>) and feed it to an external script.
 This way you can make a blog, an Atom feed, or simply a list of all pages in a site section. You decide what data is extracted,
 from which elements, and what the script does with it.
@@ -86,31 +118,6 @@ The only downside is that the extension language is Lua 2.5 rather than modern 5
 soupault uses a research implementation named Lua-ML that includes many embedded interpreter design breakthroughs, but sadly
 isn't up to date with the official Lua spec.</span>
 </p>
-
-<h2>Why it's named soupault?</h2>
-<p>
-Soupault is named after the French dadaist and surrealist writer Philippe Soupault
-because it's based on the <a href="https://github.com/aantron/lambdasoup">lambdasoup</a> library.
-Its development is sponsored by the <a href="http://www.college-de-pataphysique.org/">College of 'Pataphysics</a>.<span class="footnote" id="pataphysics">Not really.</span>
-</p>
-
-<h2>How to use it?</h2>
-<p>The <a href="/howto">HOWTO</a> should be a good start. Then read the <a href="https://baturin.org/projects/soupault">reference manual</a> for details.</p>
-
-<h2>Who's behind it?</h2>
-<p>
-So far just me, <a href="https://baturin.org">Daniil Baturin</a>, but everyone is welcome to send a pull request or a suggestion.
-It has grown out of the bunch of ad hoc scripts that used to power my own website, and then I thought I can as well make it usable
-for everyone who finds other generators too annoying or too limiting.
-</p>
-
-<h2>Graphics</h2>
-<p>
-The stick horse logo is a reference to the meeting where Philippe Soupault et al. chose a name for their movement by opening a dictionary
-at a random word and landed on &ldquo;dada (n.), a colloquial for a stick horse&rdquo;, which is why they named it &ldquo;dadaism&rdquo;.
-</p>
-<img src="/images/soupault_stick_horse.png" />
-<img src="/images/powered_by_soupault.png" />
 
 <h2>News</h2>
 <dl>

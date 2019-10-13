@@ -42,6 +42,8 @@ body
 
 a { color: #d65906; }
 
+a.nav-active { font-weight: bold; }
+
 a.here { text-decoration: none; }
 
 hr

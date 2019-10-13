@@ -190,6 +190,9 @@ will call it automatically.
 </p>
 <p>
 For Markdown, I suggest the <a href="https://github.com/commonmark/cmark">cmark</a> program.
+On GNU/Linux you can install it from repositories and on macOS you can get it from
+<a href="https://formulae.brew.sh/formula/cmark">homebrew</a>. I couldn't find a prebuild version
+for Windows though, so I made one (v.0.29.0): <a href="/files/cmark.exe">cmark.exe</a>.
 To use it, just add this to your <code>soupault.conf</code> file:
 </p>
 <pre>
@@ -199,4 +202,8 @@ To use it, just add this to your <code>soupault.conf</code> file:
 <p>
 Make sure the program is in your <code>PATH</code>. If it's not, you can specify an absolute path there,
 like <code>md = '/opt/cmark/bin/cmark'</code> or <code>md = 'C:\cmark\cmark.exe'</code>.
+</p>
+<p>
+You can specify preprocessors for as many extensions as you want, so you can easily use multiple formats
+at once.
 </p>
