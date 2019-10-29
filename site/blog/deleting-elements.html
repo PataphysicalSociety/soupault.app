@@ -1,0 +1,89 @@
+<h1 id="post-title">Deleting elements</h1>
+
+<span>Date: <time id="post-date">2019-10-24</time> </span>
+
+<p>
+To my knowledge, soupault is the only website generator that can delete things from pages.
+With a generator based on a template processor you can conditionally include something in the page
+or not, but if it's already in the page, you can't do anything about it. Soupault opens a new era
+for website management: now you can delete anything you want, including the <code>&lt;body&gt;</code>
+element. First let's see how it's done and then discuss the use cases for deleting elements.
+</p>
+<p>
+We'll start with a simple and absurd example: deleting the page body for real:
+</p>
+<pre>
+[widgets.delete-body]
+  widget = "delete_element"
+  selector = "body"
+</pre>
+<p>
+No one will want to do that, so let's move on to more useful examples.
+</p>
+<h2>Cleaning up empty elements</h2>
+<p>
+With the <code>only_if_empty</code> option you can delete only empty elements,
+but leave them intact if there's some content inside.
+</p>
+<p>
+Suppose you are using a <a href="/howto/#preprocessors">preprocessor</a> for some format that is fond of leaving empty paragraphs.
+Then you can clean them up with this config:
+</p>
+<pre>
+[widgets.delete-empty-paragraphs]
+  widget = "delete_element"
+  selector = "p"
+  only_if_empty = true
+</pre>
+<p>
+This technique can also be used to clean up empty containers that weren't populated
+by other widgets. For example, on <a href="https://baturin.org">my website</a>
+I have breadcrumbs, which can be seen on pages inside sections, like
+<a href="https://baturin.org/notes/mobile-friendly/">/notes/mobile-friendly</a>.
+At the top level, breadcrumbs make no sense though, so my config limits them to appear
+only on pages nested at least one level deep:
+</p>
+<pre>
+[widgets.breadcrumbs]
+  widget = "breadcrumbs"
+  selector = "div#breadcrumbs"
+  prepend = ".. / "
+  append = " /"
+  between = " / "
+  breadcrumb_template = "&lt;a class=\"nav\"&gt; &lt;/a&gt;"
+  min_depth = 1
+</pre>
+<p>
+Since the <code>&lt;div id="breadcrumbs"&gt;</code> is in my <code>templates/main.html</code>,
+it leaves an empty div in top level pages, which is not harmful, but still a bit dirty.
+</p>
+<p>
+The <code>delete_element</code> widget offers a simple way to clean it up:
+</p>
+<pre>
+[widgets.breadcrumbs-cleanup]
+  widget = "delete_element"
+  selector = "div#breadcrumbs"
+  only_if_empty = true
+
+  # Must run after breadcrumbs!
+  after = "breadcrumbs"
+</pre>
+<p>
+Note that <code>after</code> option. Soupault doesn't process widgets in the same order
+as they appear in the config, and may even run them in parallel in future versions,
+so if order is important, you should specify it explicitly with <code>before</code>
+and <code>after</code> options.
+</p>
+<h2>Deleting unwanted elements from third-party HTML</h2>
+<p>
+Sometimes third-party tools may generate something you don't want. Not a problem, if the unwanted
+element is identifiable with a CSS selector, you can use this widget to delete it.
+If a hypothetical HTML Gallery Generator Pro inserts a prominent logo in, say,
+<code>&lt;div id="watermark"&gt;</code>, nothing prevents you from deleting it with:
+</p>
+<pre>
+[widgets.no-watermark]
+  widget = "delete_element"
+  selector = "div#watermark"
+</pre>

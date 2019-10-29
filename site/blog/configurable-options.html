@@ -44,17 +44,20 @@ for a one time behaviour change.
 </p>
 <p>
 The <code>strict</code> option defines whether soupault will stop on page processing errors or not. Trying to include a file that doesn't exist
-is a typical error of this kind. Suppose you want to include a footer from <code>templates/footer.html</code> in every page, and add this to the config:
+is a typical error of this kind. Suppose you want to include a footer from <code>templates/footer.html</code> in every page, and you add this to the config
+but forget to create the <code>templates/footer.html</code> file:
 </p>
 <pre>
 [widgets.footer]
   widget = "include"
+
+  # file doesn't exist yet
   file = "templates/footer.html"
   selector = "div#footer"
 </pre>
 <p>
 If you have <code>strict = true</code> in your config, then build will fail with <code>[ERROR] Could not process page ...: templates/footer.html: No such file or directory</code>.
-If you have <code>strict = false</code>, it will be just show a warning and produce pages without a footer.
+If you have <code>strict = false</code>, it will just show a non-existent file warning and produce pages without a footer.
 </p>
 <h2>Site and build dirs</h2>
 <p>

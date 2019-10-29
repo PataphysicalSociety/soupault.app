@@ -1,0 +1,99 @@
+<h1 id="post-title">Doing things only to some pages</h1>
+<span>Last update: <time id="post-date">2019-10-22</time> </span>
+<p>
+Soupault is meant to be a website generator for Web 1.0. One of the key freedoms the Web 2.0 approach
+took away is the freedom to make different pages look different. To live up to the Web 1.0-friendly promise,
+a tool must make it easy to do again. Soupault includes a number of features to make it easier.
+</p>
+<h3>Omitting widget's target from the page</h3>
+<p>
+First of all, as already mentioned, if a widget has a target selector, it will only run if it finds an element
+matching that selector. If there's no element where it could insert its output, it will do nothing.
+In the functional programming jargon, widgets are &ldquo;lazily evaluated&rdquo;.
+</p>
+<p>For example, suppose you have this config for footnotes:</p>
+<pre>
+[widgets.footnotes]
+  widget = "footnotes"
+
+  selector = "div#footnotes"
+
+  footnote_selector = ".footnote"
+  footnote_link_class = "footnote"
+  back_links = true
+  link_id_prepend = "footnote-"
+  back_link_id_append = "-ref"
+</pre>
+<p>
+If you want footnotes in every page, you can include a <code>&lt;div id="footnotes"&gt;</code> in <code>templates/main.html</code>
+and never have to think about it again (fun fact: that div needs not be at the bottom of the page, for a practical joke you can place it at the top
+or in the middle).
+</p>
+<p>
+However, if you want it only in some pages, you can omit that div from the template, and insert it only in pages where you want footnotes.
+</p>
+<h3>Limiting widgets to specific pages</h3>
+<p>
+Omitting widget's target from a page is not always an option, or at least not the best option. Sometimes the target is too generic and cannot be
+omitted. For example, if you want to add a custom CSS style, using a <code>link</code> tag in the head, you'd have to leave the template to
+just <code>&lt;html&gt; &lt;/html&gt;</code>, which is a very bad option for websites with more or less uniform-looking pages, since you'd end up
+with a lot of redundant code in the page content files.
+</p>
+<p>
+This is why soupault has options for explicitly limiting widgets to certain pages or sections (i.e. subdirectories). For example, suppose you have a separate
+file with site news in <code>templates/news.html</code> that you only want to include in the main page of your website (i.e. <code>site/index.html</code>.
+You can do it by adding a <code>page = "index.html"</code> option to the widget config:
+</p>
+<pre>
+[widgets.site-news]
+  page = "index.html"
+
+  widget = "include"
+  file = "templates/news.html"
+  selector = "body"
+</pre>
+<p>You can also specify more than one page there. For example, this is how you could apply a special CSS style to <code>cv.html</code> and <code>about.html</code>:</p>
+<pre>
+[widgets.special-style]
+  page = ["cv.html", "about.html"]
+
+  widget = "insert_html"
+  html = '&lt;link rel="stylesheet" type="text/css" href="/special.css"&gt;'
+  selector = "head"
+</pre>
+<p>I'm using single quotes for the HTML string here because they allows you to write double quotes inside strings without escaping.</p>
+<p>
+You can also apply a widget to all pages in one or more sections using the <code>section</code> option. This is how you can do something to all pages in
+<code>blog/</code>:
+</p>
+<pre>
+[widgets.some-widget]
+  section = "blog/"
+
+  ...
+</pre>
+<p>
+If this is not flexible enough, you can use a regular expression, that option is called <code>regex</code>. The syntax is mostly Perl-compatible, but
+without backtracking support.
+</p>
+<p>
+You can find a live example in my personal website <a href="https://github.com/dmbaturin/baturin.org/blob/master/soupault.conf#L142-L145">config</a>.
+The page in question, <a href="https://baturin.org/tools/bnfgen/">baturin.org/tools/bnfgen/</a> is a web application for playing with formal grammars,
+and it's a 90Kbyte JS file. No other page needs that file, so including it in every page would cause every visitor to download 90K of useless JS.
+That's why it's limited only to its own page with a regex option (it could use <code>page</code> instead, but that website doubles as a test suite
+for soupault dev builds, and I needed to use the regex option <em>somewhere</em>).
+</p>
+<h3>Excluding pages from widgets</h3>
+<p>
+Each of those options has a negative counterpart that allows you to do something to all but some of your pages. Those options care called
+<code>exclude_page</code>, <code>exclude_section</code>, and <code>exclude_regex</code>.
+</p>
+<p>This is how you can set a style for every page <em>except</em> your main page:</p>
+<pre>
+[widgets.common-style]
+  exclude_page = "index.html"
+
+  widget = "insert_html"
+  html = '&lt;link rel="stylesheet" type="text/css" href="/common.css"&gt;'
+  selector = "head"
+</pre>

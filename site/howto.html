@@ -32,6 +32,30 @@ the <code>build/</code> directory. You can then deploy your website with any too
 <code>neocities push</code>, rsync, or anything else.
 </p>
 
+<h3 id="assets">How to add assets (pictures, CSS...)</h3>
+<p>
+You can just drop files in the <code>site/</code> directory together with pages. Files with extensions
+matching the <code>page_file_extensions</code> are considered pages and processed, by default that's
+<code>["html", "htm", "md", "rst", "adoc"]</code>. All other files are just copied to the <code>build/</code>
+directory unchanged.
+</p>
+
+<h3 id="sections">How to create a site section</h3>
+
+<p>
+Just create a subdirectory in <code>site/</code>. Every subdirectory automatically becomes a section,
+e.g. <code>site/pictures/cats.html</code> becomes <code>build/pictures/cats/index.html</code> if clean URLs
+are enabled, or <code>build/pictures/cats.html</code> if they are disabled.
+</p>
+<p>
+They can be nested as deep as you want, there is no depth limit. However, section index pages is your responsibility,
+so if you want <code>https://example.com/pictures</code> to work, you should also add <code>site/pictures/index.html</code>.
+</p>
+<p>
+Soupault can be configured to generate a list of all pages in a section, but there still must be a section index page,
+whether you are maintaining a list of pages in the section by hand or using a script to generate it.
+</p>
+
 <h3 id="clean-urls">How to disable clean URLs</h3>
 <p>
 Soupault uses &ldquo;clean URLs&rdquo; by default. This means a page like <code>site/about.html</code>
@@ -206,4 +230,16 @@ like <code>md = '/opt/cmark/bin/cmark'</code> or <code>md = 'C:\cmark\cmark.exe'
 <p>
 You can specify preprocessors for as many extensions as you want, so you can easily use multiple formats
 at once.
+</p>
+
+<h2 id="edge-cases">Edge cases</h2>
+
+<h3 id="page-section-collision">What happens if you have a directory and a page with the same name</h3>
+<p>
+Don't do it. It's undefined behaviour and anything may happen.
+</p>
+<p>
+In the current versions, if you have clean URLs enabled and there are both <code>site/test.html</code>
+and <code>site/test/index.html</code>, then the latter will be used. But it just happens to be this way
+and may change any time, so don't count on it.
 </p>

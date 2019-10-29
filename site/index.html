@@ -5,38 +5,67 @@ files and builds a complete static website from it. This makes it easy to tweak 
 It can include external files in your pages, set the page title, create footnotes and tables of contents for your pages—in short, help
 you with tedious tasks that distract you from working on the site layout and content.
 </p>
+<h3>Highlights</h3>
 <p>
-If you are already familiar with static generators like Jekyll or Hugo, you are likely wondering how soupault is different from them
-and why make another one. The key difference is that soupault doesn't use a template processor. Instead of generating HTML, it
-transforms and enhances it, using HTML element tree rewriting. Instead of making you supply page metadata in the &ldquo;front matter&rdquo;,
-it can extract metadata from your pages. It's more like an automated HTML editor that can emulate a human webmaster.
+Soupault is different from existing projects in multiple ways:
 </p>
+<ul>
+  <li>It can work with existing HTML, no need for Markdown etc.</li>
+  <li>You can make all pages look different if you want.</li>
+  <li>A theme/template is just an empty HTML page.</li>
+  <li>It can preserve your existing site structure without breaking any links.</li>
+</ul>
+<h3>HTML first</h3>
 <p>
-This allows new possibilities such as setting page title to the first <code>&lt;h1&gt;</code> of the page, no matter where it's located in the page,
-generating footnotes and ToC links with persistent anchors based on the <code>id</code> attribute of the heading or footnote paragraph elements,
-or inserting different scripts and styles into the <code>&lt;head&gt;</code> of certain pages.
-</p>
-<p>
+Most website generators like Jekyll or Hugo are based on template processors.
+Soupault is different because it uses HTML element tree manipulation, similar to DOM manipulation in JS (<code>getElementById</code> etc.),
+so it's more like an automated HTML editor.
+Its &ldquo;templates&rdquo; are really just HTML pages with some empty tags, rather than HTML interspersed with template processor macros.
 Source and target elements for content extraction and insertion are identified using CSS selectors like <code>h1</code>, <code>div#content</code>,
-or <code>.footnote</code>. The way soupault works is similar to DOM manipulation in JS, except it doesn't need a browser and produces static pages
-that don't require any client-side scripts to work.
-</p>
-<p>
-It also removes the artificial separation of theme and content and allows you to make every page look different if you feel like it. This makes soupault
-especially suited for the Web 1.0 revival. You decide how much is the theme and how much is the content, the minimal page template
-is just <code>&lt;html&gt; &lt;body&gt; &lt;/body&gt; &lt;/html&gt;</code>.
+or <code>.footnote</code>. You can tell it to set the page title to the content of the first <code>&lt;h1&gt;</code> element, or insert <code>templates/footer.html</code>
+into <code>&lt;div id="footer"&gt;</code>, and it will find those elements no matter where they are in the page.
 </p>
 <p>Despite its seemingly heavy-handed approach, soupault is reasonably fast and can build a site with a hundred pages in under a second.</p>
-
-<h2>What can you do with it?</h2>
+<h3>Perfect for Web 1.0</h3>
+<p>
+Many website generators are more like CMSes without a database and make it difficult to create free-form websites that people are turning
+back to Web 1.0 for. Soupault is intentionally designed to make it possible but still automate the tedious tasks.
+</p>
+<p>
+You can make every page look different if you want. You can store your assets (images, CSS...) together with pages in <code>site/</code>
+and they will be copied unchanged. You can create a site section simply by making a subdirectory and dropping pages into it.
+It's very easy to migrate to soupault from a handwritten website without breaking any internal or external links.
+</p>
+<p>
+There is no artificial separation of theme and content. You decide how much is the theme and how much is the content, the minimal page template
+is just <code>&lt;html&gt; &lt;body&gt; &lt;/body&gt; &lt;/html&gt;</code>. You can setup a Web 2.0 style workflow with complete separation of the theme,
+content, and assets, but you don't have to.
+</p>
+<h3>Extensible</h3>
+<p>
+You can configure soupault to automatically run convertors to HTML from other formats (Markdown, AsciiDoc...) and include output of external scripts in your pages.
+You can also extend its functionality with Lua<span class="footnote">The only pitfall is that the language is Lua 2.5, not modern Lua 5.x. That's because
+soupault uses a research implementation called Lua-ML that made some embedded intepreter design breakthroughs, but sadly isn't up to date with Lua standards.</span>
+plugins.
+</p>
+<p>
+You can also extract page metadata and export it to JSON for creating a list of all pages in a section or a blog feed. Elements to extract data from
+are configured using CSS selectors like everything else, so you can add an autogenerated index to an existing site without having to rewrite any pages.
+</p>
+<h3>Useful built-ins</h3>
+<p>There's built-in functionality for:</p>
 <ul>
-  <li>Include files, HTML snippets, or output of external programs/scripts in your pages.</li>
-  <li>Automatically create tables of contents, footnotes, and breadcrumbs (fully static, no JS).</li>
-  <li>Delete HTML elements from certain pages.</li>
-  <li>Store pages in any format (Markdown, AsciiDoc...) that can be converted to HTML, if you specify a <a href="/howto/#preprocessors">preprocessor</a> for it.</li>
-  <li>Get page metadata in JSON and generate a section index/blog feed from it.</li>
-  <li>Add your own functionality with external scripts and plugins.</li>
+  <li>Including files or HTML snippets into any elements in your page.</li>
+  <li>Setting the page title to the content of any element from the page.</li>
+  <li>Creating tables of contents, footnotes, and breadcrumbs (all fully static, no JS required).</li>
+  <li>Deleting HTML elements from certain pages.</li>
 </ul>
+<p>
+When you run soupault, it parses a page file, inserts its contents into an element in the template (by default, the <code>&lt;body&gt;</code> tag)
+and runs the page HTML through one or more &ldquo;widgets&rdquo;. Output of one widget can be used as input for another. You can order
+execution of widgets explicitly, e.g. to make sure ToC is created after all external files are included. It's also possible to set widgets
+to run only on certain pages or site sections (directories).
+</p>
 <p>Here's a screencast of basic usage:</p>
 <div> <script id="asciicast-271350" src="https://asciinema.org/a/271350.js" async></script> <br /></div>
 <p>
@@ -48,16 +77,12 @@ You can also download the <a href="https://github.com/dmbaturin/soupault.neociti
 <p>Downloads:</p>
 <dl>
   <dt>Linux (x86-64, statically linked)</dt>
-  <dd><a href="/files/soupault-1.3.2-linux-x86_64.tar.gz">soupault-1.3.2-linux-x86_64.tar.gz</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.4/soupault-1.4-linux-x86_64.tar.gz">soupault-1.4-linux-x86_64.tar.gz</a></dd>
   <dt>Microsoft Windows (7 and newer, 32-bit)</dt>
-  <dd><a href="/files/soupault-1.3.2-win32.zip">soupault-1.3.2-win32.zip</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.4/soupault-1.4-win32.zip">soupault-1.4-win32.zip</a></dd>
   <dt>macOS</dt>
-  <dd><a href="/files/soupault-1.3.2-macos.tar.gz">soupault-1.3.2-macos.tar.gz</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.4/soupault-1.4-macos.tar.gz">soupault-1.4-macos.tar.gz</a></dd>
 </dl>
-<p>
-Alternatively, you can download it from <a href="https://github.com/dmbaturin/soupault/releases/latest">Github</a>,
-along with GPG signatures.
-</p>
 <p>
 Soupault is free software published under the <a href="https://mit-license.org/">MIT license</a>. You can build it from source for any
 platform supported by the <a href="https://ocaml.org">OCaml</a> programming language and contribute to it.
@@ -84,6 +109,9 @@ at a random word and landed on &ldquo;dada (n.), a colloquial for a stick horse&
 </p>
 <img src="/images/soupault_stick_horse.png" />
 <img src="/images/powered_by_soupault.png" />
+<img src="/images/powered_by_soupault_88x31.png" />
+
+<p>If you are using soupault for your site or want to raise awareness of it, feel free to put a button there.</p>
 
 <h2>Who's behind it?</h2>
 <p>
@@ -92,31 +120,7 @@ It has grown out of the bunch of ad hoc scripts that used to power my own websit
 for everyone who finds other generators too annoying or too limiting.
 </p>
 <p>
-If you find a bug or have a feature request, create an issue on <a href="https://github.com/dmbaturin/soupault/issues">Github</a>.
-Alternatively, you can send an email to <code>daniil+soupault@[my last name].org</code>. Feel free to send me messages on Neocities as well.
-</p>
-
-<h2>Extensibility</h2>
-<p>Apart from built-in functionality, soupault offers a few ways to add your own.</p>
-<h3>Running external scripts</h3>
-<p>
-Soupault can run external scripts and include their output in the page. It can also pass arguments to scripts, so that you can run
-a script on the page source file (e.g. add automatically add last modification date to the page).
-</p>
-<h3>Index generators</h3>
-<p>
-While soupault, by itself, is not &ldquo;blog-aware&rdquo;, it can extract data from elements matching certain selectors from each page
-(e.g. title from a <code>&lt;h1 id="title"&gt;</code> and date from <code>&lt;time&gt;</code>) and feed it to an external script.
-This way you can make a blog, an Atom feed, or simply a list of all pages in a site section. You decide what data is extracted,
-from which elements, and what the script does with it.
-</p>
-<h3>Lua plugins</h3>
-<p>
-If you want new ways to modify the HTML tree of your pages, you can do it with Lua plugins. There are Lua functions for creating elements,
-deleting them, and setting attributes.
-The only downside is that the extension language is Lua 2.5 rather than modern 5.x.<span class="footnote" id="lua-ml">That's because
-soupault uses a research implementation named Lua-ML that includes many embedded interpreter design breakthroughs, but sadly
-isn't up to date with the official Lua spec.</span>
+Feel free to <a href="/contact">contact</a> me.
 </p>
 
 <h2>News</h2>

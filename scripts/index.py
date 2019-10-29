@@ -16,7 +16,7 @@ renderer = pystache.Renderer()
 
 input = sys.stdin.readline()
 index_entries = json.loads(input)
-index_entries.reverse()
+#index_entries.reverse()
 
 for entry in index_entries:
     print(renderer.render(template, entry))

@@ -1,0 +1,73 @@
+<h1 id="post-title">Widget pipelines and ordering</h1>
+
+<span>Date: <time id="post-date">2019-10-27</time> </span>
+
+<p>
+One limitation of classic static site generators is that output of a template is generally final
+and cannot be processed further. They assemble pages by filling the blanks.
+In some implementations they can set variables, but they cannot create
+other templates. Soupault's widgets, however, form a pipeline where output of one input can be used
+as input for another. You can also explicitly order the widgets to make sure they run when their input
+is available.
+</p>
+<p>
+First thing you need to know is that soupault first inserts the page content in the template,
+and then runs the complete page through the widgets. At that stage, ordering is not a concern.
+</p>
+<p>
+Then things get more interesting. The order of widgets in the config has no effect on their processing order.
+There are two reasons for it. First, soupault uses <a href="https://github.com/toml-lang/toml">TOML</a>, and
+TOML tables are not order-preserving<span class="footnote">They are hash tables and libraries for working with TOML
+treat them as such. This is also the case with YAML and similar formats.</span>.
+Second, even if it was order-preserving, people would have to move chunks of the configs to reorder widgets.
+That would be pretty inconvenient.
+</p>
+<p>
+That is why soupault uses an explicit ordering option. You can make one widget run after another by adding an
+<code>after</code> option to its config. It accepts either a single widget or a list of widgets, so
+you can write either <code>after = "my-widget"</code> or <code>after = ["first-widget", "second-widget"]</code>.
+</p>
+<p>
+Suppose you are using the <a href="https://soupault.neocities.org/plugins/#site-url">Site URL</a> plugin.
+You also keep the navigation links and the footer in separate files, and you want that plugin to alter URLs
+inside the HTML imported from those files.
+</p>
+<p>
+If you don't specify the order, soupault may run the plugin before those files are included, and you'll end up
+with a page where links inside the page content have absolute URLs, but those in the navigation menu and the footer are relative.
+</p>
+<p>To avoid that, you need to tell soupault when to run it. Here's a sample config:</p>
+<pre>
+[plugins.site-url]
+  file = "plugins/site-url.lua"
+
+[widgets.insert-nav-menu]
+  widget = "include"
+  file = "templates/menu.html"
+  selector = "nav"
+
+[widgets.insert-footer]
+  widget = "include"
+  file = "templates/footer.html"
+  selector = "div#footer"
+
+[widgets.set-site-url]
+  widget = "site-url"
+  site_url = "https://www.example.com"
+  after = ["insert-nav-menu", "insert-footer"]
+</pre>
+<p>
+You can see the processing order by running <code>soupault --debug</code> or adding <code>debug = true</code>
+to the <code>[settings]</code> section of <code>soupault.conf</code>. For this site it looks like this:
+</p>
+<pre>
+$ soupault --debug
+[DEBUG] Widget processing order: nav-menu footer footnotes table-of-contents page-title highlight-active-link
+</pre>
+<p>
+Note that a dependency on a widget that doesn't exist is an error. It would be easy to ignore, but it's usually
+a sign of a mistyped widget name, so I thought it's better to give people a chance to fix their config,
+rather than leave them wondering why their page looks wrong. Circular dependencies are errors too.
+In both cases soupault will tell you which widgets are causing problems so you shouldn't fear making complex
+pipelines.
+</p>
