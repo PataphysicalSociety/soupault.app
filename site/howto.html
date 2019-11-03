@@ -92,6 +92,23 @@ to <code>templates/main.html</code>, find that option in <code>soupault.conf</co
 and set it to <code>content_selector = "div#content"</code>.
 </p>
 
+<h3 id="unique-layout">How to create a page with unique layout</h3>
+<p>
+Using a template saves time and allows easily changing the website layout. However, what if you want to make a page
+with a unique layout different from the template?
+</p>
+<p>
+Soupault decides whether to use a template or not by checking if a page file has an <code>&lt;html&gt;</code> element in it.
+It it does not have it, then the file is considered a page body and inserted in the template. If it does, then it's considered
+a complete page and only processed by widgets/plugins.
+</p>
+<p>
+So, to make a unique page, just make it a complete HTML document.
+</p>
+<p>
+You may also want to exclude it from some widgets using the <code>exclude_page</code> option.
+</p>
+
 <h3 id="include-file">How to include external files in pages</h3>
 <p>
 Suppose all your pages have the same header and footer, and you want to keep them in separate files,

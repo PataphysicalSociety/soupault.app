@@ -1,70 +1,38 @@
-<p>Soupault (<em>soup-oh</em>) is a static website generator.</p>
-<p>
-It's a tool that takes a page template and a directory with page content
-files and builds a complete static website from it. This makes it easy to tweak the site layout without having to edit every page by hand.
-It can include external files in your pages, set the page title, create footnotes and tables of contents for your pages—in short, help
-you with tedious tasks that distract you from working on the site layout and content.
-</p>
-<h3>Highlights</h3>
-<p>
-Soupault is different from existing projects in multiple ways:
-</p>
+<p>Soupault (<em>soup-oh</em>) is a static website generator and HTML processor.</p>
+<p>These are some of the things it can do for you:</p>
 <ul>
-  <li>It can work with existing HTML, no need for Markdown etc.</li>
-  <li>You can make all pages look different if you want.</li>
-  <li>A theme/template is just an empty HTML page.</li>
-  <li>It can preserve your existing site structure without breaking any links.</li>
+  <li>Assemble a complete website from a template (an empty page) and a directory with page body files.</li>
+  <li>Insert files, HTML snippets, or output of external programs into your pages.</li>
+  <li>Create a table of contents from the page headings.</li>
+  <li>Create footnotes.</li>
+  <li>Automatically call convertors from other format (Markdown etc.) to HTML.</li>
+  <li>Delete unwanted elements.</li>
 </ul>
-<h3>HTML first</h3>
 <p>
-Most website generators like Jekyll or Hugo are based on template processors.
-Soupault is different because it uses HTML element tree manipulation, similar to DOM manipulation in JS (<code>getElementById</code> etc.),
-so it's more like an automated HTML editor.
-Its &ldquo;templates&rdquo; are really just HTML pages with some empty tags, rather than HTML interspersed with template processor macros.
-Source and target elements for content extraction and insertion are identified using CSS selectors like <code>h1</code>, <code>div#content</code>,
-or <code>.footnote</code>. You can tell it to set the page title to the content of the first <code>&lt;h1&gt;</code> element, or insert <code>templates/footer.html</code>
-into <code>&lt;div id="footer"&gt;</code>, and it will find those elements no matter where they are in the page.
-</p>
-<p>Despite its seemingly heavy-handed approach, soupault is reasonably fast and can build a site with a hundred pages in under a second.</p>
-<h3>Perfect for Web 1.0</h3>
-<p>
-Many website generators are more like CMSes without a database and make it difficult to create free-form websites that people are turning
-back to Web 1.0 for. Soupault is intentionally designed to make it possible but still automate the tedious tasks.
+How it's different from other tools?
+Website generators like Jekyll or Hugo <em>generate</em> HTML by filling the blanks in a template. Soupault parses HTML and then <em>transforms and enhances</em> it.
+It allows you to do things that are impossible with tools based on template processors. For example, you can insert the content of <code>header.html</code> before the first element
+in the page <code>&lt;body&gt;</code> and <code>footer.html</code> after the last element. Or insert the table of contents into a <code>&lt;div id="toc"&gt;</code>
+even if it's in a different place in every page. Or set the page title to the content of the first <code>&lt;h1&gt;</code> element. Instead of template tags like
+<code>{{content}}</code>, soupault uses CSS selectors to locate elements in the page, like <code>body</code>, <code>.footnote</code>, or <code>div#content</code>.
 </p>
 <p>
-You can make every page look different if you want. You can store your assets (images, CSS...) together with pages in <code>site/</code>
-and they will be copied unchanged. You can create a site section simply by making a subdirectory and dropping pages into it.
-It's very easy to migrate to soupault from a handwritten website without breaking any internal or external links.
+If you have a handwritten website, you can start using soupault right away to automate tedious tasks, and then gradually move the common layout
+to the template if you want to. You can easily mix unique and templated pages. Soupault can check if a file is a complete page or a page body (by checking if there's an <code>&lt;html&gt;</code> element in it),
+so it knows whether to insert a page in the template first or just apply HTML transformation rules to it.
 </p>
 <p>
-There is no artificial separation of theme and content. You decide how much is the theme and how much is the content, the minimal page template
-is just <code>&lt;html&gt; &lt;body&gt; &lt;/body&gt; &lt;/html&gt;</code>. You can setup a Web 2.0 style workflow with complete separation of the theme,
-content, and assets, but you don't have to.
+If you are using another static site generator and have your content in Markdown/reStructuredText/whatever format, you can configure soupault
+to automatically <a href="/howto/#preprocessors">convert</a> your files to HTML before inserting it in the template.
 </p>
-<h3>Extensible</h3>
 <p>
-You can configure soupault to automatically run convertors to HTML from other formats (Markdown, AsciiDoc...) and include output of external scripts in your pages.
-You can also extend its functionality with Lua<span class="footnote">The only pitfall is that the language is Lua 2.5, not modern Lua 5.x. That's because
+While there's no built-in support for blogs, soupault can automatically extract page metadata and feed it to an external script, so you can create a blog,
+a simple list of pages in a section, or some custom index from your pages. See <a href="/blog/blogs-and-section-indices">this post</a> for a simple blog recipe.
+</p>
+<p>
+You can also extend its capabilities with Lua plugins.<span class="footnote" id="lua-2.5">The only pitfall is that the language is Lua 2.5, not modern Lua 5.x. That's because
 soupault uses a research implementation called Lua-ML that made some embedded intepreter design breakthroughs, but sadly isn't up to date with Lua standards.</span>
-plugins.
-</p>
-<p>
-You can also extract page metadata and export it to JSON for creating a list of all pages in a section or a blog feed. Elements to extract data from
-are configured using CSS selectors like everything else, so you can add an autogenerated index to an existing site without having to rewrite any pages.
-</p>
-<h3>Useful built-ins</h3>
-<p>There's built-in functionality for:</p>
-<ul>
-  <li>Including files or HTML snippets into any elements in your page.</li>
-  <li>Setting the page title to the content of any element from the page.</li>
-  <li>Creating tables of contents, footnotes, and breadcrumbs (all fully static, no JS required).</li>
-  <li>Deleting HTML elements from certain pages.</li>
-</ul>
-<p>
-When you run soupault, it parses a page file, inserts its contents into an element in the template (by default, the <code>&lt;body&gt;</code> tag)
-and runs the page HTML through one or more &ldquo;widgets&rdquo;. Output of one widget can be used as input for another. You can order
-execution of widgets explicitly, e.g. to make sure ToC is created after all external files are included. It's also possible to set widgets
-to run only on certain pages or site sections (directories).
+Plugins have full access to the element tree of the page, much like JavaScript, but without a browser.
 </p>
 <p>Here's a screencast of basic usage:</p>
 <div> <script id="asciicast-271350" src="https://asciinema.org/a/271350.js" async></script> <br /></div>
@@ -77,11 +45,11 @@ You can also download the <a href="https://github.com/dmbaturin/soupault.neociti
 <p>Downloads:</p>
 <dl>
   <dt>Linux (x86-64, statically linked)</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.4/soupault-1.4-linux-x86_64.tar.gz">soupault-1.4-linux-x86_64.tar.gz</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.5/soupault-1.5-linux-x86_64.tar.gz">soupault-1.5-linux-x86_64.tar.gz</a></dd>
   <dt>Microsoft Windows (7 and newer, 32-bit)</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.4/soupault-1.4-win32.zip">soupault-1.4-win32.zip</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.5/soupault-1.5-win32.zip">soupault-1.5-win32.zip</a></dd>
   <dt>macOS</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.4/soupault-1.4-macos.tar.gz">soupault-1.4-macos.tar.gz</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.5/soupault-1.5-macos.tar.gz">soupault-1.5-macos.tar.gz</a></dd>
 </dl>
 <p>
 Soupault is free software published under the <a href="https://mit-license.org/">MIT license</a>. You can build it from source for any
@@ -91,7 +59,7 @@ The source code is available from <a href="https://github.com/dmbaturin/soupault
 
 <h2>How to use it?</h2>
 <p>
-The <a href="/howto">HOWTO</a> should be a good start. Then read the <a href="https://baturin.org/projects/soupault">reference manual</a> for details.
+The <a href="/howto">HOWTO</a> should be a good start. Then read the <a href="/reference-manual">reference manual</a> for details.
 There's also a <a href="/blog">blog</a> with tips and tricks.
 </p>
 
@@ -122,12 +90,3 @@ for everyone who finds other generators too annoying or too limiting.
 <p>
 Feel free to <a href="/contact">contact</a> me.
 </p>
-
-<h2>News</h2>
-<dl>
-  <dt>2019-10-06</dt>
-  <dd>Soupault 1.3.2 maintenance release. External preprocessors and scripts now work on Windows as well as on UNIX-like platforms.</dd>
-  <dt>2019-09-29</dt>
-  <dd>Soupault 1.3 is released, with proper warnings
-      and suggestions for invalid config options, improved footnotes, logging functions for Lua plugins, and some bug fixes.</dd>
-</dl>

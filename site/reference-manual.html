@@ -1,8 +1,12 @@
 <h1>Reference manual</h1>
 
-<p>Soupault (<em>soup-oh</em>) is a static website generator based on HTML rewriting.</p>
+<p>Soupault (<em>soup-oh</em>) is an HTML manipulation tool.</p>
 <p>
-Pretty much like client-side DOM manipulation, just without the browser or interactivity.
+It can work either as a static site generator that builds a complete site from a page template
+and a directory with page body files, or an HTML processor for an existing website.
+</p>
+<p>
+Soupault is based on HTML element tree rewriting. Pretty much like client-side DOM manipulation, just without the browser or interactivity.
 You can tell it to do things like &ldquo;insert contents of <code>footer.html</code> file into
 <code>&lt;div id="footer"&gt;</code> no matter where that div is in the page&rdquo;,
 or &ldquo;use the first <code>&lt;h1&gt;</code> element in the page for the page title&rdquo;.
@@ -25,7 +29,8 @@ or &ldquo;use the first <code>&lt;h1&gt;</code> element in the page for the page
       permanent and immune to link rot, even if you change the heading text or page structure.</dd>
   <dt><strong>Preserves your content structure</strong></dt>
   <dd>Soupault can mirror your directory structure exactly, down to file extensions.
-      You can migrate from an old handcrafted website without breaking any links.</dd>
+      You can use it to enhance an existing website without breaking any links, or gradually migrate from an HTML processor
+      to the website generator workflow.</dd>
   <dt><strong>Any input format</strong></dt>
   <dd>HTML is the primary format, but you can use anything that can be converted to HTML. Just specify
       preprocessors for files with certain extensions.</dd>
@@ -43,10 +48,11 @@ For a <em>very</em> quick start:
 </p>
 <ol>
   <li>Create a directory for your site.</li>
-  <li>Create a page layout with empty <code>&lt;body&gt;</code> in <code>templates/main.html</code></li>
-  <li>Create some files with content to insert inside <code>&lt;body&gt;</code> and drop them to <code>site/</code></li>
+  <li>Run <code>soupault --init</code>. It will create a page template in <code>templates/main.html</code>,
+      default <code>soupault.conf</code> config file, and a directory for pages (<code>site</code>).</li>
+  <li>Drop some HTML files into the <code>site</code> directory.</li>
   <li>Run <code>soupault</code> in that directory.</li>
-  <li>Look in <code>build/</code>.</li>
+  <li>Look in <code>build/</code> for the result.</li>
 </ol>
 
 <p>For details, read the documentation below.</p>
@@ -72,6 +78,7 @@ in this document.
   <li>No special syntax inside pages, only plain old semantic HTML.</li>
   <li>No templates or themes. Any HTML page can be a soupault theme.</li>
   <li>No front matter.</li>
+  <li>Usable as a postprocessor for existing website and friendly to sites with unique pages.</li>
 </ol>
 <p>
 People have written lots of static website generators, but most of them are variations
@@ -103,7 +110,7 @@ if you go that way.
 </p>
 <h3>How soupault works</h3>
 <p>
-Soupault takes a page &ldquo;template&rdquo;&mdash; an HTML file devoid of content,
+In the website generator mode (the default), soupault takes a page &ldquo;template&rdquo;&mdash;an HTML file devoid of content,
 parses it into an element tree, and locates the <em>content container</em> element inside it.
 </p>
 <p>
@@ -112,8 +119,9 @@ By default the content container is <code>&lt;body&gt;</code>, but you can use a
 <code>#post</code> (any element with <code>id="post"</code>) or any other valid CSS selector.
 </p>
 <p>
-Then it traverses your <em>site directory</em> where page source files are stored, takes a page file, parses it into an HTML element tree too,
-and inserts it into the <em>content container</em> element of the template.
+Then it traverses your <em>site directory</em> where page source files are stored, takes a page file, and parses it into an HTML element tree too.
+If the file is not a complete HTML document (doesn't have an <code>&lt;html&gt;</code> element in it),
+soupault inserts it into the <em>content container</em> element of the template. If it is a complete page, then it goes straight to the next step.
 </p>
 <p>
 The new HTML tree is then passed to <em>widgets</em>&mdash;HTML rewriting modules that manipulate it in different ways:
@@ -156,8 +164,14 @@ and run the <code>soupault</code> command in that directory.
 <h4>If you already have a website</h4>
 <p>
 If you have a website made of handwritten pages, you can use soupault as a drop-in automation tool.
-Just take your existing page skeleton, strip the other pages down to their content,
-and you are good to go.
+Just copy your pages to the <code>site</code> directory, and you can already take advantages of features like
+tables of content, without modifying any of your pages.
+</p>
+<p>
+Then you can gradually migrate to using a shared template, if you want to. Take a page, remove the content from it, save that empty page
+to <code>templates/main.html</code>, and start stripping pages in <code>site</code> down to their content.
+Pages that don't have an <code>&lt;html&gt;</code> element will be treated as page bodies and inserted in the template,
+but other pages will only be processed by widgets.
 </p>
 <p>
 If you have an existing directory structure that you don't want to change because it will break links,
@@ -174,8 +188,8 @@ Soupalt comes with a bunch of built-in widgets that can:
   <li>Set the page title from text in some element.</li>
   <li>Generate breadcrumbs.</li>
   <li>Move footnotes out of the text.</li>
-  <li>Insert a table of contents</li>
-  <li>Delete unwanted elements</li>
+  <li>Insert a table of contents.</li>
+  <li>Delete unwanted elements.</li>
 </ul>
 <p>For example, here's a config for the <code>title</code> widget that sets the page title.</p>
 <pre>
@@ -212,16 +226,16 @@ the <code>&lt;nav&gt;</code> element, you can put this into your <code>soupault.
   <dt>Development web server</dt>
   <dd>There are plenty of those, even <code>python3 -m http.server</code> is perfectly
       good for previews.</dd>
-  <dt>Deployment automation</dt>
+  <dt>Deployment automation.</dt>
   <dd>Same reason, there are lots of tools for it.</dd>
 </dl>
 
 <p>Because I don't need it and I'm not sure if anyone wants it or how it will fit:</p>
-<dl>
-  <dt>Asset management</dt>
-  <dt>Incremental builds</dt>
-  <dt>Multilingual sites</dt>
-</dl>
+<ul>
+  <li>Asset management</li>
+  <li>Incremental builds</li>
+  <li>Multilingual sites</li>
+</ul>
 
 <h2>Installation</h2>
 <h3>Binary release packages</h3>
@@ -230,16 +244,16 @@ Soupault is distributed as a single, self-contained executable, so installing it
 it trivial.
 </p>
 <p>
-You can download the latest release
-from <a href="https://github.com/dmbaturin/soupault/releases/latest">github.com/dmbaturin/soupault/releases/latest</a>.
+You can download it
+from <a href="https://files.baturin.org/software/soupault">files.baturin.org/software/soupault</a>.
 Prebuilt executables are available for Linux (x86-64, statically linked), macOS (x86-64), and Microsoft Windows (32-bit, Windows 7 and newer).
 </p>
 <p>
 Just unpack the archive and copy the executable wherever you want.
 </p>
 <p>
-Soupault is now stable enough to build this website, but hasn't received much testing from other people yet.
-Prebuilt binaries are compiled with debug symbols, which makes them a couple of megabytes larger than they could be, but you can get better
+Prebuilt executables are compiled with debug symbols.
+It makes them a couple of megabytes larger than they could be, but you can get better
 error messages if something goes wrong. If you encounter an internal error, you can get an exception trace
 by running it with <code>OCAMLRUNPARAM=b</code> environment variable.
 </p>
@@ -256,6 +270,31 @@ you need to install it first.
 opam pin add lua-ml git+https://github.com/lindig/lua-ml
 opam pin add soupault git+https://github.com/dmbaturin/soupault
 </pre>
+
+<h3>Using soupault on Microsoft Windows</h3>
+<p>
+Windows is a supported platform and soupault includes some fixups to account for the differences. This document
+makes a UNIX cultural assumption throughout, but most of the time the same configs will work on both systems.
+Some differences, however, require user intervention to resolve.
+</p>
+<p>
+If a file path is only used by soupault itself, then the UNIX convention will work, i.e.
+<code>file = 'templates/header.html'</code> and <code>file = 'templates\header.html'</code> are both valid options
+for the <code>include</code> widget. However, if it's passed to something else in the system, then you <strong>must</strong>
+use the Windows convention with back slashes. This applies to the preprocessors, the <code>command</code> option of the
+<code>exec</code> widget, and the <code>index_processor</code> option.
+</p>
+<p>So, if you are on Windows, remember to adjust the paths if needed, e.g.:
+<pre>
+[widgets.some-script]
+  widget = 'exec'
+  command = 'scripts\myscript.bat'
+  selector = 'body'
+</pre>
+<p>
+Note that inside double quotes, the back slash is an escape character, so you should either use single quotes for such paths
+(<code>'scripts\myscript.bat'</code>) or use a double back slash (<code>"scripts\\myscript.bat"</code>).
+</p>
 
 <h2>Getting started</h2>
 <h3>Create your first website</h3>
@@ -323,7 +362,7 @@ to <code>content_selector = "div#content"</code>.
 
 <h3>Page files</h3>
 <p>
-Soupault assumes that with extensions <code>.html, .htm, .md, .rst</code> are pages
+Soupault assumes that files with extensions <code>.html, .htm, .md, .rst, and .adoc</code> are pages
 and processes them. All other files are simply copied to the build directory.
 </p>
 <p>
@@ -334,6 +373,10 @@ For example, to add <code>.txt</code> to the page extension list, use this optio
 [settings]
   page_file_extensions = ["htm", "html", "md", "rst", "txt"]
 </pre>
+<p>
+Remember that for files in formats other than HTML, you also need to specify a <a href="#Page preprocessors">convertor</a>,
+simply adding an extension to the list is not enough.
+</p>
 
 <h3>Clean URLs</h3>
 <p>
@@ -388,6 +431,19 @@ Just add <code>clean_urls = false</code> to the <code>[settings]</code> table of
   clean_urls = false
 </pre>
 
+<h3>Using soupault as an HTML processor</h3>
+<p>
+If you want to use soupault with an existing website and don't want the template functionality,
+you can switch it from a website generator mode to an HTML processor more where it doesn't use
+a template and doesn't require the <code>default_template</code> to exist.
+</p>
+<p>Recommended settings for the preprocessor mode:</p>
+<pre>
+[settings]
+  generator_mode = false
+  clean_urls = false
+</pre>
+
 <h3>Nested structures</h3>
 <p>
 A flat layout is not always desirable. If you want to create site sections, just add some
@@ -431,42 +487,69 @@ If you want a page to exist, you need to make it.
 The default directory and file paths <code>soupault --init</code> creates are
 not fixed, you can change any of them. If you prefer different names, or you
 have an existing directory structure you want soupault to use, just edit
-the <code>soupault.conf</code> file.
+the <code>soupault.conf</code> file. This is <code>[settings]</code> section of the default config:
 </p>
 <pre>
 [settings]
-  # Where generated files go
-  build_dir = "build"
+  # Stop on page processing errors?
+  strict = true
 
-  # Where page files are stored
-  site_dir = "site"
-
-  # Where to insert the content in the page template
-  content_selector = "#content"
-
-  default_template = "templates/main.html"
-
-  # Name of the page used as a section index,
-  # without extension
-  index_page = "index"
-
-  # Output file name for the "clean URLs" page files
-  # site/foo.html → build/foo/index.html
-  index_file = "index.html"
-
-  doctype = "&lt;!DOCTYPE html&gt;"
-
-  # Don't print debugging information
+  # Display progress?
   verbose = false
 
-  # Don't fail on page processing errors
-  strict = false
+  # Display detailed debug output?
+  debug = false
 
-  # Create a directory per page, site/foo.html → build/foo/$index_file
+  # Where input files (pages and assets) are stored.
+  site_dir = "site"
+
+  # Where the output goes
+  build_dir = "build"
+
+  # Files inside the site/ directory can be treated as pages or static assets,
+  # depending on the extension.
+  #
+  # Files with extensions from this list are considered pages and processed.
+  # All other files are copied to build/ unchanged.
+  #
+  # Note that for formats other than HTML, you need to specify an external program
+  # for converting them to HTML (see below).
+  page_file_extensions = ["htm", "html", "md", "rst", "adoc"]
+
+  # Files with these extensions are ignored.
+  ignore_extensions = ["draft"]
+
+  # Soupault can work as a website generator or an HTML processor.
+  #
+  # In the "website generator" mode, it considers files in site/ page bodies
+  # and inserts them into the empty page template stored in templates/main.html
+  #
+  # Setting this option to false switches it to the "HTML processor" mode
+  # when it considers every file in site/ a complete page and only runs it through widgets/plugins.
+  generator_mode = false
+
+  # Files that contain an <html> element are considered complete pages rather than page bodies,
+  # even in the "website generator" mode.
+  # This allows you to use a unique layout for some pages and still have them processed by widgets.
+  complete_page_selector = "html"
+
+  # Website generator mode requires a page template (an empty page to insert a page body into).
+  # If you use "generator_mode = false", this file is not required.
+  #default_template = "templates/main.html"
+
+  # Page content is inserted into a certain element of the page template. This option is a CSS selector
+  # used for locating that element.
+  # By default the content is inserted into the <body>
+  content_selector = "body"
+
+  # Soupault currently doesn't preserve the original doctype declaration
+  # and uses the HTML5 doctype by default. You can change it using this option.
+  doctype = "<!DOCTYPE html>"
+
+  # Enables or disables clean URLs.
+  # When false: site/about.html -> build/about.html
+  # When true: site/about.html -> build/about/index.html
   clean_urls = true
-
-  # What files are considered pages and processed
-  page_extensions = ["htm", "html", "md", "rst"]
 </pre>
 
 <p>
@@ -480,17 +563,32 @@ we'll use default values.
 </p>
 <div class="info">
 <p>
-Note that there is no check for invalid fields. Soupault will simply ignore
-fields it doesn't know about. A downside is that it doesn't detect misspellt
-options, so check your spelling carefully.
+If you misspell and option or make another mistake, soupault will warn you about
+an invalid option and try to suggest a correction.
 </p>
 <p>
-The config is also typed and wrong value type has the same effect as a missing
+Note that the config is typed and wrong value type has the same effect as missing
 option. All boolean values must be <code>true</code> or <code>false</code>
 (without quotes), all integer values must not have quotes around numbers,
 and all strings must be in single or double quotes.
 </p>
 </div>
+
+<h3>Overriding configuration settings</h3>
+<p>
+If you are using soupault as an HTML processor, or using it as a part of a CI pipeline,
+the typical website generator approach with a single &ldquo;project directory&rdquo;
+may not be optimal.
+</p>
+<p>
+You can override the location of the config using an environment variable <code>SOUPAULT_CONFIG</code>.
+You can also override the locations of the source and destination directories with <code>--site-dir</code>
+and <code>--build-dir</code> options. Thus it's possible to run soupault without a dedicated project
+directory at all:
+</p>
+<pre>
+SOUPAULT_CONFIG="something.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
+</pre>
 
 <h2>Page preprocessors</h2>
 <p>
@@ -515,6 +613,13 @@ You can specify as many extensions as you want.
 <p>
 Preprocessor commands are executed in shell, so it's fine to use relative
 paths and add arguments. Page file name will be appended to the command string.
+</p>
+<p>
+By default soupault assumes that files with extensions <code>.md, .rst, .adoc</code>
+are pages. If you are using another extension, you need to add it to the
+<code>page_file_extensions</code> list in the <code>[settings]</code> section,
+else it will assume it's an asset and copy it unmodified, even if you configure a preprocessor
+for that extension.
 </p>
 
 <h2 id="indexing">Automatic section and site index</h2>
@@ -571,6 +676,10 @@ excerpt, date, and author.
   # Page date selector
   index_date_selector = "time"
 
+  # By default entries are sorted by date in ascending order (oldest to newest)
+  # If you are making a blog, you can set this to true to sort from newest to oldest
+  newest_entries_first = false
+
   # Date format for sorting
   # Default %F means YYYY-MM-DD
   # For other formats, see http://calendar.forge.ocamlcore.org/doc/Printer.html
@@ -584,7 +693,7 @@ excerpt, date, and author.
 
   # External index generator
   # There is no default
-  index_processor =
+  index_processor = 
 </pre>
 <h3>Using external index generators</h3>
 <p>
@@ -750,10 +859,42 @@ a hypothetical <code>frobnicator</code> widget, your entry will look like:
   selector "div#frob"
 </pre>
 <p>
-It may seen confusing and redundant, but if subtable name defined the
+It may seem confusing and redundant, but if subtable name defined the
 widget to be called, you could only have one widget of the same type,
 and would have to choose whether to include the header or the footer
 with the <code>include</code> widget for example.
+</p>
+
+<h3>Choosing where to insert the output</h3>
+<p>By default, widget output is inserted after the last child element in its container.</p>
+<p>
+If you have a designated place in your page for the widget output,
+e.g. leave an empty <code>&lt;div id="header"&gt;</code> for the header,
+then this detail is unimportant.
+</p>
+<p>
+However, if you are modifying existing pages or just want more control and flexibility,
+you can specify the insert position using the <code>action</code> option.
+</p>
+<p>For example, you can insert a header file before the first element in the page <code>&lt;body&gt;</code>:
+<pre>
+[widgets.insert-header]
+  widget = "include"
+  file = "templates/header.html"
+  selector = "body"
+  action = "prepend_child"
+</pre>
+<p>
+Or insert a table of contents before the first <code>&lt;h1&gt;</code> element (it a page has it):
+</p>
+<pre>
+[widgets.table-of-contents]
+  widget = "toc"
+  selector = "h1"
+  action = "insert_before"
+</pre>
+<p>
+Possible values of that option are: <code>prepend_child, append_child, insert_before, insert_after, replace_element, replace_content</code>.
 </p>
 
 <h3>Limiting widgets to specific pages or sections</h3>
@@ -846,7 +987,7 @@ It can be a single widget (<code>after = "mywidget"</code) or a list of widgets
 (<code>after = ["some-widget", "another-widget"]</code>).
 </p>
 <p>
-Here is an example from this website's config. In the template there's
+Here is an example. Suppose in the template there's
 a <code>&lt;div id="breadcrumbs"&gt;</code> where breadcrumbs are inserted by the
 <code>add-breadcrumbs</code> widget. Since there may not be breadcrumbs if the
 page is not deep enough, the <code>div</code> may be left empty, and that's not
@@ -1024,6 +1165,12 @@ As usual, the container element can be anywhere in the page—you can have footn
 
   # Optional: do not create links back to original locations
   back_links = true
+
+  # Prepends some text to the footnote id
+  link_id_prepend = ""
+
+  # Appends some text to the back link id
+  back_link_id_append = ""
 </pre>
 <p>
 The <code>footnote_selector</code> option can be a list, in that case all elements
@@ -1033,6 +1180,14 @@ matching any of those selectors will be considered footnotes.
 By default, the number in front of a footnote is a hyperlink back to the original
 location. You can disable it and make footnotes one way links with <code>back_links = false</code>.
 </p>
+<p>
+You can create a custom &ldquo;namespace&rdquo; for footnotes and reference links using the <code>link_id_prepend</code> and <code>back_link_id_append</code> options.
+This makes it easier to use custom styling for those elements.
+</p>
+<pre>
+link_id_prepend = "footnote-"
+back_link_id_append = "-ref"
+</pre>
 
 <h4 id="widgets-toc">toc</h4>
 <p>The <code>toc</code> widget generates a table of contents for your page.</p>
@@ -1068,7 +1223,7 @@ to <code>&lt;h6&gt;</code>.
 
   # Optional: text for the section links
   # Default is "#"
-  heading_link_text = "→ " 
+  heading_link_text = "→ "
 
   # Optional: class for the section links
   # Default is none
@@ -1181,6 +1336,10 @@ to themselves.
 <p>
 You can limit it to deleting only empty elements with <code>only_if_empty = true</code> option.
 Element is considered empty if there's nothing but whitespace inside it.
+</p>
+<p>
+It's possible to delete only the first element matching the selector by adding <code>delete_all = false</code>
+to its config.
 </p>
 
 <h2>Plugins</h2>
@@ -1346,6 +1505,11 @@ for HTML element tree manipulation and <code>Regex</code> for simple regex opera
     <td>Deletes an element from the page. The second argument must be an element reference returns by a select function.</td>
   </tr>
 </table>
+<p>
+Apart from <code>HTML.append_child</code>, there's a family of functions that insert an element at a different position in the tree:
+<code>HTML.prepend_child</code>, <code>HTML.insert_before</code>, <code>HTML.insert_after</code>, <code>HTML.replace_element</code>,
+and <code>HTML.replace_content</code>.
+</p>
 
 <h4>The Regex module</h4>
 <p>
