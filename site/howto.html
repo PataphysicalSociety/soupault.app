@@ -10,6 +10,26 @@ consult the <a href="https://baturin.org/projects/soupault">reference manual</a>
 
 <h2 id="getting-started">Getting started</h2>
 
+<h3 id="processor-mode">Do I need to change my website to start using soupault?</h3>
+<p>
+No. With many other website generators, you need to create a theme/template in their
+own format to start using them. Soupault can work as an HTML processor for existing
+websites, so it's much easier to give it a try.
+</p>
+<p>
+Note that soupault never modifies any files in place, it always reads pages from one directory
+and outputs processed pages to another. It's thus safe to point at handwritten pages.
+</p>
+<p>
+The simplest way to try it is to <a href="#project-setup">initialize a project</a>,
+copy your pages to the <code>site</code> directory and edit the config (<code>soupault.conf</code>).
+Then just run <code>soupault</code> in that directory.
+</p>
+Soupault knows if a file is a complete page or a page body, and doesn't use a template for
+complete pages, so the pages will not be messed up. This can be used for <a href="#unique-layout">mixing unique and templated
+pages</a> too.
+</p>
+
 <h3 id="project-setup">How to setup a basic project</h3>
 <p>
 Run <code>soupault --init</code> in an empty directory. It will create the following directory structure and files:
@@ -30,6 +50,24 @@ the page template. The <code>soupault.conf</code> file is the configuration file
 If you run <code>soupault</code> in that directory, it will build your website and place the processed pages in
 the <code>build/</code> directory. You can then deploy your website with any tool of your choice, like
 <code>neocities push</code>, rsync, or anything else.
+</p>
+
+<h3 id="no-project-dir">Do I need to keep everything in one directory?</h3>
+<p>
+No. It makes things easier, but it's not required. By default, soupault will look for <code>soupault.conf</code>
+in the current working directory and read it. From there it will take the <code>site_dir</code> and <code>build_dir</code>
+options. You can use absolute paths for those options.
+<p>
+You can also override the locations of the config file
+and the source/output directories from the command line. A UNIX example of overriding everything at once:
+</p>
+<pre>
+SOUPAULT_CONFIG="something.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
+</pre>
+<p>
+On Windows, there's no easy way to set an environment variable for a command like that,
+but you can make a batch script or just keep the config file in a parent directory and call soupault from there.
+The <code>--site-dir</code> and <code>--build-dir</code> options work the same on all platforms.
 </p>
 
 <h3 id="assets">How to add assets (pictures, CSS...)</h3>

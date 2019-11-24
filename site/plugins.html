@@ -3,6 +3,43 @@
 
 <p>If you made a plugin and want it included in this directory, let me know!</p>
 
+<h2>Generic</h2>
+
+<h3>Conditional HTML insertion</h3>
+<p>This plugin inserts an HTML snippet into the page iff that page has an element matching certain selector.</p>
+<p>
+The key difference from the built-in <code>insert_html</code> widget is that it can check for one element,
+but insert in another. The element to check for is defined by the <code>check_selector</code> option,
+while the <code>selector</code> option defines the target element to insert the snippet in.
+</p>
+<p>
+For example, if some content requires some JavaScript to interpret, you may want to insert that JavaScript only in pages
+that actually need it. Of course, that JS usually has to go to the page <code>&lt;head&gt;</code>,
+not inside the content element, and you don't need it in <em>every</em> element, so <code>insert_html</code>
+doesn't work well for this task.
+</p>
+<p>
+One example is self-hosted <a href="https://asciinema.org">asciinema</a> player. It's smaller than a video
+would be, but it's still quite a chunk of JS and it's better to insert it only in pages that have any <code>&lt;asciinema-player&gt;</code>
+elements.
+</p>
+<p>
+There are other possible uses of course. Here's an example that adds a warning to your page if it has any <code>&lt;blink&gt;</code>
+elements:
+</p>
+<pre>
+[plugins.insert_if]
+  file = "plugins/insert-if.lua"
+
+[widgets.blink-warning]
+  widget = "insert_if"
+  html = "&lt;div&gt;&lt;strong&gt;Warning: blink elements are obsolete!&lt;/strong&gt;&lt;/div&gt;"
+  selector = "body"
+  check_selector = "blink"
+</pre>
+
+<p>Download: <a href="/files/plugins/insert-if.lua">insert-if.lua</a>.</p>
+
 <h2>Navigation</h2>
 <h3>Site URL</h3>
 <p>
@@ -48,3 +85,23 @@ If you keep navigation menu in a separate file like I do, the <code>after = </co
 otherwise the <code>highlight-active-link</code> widget may run before navigation links are actually available.
 </p>
 <p>Download: <a href="/files/plugins/section-link-highlight.lua">section-link-highlight.lua</a>.</p>
+
+<h3>Page source link</h3>
+<p>
+For people who store their site source in a public repository. This plugin inserts a link to the page source file
+in the repository, by appending the page file path to a base URL (the <code>repo_base</code> option).
+</p>
+<p>Written by <a href="https://hristos.lol/">Hristos N. Triantafillou</a>.</p>
+<p>Sample configuration from his site:</p>
+<pre>
+[plugins.source-link]
+  file = "plugins/source-link.lua"
+
+[widgets.source-link]
+  widget = "source-link"
+  selector = "div#source-link"
+  link_text = "Source link for this page"
+  repo_base = "https://git.sr.ht/~hristoast/hristoast/tree/master/"
+</pre>
+
+<p>Download: <a href="/files/plugins/source-link.lua">source-link.lua</a>.</p>
