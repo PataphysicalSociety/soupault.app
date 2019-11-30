@@ -4,7 +4,11 @@
 -- It assumes you are using relative links
 --
 -- Sample configuration:
--- [plugins.active-link-hightlight]
+--
+-- [plugins.active-link-highlight]
+--   file = "plugins/section-link-highlight.lua"
+--
+-- [widgets.active-link-hightlight]
 --   active_link_class = "active"
 --   selector = "nav"
 --

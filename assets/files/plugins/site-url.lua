@@ -4,6 +4,7 @@
 -- To run it, you need to add something like this to soupault.conf:
 -- [plugins.site-url]
 --   file = "plugins/site-url.lua"
+--
 -- [widgets.set-site-url]
 --   widget = "site-url"
 --   site_url = "https://www.example.com"
