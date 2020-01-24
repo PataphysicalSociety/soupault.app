@@ -18,7 +18,7 @@ Thanks to those defaults, soupault can function without a config file at all. It
 missing config file, but it will work. The main reason <kbd>soupault --init</kbd> creates a default config
 is to tell you what the defaults are and make it easier to change them. Here is the default config from 1.3.2:
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   strict = true
   verbose = false
@@ -47,7 +47,7 @@ The <code>strict</code> option defines whether soupault will stop on page proces
 is a typical error of this kind. Suppose you want to include a footer from <code>templates/footer.html</code> in every page, and you add this to the config
 but forget to create the <code>templates/footer.html</code> file:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.footer]
   widget = "include"
 

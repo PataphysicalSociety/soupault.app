@@ -7,10 +7,9 @@
 --   active_link_class = "active"
 --   nav_menu_selector = "nav"
 --
--- Minimal soupault version: 1.6
+-- Minimum soupault version: 1.6
 -- Author: Daniil Baturin
 -- License: MIT
-
 
 active_link_class = config["active_link_class"]
 nav_menu_selector = config["selector"]

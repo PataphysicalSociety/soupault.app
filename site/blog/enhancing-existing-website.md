@@ -53,7 +53,7 @@ config via `config` variable, with one caveat: you can only pass string options 
 
 So, this is the plugin source:
 
-```
+```lua
 -- Get the selector option from the config
 selector = config["selector"]
 
@@ -96,7 +96,7 @@ the HTML processor mode with `generator_mode = false`.
 
 This is the complete config (`districts/soupault.conf`):
 
-```
+```toml
 [settings]
   strict = true
 

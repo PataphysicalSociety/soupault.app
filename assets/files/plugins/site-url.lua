@@ -9,7 +9,7 @@
 --   widget = "site-url"
 --   site_url = "https://www.example.com"
 --
--- Minimal soupault version: 1.3
+-- Minimum soupault version: 1.3
 -- Author: Daniil Baturin
 -- License: MIT
 

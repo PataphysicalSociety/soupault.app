@@ -33,7 +33,7 @@ of the <a href="/reference-manual/#widgets-exec">exec</a> widget.
 Wherever the path is only interpreted by soupault itself, you can just copy examples from this blog or the documentation
 unchanged. This will work on all systems:
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   default_template = 'templates/main.html'
 
@@ -46,7 +46,7 @@ unchanged. This will work on all systems:
 Paths to executables, however, are passed to the system shell (<code>cmd.exe /s</code> on Windows), so they must follow
 the right convention for the OS. This is why you need to write them like this:
 </p>
-<pre>
+<pre class="language-toml">
 [index]
   index_processor = 'scripts\index.py'
 

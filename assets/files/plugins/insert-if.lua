@@ -23,7 +23,7 @@ check_selector = config["check_selector"]
 -- Plugin code
 
 if not snippet then
-  Log.warning("snippet is not configured, using an empty string")
+  Log.warning("Missing html option, using an empty string")
   snippet = ""
 end
 
@@ -34,7 +34,7 @@ else
   if elem then
     target = HTML.select_one(page, selector)
     if not target then
-      Log.info("page has no element matching selector " .. selector)
+      Log.info("Page has no element matching selector " .. selector)
     else
       snippet_html = HTML.parse(snippet)
       HTML.append_child(target, snippet_html)

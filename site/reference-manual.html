@@ -1,3 +1,10 @@
+<div id="refman">
+
+<div id="refman-sidebar">
+  <div id="generated-toc"> </div>
+</div>
+<div id="refman-main">
+
 <h1>Reference manual</h1>
 
 <p>Soupault (<em>soup-oh</em>) is an HTML manipulation tool.</p>
@@ -56,9 +63,6 @@ For a <em>very</em> quick start:
 </ol>
 
 <p>For details, read the documentation below.</p>
-
-<h2>Contents</h2>
-<div id="generated-toc"> </div>
 
 <h2>Overview</h2>
 <p>
@@ -179,7 +183,7 @@ soupault can mirror it exactly, with the <code>clean_urls = false</code> config 
 It also preseves original file names and extensions in that mode.
 </p>
 
-<h3>What kind of rewriting it can do</h3>
+<h3>What can it do?</h3>
 <p>
 Soupalt comes with a bunch of built-in widgets that can:
 </p>
@@ -192,7 +196,7 @@ Soupalt comes with a bunch of built-in widgets that can:
   <li>Delete unwanted elements.</li>
 </ul>
 <p>For example, here's a config for the <code>title</code> widget that sets the page title.</p>
-<pre>
+<pre class="language-toml">
 [widgets.page-title]
   widget = "title"
   selector = "#title"
@@ -212,14 +216,14 @@ that a widget uses for its target, and the widget will not run on that page.
 Another example: to automatically include content of a <code>templates/nav-menu.html</code> into
 the <code>&lt;nav&gt;</code> element, you can put this into your <code>soupault.conf</code> file:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.nav-menu]
   widget = "include"
   selector = "nav"
   file = "templates/nav-menu.html"
 </pre>
 
-<h3>What soupault does not include</h3>
+<h3>What it cannot do</h3>
 
 <p>By design:</p>
 <dl>
@@ -264,14 +268,18 @@ If you are familiar with the <a href="https://ocaml.org">OCaml</a> programming l
 from source.
 </p>
 <p>
-Since Lua-ML, the Lua interpreter that soupault uses for executing plugins, it not in the OPAM repository yet,
-you need to install it first.
-<pre>
-opam pin add lua-ml git+https://github.com/lindig/lua-ml
-opam pin add soupault git+https://github.com/dmbaturin/soupault
-</pre>
+Since version 1.6, soupault is available from the <a href="https://opam.ocaml.org/packages/soupault/">opam repository</a>.
+If you already have opam installed, you can install it with <code>opam install soupault</code>.
+</p>
+<p>
+If you want the latest development version, the git repository is at <a href="https://github.com/dmbaturin/soupault">github.com/dmbaturin/soupault</a>.
+</p>
+<p>
+To build a statically linked executable for Linux, identical to the official one, first install a <code>+musl+static+flambda</code>
+compiler flavor, then uncomment the <code>(flags (-ccopt -static))</code> line in <code>src/dune</code>.
+</p>
 
-<h3>Using soupault on Microsoft Windows</h3>
+<h3>Using soupault on Windows</h3>
 <p>
 Windows is a supported platform and soupault includes some fixups to account for the differences. This document
 makes a UNIX cultural assumption throughout, but most of the time the same configs will work on both systems.
@@ -285,7 +293,7 @@ use the Windows convention with back slashes. This applies to the preprocessors,
 <code>exec</code> widget, and the <code>index_processor</code> option.
 </p>
 <p>So, if you are on Windows, remember to adjust the paths if needed, e.g.:
-<pre>
+<pre class="language-toml">
 [widgets.some-script]
   widget = 'exec'
   command = 'scripts\myscript.bat'
@@ -369,7 +377,7 @@ and processes them. All other files are simply copied to the build directory.
 If you want to use other extensions, you can change it in <code>soupault.conf</code>.
 For example, to add <code>.txt</code> to the page extension list, use this option:
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   page_file_extensions = ["htm", "html", "md", "rst", "txt"]
 </pre>
@@ -426,19 +434,19 @@ exactly and preserve original file names.
 Just add <code>clean_urls = false</code> to the <code>[settings]</code> table of your
 <code>soupault.conf</code> file.
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   clean_urls = false
 </pre>
 
-<h3>Using soupault as an HTML processor</h3>
+<h3>Soupault as an HTML processor</h3>
 <p>
 If you want to use soupault with an existing website and don't want the template functionality,
 you can switch it from a website generator mode to an HTML processor more where it doesn't use
 a template and doesn't require the <code>default_template</code> to exist.
 </p>
 <p>Recommended settings for the preprocessor mode:</p>
-<pre>
+<pre class="language-toml">
 [settings]
   generator_mode = false
   clean_urls = false
@@ -489,7 +497,7 @@ not fixed, you can change any of them. If you prefer different names, or you
 have an existing directory structure you want soupault to use, just edit
 the <code>soupault.conf</code> file. This is <code>[settings]</code> section of the default config:
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   # Stop on page processing errors?
   strict = true
@@ -574,7 +582,7 @@ and all strings must be in single or double quotes.
 </p>
 </div>
 
-<h3>Overriding configuration settings</h3>
+<h3>Custom directory layouts</h3>
 <p>
 If you are using soupault as an HTML processor, or using it as a part of a CI pipeline,
 the typical website generator approach with a single &ldquo;project directory&rdquo;
@@ -602,7 +610,7 @@ Any preprocessor that takes page file as its argument and outputs the result to
 <p>
 For example, this configuration will make soupault call a program called
 <code>cmark</code> on the page file if its extension is <code>.md</code>.
-<pre>
+<pre class="language-toml">
 [preprocessors]
   md = "cmark"
 </pre>
@@ -644,7 +652,7 @@ It can be empty, but it must be there. Default index page name is <code>index</c
 so you should make a page like <code>site/articles/index.html</code> first.
 </p>
 <p>Then enable indexing in the config. All indexing options are in tne <code>[index]</code> table.</p>
-<pre>
+<pre class="language-toml">
 [index]
   index = true
 </pre>
@@ -658,7 +666,7 @@ There are a few configurable options. You can specify element selectors for page
 excerpt, date, and author.
 </p>
 <p>These are all available options:</p>
-<pre>
+<pre class="language-toml">
 [index]
   # Whether to generate indices or not
   # Default is false, set to true to enable
@@ -688,14 +696,40 @@ excerpt, date, and author.
   # Page author selector
   index_author_selector = "#author"
 
-  # Wrapper element for index entries
-  index_item_template = "&lt;div&gt; &lt;/div&gt;"
+  # Mustache template for index entries
+  index_item_template = "&lt;div&gt; &lt;a href=\"{{url}}\"&gt;{{{title}}}&lt;/a&gt; &lt;/div&gt;"
 
   # External index generator
   # There is no default
   index_processor = 
+
+  # When false, causes soupault to ignore index_item_template and index_processor
+  # options (and their default values). Useful if you want to use named views exclusively.
+  use_default_view = true
 </pre>
-<h3>Using external index generators</h3>
+<h3>Built-in index generator</h3>
+<p>
+Since version 1.6, soupault includes a built-in index generator that uses Mustache templates.
+</p>
+<p>
+The following built-in fields are supported: <code>url, title, excerpt, date, author</code>.
+For a simple blog feed, you can use something like this:
+</p>
+<pre class="raw-html">
+index_item_template = """
+    <h2><a href="{{url}}">{{title}}</a></h2>
+    <p><strong>Last update:</strong> {{date}}.</p>
+    <p>{{{excerpt}}}</p>
+    <a href="{{url}}">Read more</a>
+  """
+</pre>
+<p>
+If you define <a href="#custom-index-fields">custom fields</a>, they also become available to the Mustache renderer.
+An easy way to see what fields are available to the built-in and external generators is to run <code>soupault --debug</code>,
+which prints a JSON dump of the index data among other things.
+</p>
+
+<h3>External index generators</h3>
 <p>
 The built-in index generator simply copies elements from the page to the index.
 You can easily end up with a rather odd-looking index, especially if you are
@@ -734,7 +768,7 @@ First, create an <code>index.html</code> page in every section and include a
 <code>&lt;div id="index"&gt;</code> element in it.
 </p>
 <p>Then write this to your config file:</p>
-<pre>
+<pre class="language-toml">
 [index]
   index = true
   index_selector = "#index"
@@ -744,7 +778,7 @@ First, create an <code>index.html</code> page in every section and include a
 <p>
 Then install the <code>pystache</code> library and save this script to <code>scripts/index.py</code>:
 </p>
-<pre>
+<pre class="language-python">
 #!/usr/bin/env python3
 
 import sys
@@ -773,7 +807,41 @@ another script,
 then re-run soupault to have them included in the pages.<span class="footnote" id="tex-like-toc">TeX users are familiar with this approach.</span>
 </p>
 
-<h3>Custom fields</h3>
+<h3>Multiple index views</h3>
+<p>
+Since version 1.7, soupault supports multiple index &ldquo;views&rdquo; that allows you to present the same index data in different ways.
+For example, you can have a blog feed in <code>/blog</code>, but a simple list or pages in every other section.
+</p>
+<p>
+Views are defined in the <code>[index.views]</code> table. You can use either normal or inline table syntax, from TOML's point of view
+it's the same. Example:
+</p>
+<pre class="language-toml">
+[index.views.title-and-date]
+  index_selector = "div#index-title-date"
+  index_item_template = "&lt;li&gt; &lt;a href=\"{{url}}\"&gt;{{{title}}}&lt;/a&gt; ({{date}})&lt;/li&gt;"
+
+[index.views.custom]
+  index_selector = "div#custom-index"
+  index_processor = 'scripts/my-index-generator.pl'
+</pre>
+<p>
+Which view is used is determined by the <code>index_selector</code> option. In this example, if your section index page
+has a <code>&lt;div id="index-title-date"&gt;</code>, soupault will insert an index generated by the <code>title-and-date</code> view,
+and if it has a <code>&lt;div id="index-custom"&gt;</code>, it will insert the output of <code>scripts/my-index-generator.pl</code>.
+</p>
+<p>
+If your page has <em>both</em> elements, both index views will be inserted in their containers. This may be useful if you want to include
+different views in the same page, e.g. show articles grouped by date and by author.
+</p>
+<p>
+Note that defining custom views doesn't automatically make soupault ignore <code>index_item_template</code> and <code>index_processor</code>
+options from the <code>[index]</code> table. Since the <code>index_item_template</code> option has a default value, and <code>index_selector</code>
+defaults to <code>"body"</code>, you may end up with an unwanted index at the top of your page if you leave the global <code>index_selector</code>
+option undefined. If you want to use named views exclusively, add <code>use_default_view = true</code> to the <code>[index]</code> table.
+</p>
+
+<h3 id="custom-index-fields">Custom fields</h3>
 <p>
 Built-in fields should be enough for a typical blog taxonomy, but it's possible
 to add custom fields to your JSON index data.
@@ -781,23 +849,28 @@ to add custom fields to your JSON index data.
 <p>
 Custom field queries are defined in the <code>[index.custom_fields]</code> table.
 Table keys are field names as they will appear in the exported JSON.
-Their values are inline tables with required <code>selector</code> field
+Their values are subtables with required <code>selector</code> field
 and optional <code>select_all</code> parameters.
 </p>
-<pre>
+<p>
+You can also specify default value for a field that will be used if matching element
+is not found, using <code>default</code> option. For fields with <code>select_all</code>
+flag, default value is ignored.
+</p>
+<pre class="language-toml">
 [index.custom_fields]
-  category = { selector = "span#category" }
+  category = { selector = "span#category", default = "misc" }
 
   tags = { selector = ".tag", select_all = true }
 </pre>
 <p>
 In this example, the <code>category</code> field will contain the inner HTML
 of the first <code>&lt;span id="category"&gt;</code> element even if there's
-more than one in the page. The <code>tags</code> field will contain a list
-of contents of all elements with <code>class="tag"</code>.
+more than one in the page (if there are none, it will be set to "misc").
+The <code>tags</code> field will contain a list of contents of all elements with <code>class="tag"</code>.
 </p>
 
-<h3>Exporting global site index to a file</h3>
+<h3>Exporting site index to JSON</h3>
 <p>
 The index processor invoked with the <code>index_processor</code> option
 receives the index of the current section. It doesn't include subsections.
@@ -810,7 +883,7 @@ create a global site index, or an index of a section and all its subsections,
 you can export the aggregated index data to a file for further processing.
 Add this option to your index config:
 </p>
-<pre>
+<pre class="language-toml">
 [index]
   dump_json = "path/to/file.json"
 </pre>
@@ -820,6 +893,23 @@ Add this option to your index config:
   <li>Run your custom index generator and save generated taxonomy pages to <code>site/</code>.</li>
   <li>Run soupault one more time to have them included in the build.</li>
 </ol>
+
+<h3>Behaviour</h3>
+<p>
+As of 1.6, generated index is always inserted before any widgets have run, so that the HTML produced
+by index generators can be processed by widgets.
+</p>
+<p>
+Metadata extraction happens as early as possible. By default, it happens <em>before</em> any widgets have run,
+to avoid adverse interaction with widgets. However, if you want data inserted by widgets to be available
+in the index, you can make soupault do the extraction after certain widgets with a <code>extract_after_widgets = ["foo", "bar"]</code>
+option in the <code>[index]</code> table.
+</p>
+<p>
+Note that it doesn't mean no other widgets will run before metadata is extracted. It only means metadata will not be extracted
+until widgets specified in the <code>extract_after_widgets</code> option have run. So, if you want a widget to run only
+after metadata is extracted, you should specify all those widgets in its dependencies. There is no easier way to do that now.
+</p>
 
 <h2>Widgets</h2>
 
@@ -853,10 +943,10 @@ Widget subtable names are purely informational and have no effect, the widget ty
 is determined by the <code>widget</code> option. Therefore, if you want to use
 a hypothetical <code>frobnicator</code> widget, your entry will look like:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.frobnicate]
   widget = "frobnicator"
-  selector "div#frob"
+  selector = "div#frob"
 </pre>
 <p>
 It may seem confusing and redundant, but if subtable name defined the
@@ -877,7 +967,7 @@ However, if you are modifying existing pages or just want more control and flexi
 you can specify the insert position using the <code>action</code> option.
 </p>
 <p>For example, you can insert a header file before the first element in the page <code>&lt;body&gt;</code>:
-<pre>
+<pre class="language-toml">
 [widgets.insert-header]
   widget = "include"
   file = "templates/header.html"
@@ -887,7 +977,7 @@ you can specify the insert position using the <code>action</code> option.
 <p>
 Or insert a table of contents before the first <code>&lt;h1&gt;</code> element (it a page has it):
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.table-of-contents]
   widget = "toc"
   selector = "h1"
@@ -897,7 +987,7 @@ Or insert a table of contents before the first <code>&lt;h1&gt;</code> element (
 Possible values of that option are: <code>prepend_child, append_child, insert_before, insert_after, replace_element, replace_content</code>.
 </p>
 
-<h3>Limiting widgets to specific pages or sections</h3>
+<h3>Limiting widgets to pages or sections</h3>
 <p>
 If the widget target comes from the page content rather than the template,
 you can simply not include any elements matching its <code>selector</code>
@@ -923,7 +1013,7 @@ The <code>page</code> option limits a widget to an exact page file,
 while the <code>section</code> option applies a widget to all
 files in a subdirectory.
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.site-news]
   # only on site/index.html and site/news.html
   page = ["index.html", "news.html"]
@@ -945,7 +1035,7 @@ files in a subdirectory.
 <p>
 It's also possible to explicitly exclude pages or sections.
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.toc]
   # Don't add a TOC to the main page
   exlude_page = "index.html"
@@ -963,7 +1053,7 @@ When nothing else helps, <code>path_regex</code> and <code>exclude_path_regex</c
 may solve your problem. They take a Perl-compatible regular expression (not a glob).
 </p>
 
-<pre>
+<pre class="language-toml">
 [widgets.toc]
   # Don't add a TOC to any section index page
   exclude_path_regex = '^(.*)/index\.html$'
@@ -993,7 +1083,7 @@ a <code>&lt;div id="breadcrumbs"&gt;</code> where breadcrumbs are inserted by th
 page is not deep enough, the <code>div</code> may be left empty, and that's not
 <em>neat</em>, so the <code>cleanup-breadcrumbs</code> widget removes it.
 </p>
-<pre>
+<pre class="language-toml">
 ## Breadcrumbs
 [widgets.add-breadcrumbs]
   widget = "breadcrumbs"
@@ -1010,8 +1100,29 @@ page is not deep enough, the <code>div</code> may be left empty, and that's not
   after = "add-breadcrumbs"
 </pre>
 
+<h3>Limiting widgets to &ldquo;build profiles&rdquo;</h3>
+<p>
+Sometimes you may want to enable certain widgets only for some builds. For example, include analytics
+scripts only in production builds. It can be done with &ldquo;build profiles&rdquo;.
+</p>
+<p>
+For example, this way you can only include <code>includes/analytics.html</code> file in your pages
+for a build profile named &ldquo;live&rdquo;:
+</p>
+<pre class="language-toml">
+[widgets.analytics]
+  profile = "live"
+  widget = "include"
+  file = "includes/analytics.html"
+  selector = "body"
+</pre>
+<p>
+Soupault will only process that widget if you run <code>soupault --profile live</code>. If you run
+<code>soupault --profile dev</code>, or run it without the <code>--profile</code> option, it will ignore that widget.
+</p>
+
 <h2>Built-in widgets</h2>
-<h3>File and output inclusion widgets</h3>
+<h3>File and output inclusion</h3>
 <p>These widgets include something into your page: a file, a snippet, or putput of an external program.</p>
 <h4 id="widgets-include">include</h4>
 <p>
@@ -1023,7 +1134,7 @@ The following configuration will insert the content of <code>templates/header.ht
 into an element with <code>id="header"</code> and the content of <code>templates/footer.html</code>
 into an element with <code>id="footer"</code>.
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.header]
   widget = "include"
   file = "templates/header.html"
@@ -1042,7 +1153,7 @@ with HTML special characters escaped.
 
 <h4 id="widgets-insert_html">insert_html</h4>
 <p>For a small HTML snippet, a separate file may be too much. The <code>insert_html</code> widget </p>
-<pre>
+<pre class="language-toml">
 [widgets.tracking-script]
   widget = "insert_html"
   html = '&lt;script src="/scripts/evil-analytics.js"&gt; &lt;/script&gt;'
@@ -1058,22 +1169,91 @@ widget, it has a <code>parse</code> option that includes the output verbatim
 if set to <code>false</code>.
 </p>
 <p>Simple example: page generation timestamp.</p>
-<pre>
+<pre class="language-toml">
 [widgets.generated-on]
   widget = "exec"
   selector = "#generated-on"
   command = "date -R"
 </pre>
 
-<h5>Environment variables</h5>
-<p>The following environment variables are passed to the external program:</p>
+<h4 id="widgets-preprocess-element">preprocess_element</h4>
+<p>
+This widget processes element content with an external program and includes
+its output back in the page.
+</p>
+<p>
+Element content is sent to program's stdin, so it can be used with any program
+designed to work as a pipe. HTML entities are expanded, so if you have <code>&amp;gt;</code>
+or <code>&amp;amp;</code> in your page, the program gets a <code>&gt;</code> and <code>&amp;</code>.
+<p>
+By default it assumes that the program output is HTML and runs it through an HTML parser.
+If you want to include its output as text (with HTML special characters escaped), you should specify <code>parse = false</code>
+</p>
+<p>
+For example, this is how you can run content of <code>&lt;pre&gt;</code> elements through <code>cat -n</code>
+to automatically add line numbers:
+</p>
+<pre class="language-toml">
+[widgets.line-numbers]
+  widget = "preprocess_element"
+  selector = "pre"
+  command = "cat -n"
+  parse = false
+</pre>
+<p>
+You can pass element metadata to the program for better control. The tag name is passed in the <code>TAG_NAME</code>
+environment variables, and all attributes are passed in environment variables prefixed with <code>ATTR</code>:
+<code>ATTR_ID</code>, <code>ATTR_CLASS</code>, <code>ATTR_SRC</code>...
+</p>
+<p>
+For example, <a href="http://www.andre-simon.de/">highlight</a>, a popular syntax highliting tool,
+accepts the language in an option like <code>--syntax=python</code>. If your elements that contain
+source code samples have language specified in a class (like <code>&lt;pre class="language-python"&gt;</code>),
+you can extract the language from the <code>ATTR_CLASS</code> variable like this:
+</p>
+<pre class="language-toml">
+# Runs the content of &lt;* class="language-*"&gt; elements through a syntax highlighter
+[widgets.highlight]
+  widget = "preprocess_element"
+  selector = '*[class^="language-"]'
+  command = 'highlight -O html -f --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
+</pre>
+<p>
+Like all widgets, this widget supports the <a href="#choosing-where-to-insert-the-output">action</a> option. The default is
+<code>action = "replace_content"</code>, but using different actions you can insert a rendered version
+of the content alongside the original. For example, insert an inline SVG version of every <a href="https://graphviz.org/">Graphviz</a>
+graph next to the source, and then highlight the source:
+</p>
+<pre class="language-toml">
+[widgets.graphviz-svg]
+  widget = 'preprocess_element'
+  selector = 'pre.language-graphviz'
+  command = 'dot -Tsvg'
+  action = 'insert_after'
+
+[widgets.highlight]
+  after = "graphviz-svg"
+  widget = "preprocess_element"
+  selector = '*[class^="language-"]'
+  command = 'highlight -O html -f --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
+</pre>
+<p>The result will look like this:</p>
+<img src="/images/graphviz_sample.png"></img>
+
+<h4>Environment variables</h4>
+<p>
+External program executed by <code>exec</code> and <code>preprocess_element</code> widgets get
+a few useful environment variables:
+</p>
 <dl>
   <dt><code>PAGE_FILE</code></dt>
   <dd>Path to the page source file, relative to the current working directory
       (e.g. <code>site/index.html</code></dd>
+  <dt><code>TARGET_DIR</code></dt>
+  <dd>The directory where the rendered page will be saved.</dd>
 </dl>
 <p>This is how you can include page's own source into a page, on a UNIX-like system:</p>
-<pre>
+<pre class="language-toml">
 [widgets.page-source]
   widget = "exec"
   selector = "#page-source"
@@ -1084,7 +1264,7 @@ if set to <code>false</code>.
 If you store your pages in git, you can get a page timestamp from the git log
 with a similar method (note that it's not a very fast operation for long commit
 histories):
-<pre>
+<pre class="language-toml">
 [widgets.last-modified]
   widget = "exec"
   selector = "#git-timestamp"
@@ -1096,11 +1276,20 @@ for example, you can use it to fetch the page author and modification date
 from a revision control system like git or mercurial.
 </p>
 <p>
-In the current version you cannot uses an external program as a filter&mdash;
-only as a producer, but it can be implemented in future versions.
+The <code>TARGET_DIR</code> variables is useful for scripts that modify or create page assets.
+For example, this snippet will create PNG images from <a href="https://graphviz.org">Graphviz</a> graphs
+inside <code>&lt;pre class="graphviz-png"&gt;</code> elements and replace those pre's with relative
+links to images.
 </p>
+<pre class="language-toml">
+[widgets.graphviz-png]
+  widget = 'preprocess_element'
+  selector = '.graphviz-png'
+  command = 'dot -Tpng &gt; $TARGET_DIR/graph_$ATTR_ID.png && echo \&lt;img src="graph_$ATTR_ID.png"\&gt;'
+  action = 'replace_element'
+</pre>
 
-<h3>Content widgets</h3>
+<h3>Content manipulation</h3>
 <h4 id="widgets-title">title</h4>
 <p>
 The <code>title</code> widget sets the page title, that is, the <code>&lt;title&gt;</code>
@@ -1108,7 +1297,7 @@ from an element with a certain selector. If there is no <code>&lt;title&gt;</cod
 in the page, this widget assumes you don't want it and does nothing.
 </p>
 <p>Example:</p>
-<pre>
+<pre class="language-toml">
 [widgets.page-title]
   widget = "title"
   selector = "h1"
@@ -1144,7 +1333,7 @@ The <code>footnotes</code> widget finds all elements matching a selector,
 moves them to a designated footnotes container, and replaces them with numbered links.<span class="footnote" id="footnotes">As if anyone doesn't know what what's a footnote.</span>
 As usual, the container element can be anywhere in the page—you can have footnotes at the top if you feel like it.
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.footnotes]
   widget = "footnotes"
 
@@ -1184,7 +1373,7 @@ location. You can disable it and make footnotes one way links with <code>back_li
 You can create a custom &ldquo;namespace&rdquo; for footnotes and reference links using the <code>link_id_prepend</code> and <code>back_link_id_append</code> options.
 This makes it easier to use custom styling for those elements.
 </p>
-<pre>
+<pre class="language-toml">
 link_id_prepend = "footnote-"
 back_link_id_append = "-ref"
 </pre>
@@ -1196,7 +1385,7 @@ Table of contents is generated from the heading tags from <code>&lt;h1&gt;</code
 to <code>&lt;h6&gt;</code>. 
 </p>
 <p>Here is the ToC configuration from this website:</p>
-<pre>
+<pre class="language-toml">
 [widgets.table-of-contents]
   widget = "toc"
 
@@ -1284,7 +1473,7 @@ by hand, and for best readability you may want to go with <code>use_heading_text
 <h4 id="widgets-breadcrumbs">breadcrumbs</h4>
 <p>The <code>breadcrumbs</code> widget generates breadcrumbs for the page.</p>
 <p>The only required parameter is <code>selector</code>, the rest is optional.</p>
-<pre>
+<pre class="language-toml">
 [widgets.breadcrumbs]
   widget = "breadcrumbs"
 
@@ -1318,7 +1507,7 @@ to themselves.
   <li><code>site/foo/bar.html</code> → 1</li>
 </ul>
 
-<h3>HTML manipulation widgets</h3>
+<h3>HTML manipulation</h3>
 
 <h4>delete_element</h4>
 
@@ -1327,7 +1516,7 @@ to themselves.
   <li>Another widget may leave an element empty and you want to clean it up.</li>
   <li>Your pages are generated with another tool and it inserts something you don't want.</li>
 </ul>
-<pre>
+<pre class="language-toml">
 # Who reads footers anyway?
 [widgets.delete_footer]
   widget = "delete_element"
@@ -1348,9 +1537,9 @@ to its config.
 Since version 1.2, soupault can be extended with Lua plugins. Currently there are following limitations:
 </p>
 <ul>
-  <li>The supported language is Lua 2.5, not modern Lua 5.x. That means no closures and no <code>for</code> loops in particular.</li>
-  <li>Lua execution errors are logged to <code>stderr</code>, but don't stop processing even in strict mode.</li>
-  <li>Only string options can be passed to plugins via widget options from <code>soupault.conf</code></li>
+  <li>The supported language is Lua 2.5, not modern Lua 5.x. That means no closures and no <code>for</code> loops in particular.
+      Here's a copy of the Lua 2.5 <a href="https://soupault.neocities.org/files/lua-2.5-refman.pdf">reference manual</a>.</li>
+  <li>Only string and integer options can be passed to plugins via widget options from <code>soupault.conf</code></li>
 </ul>
 <p>
 Plugins are treated like widgets and are configured the same way.
@@ -1361,7 +1550,7 @@ Plugins are treated like widgets and are configured the same way.
 Here is an example of a plugin that converts relative links to absolute URLs by prepending a site URL to them:
 </p>
 
-<pre>
+<pre class="language-lua">
 -- Converts relative links to absolute URLs
 -- e.g. "/about" -> "https://www.example.com/about"
 
@@ -1397,7 +1586,7 @@ Plugin files can be placed in any directory. By convention, we'll use <code>plug
 So, to use that plugin, first save it to <code>plugins/site-url.lua</code>
 </p>
 <p>Then you need to configure soupault to load the plugin. Add this snippet to <code>soupault.conf</code>:</p>
-<pre>
+<pre class="language-toml">
 [plugins.site-url]
   file = "plugins/site-url.lua"
 </pre>
@@ -1407,7 +1596,7 @@ Then you can use it like any other widget. Plugin subtable name becomes the name
 in our case <code>site-url</code>. The <code>site_url</code> option from the widget config
 will be accessible to the plugin as <code>config["site_url"]</code>.
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.absolute-urls]
   widget = "site-url"
   site_url = "https://www.example.com"
@@ -1419,25 +1608,28 @@ will be accessible to the plugin as <code>config["site_url"]</code>.
   <dt><code>page</code></dt>
   <dd>The page element tree that can be manipulated with functions from the <code>HTML</code> module.</dd>
   <dt><code>page_file</code></dt>
-  <dd>String containing page file path, e.g. <code>site/index.html</code></dd>
+  <dd>Ppage file path, e.g. <code>site/index.html</code></dd>
+  <dt><code>target_dir</code>
+  <dd>The directory where the page file will be saved, e.g. <code>build/about/</code>.</dd>
   <dt><code>nav_path</code></dt>
   <dd>List of strings representing the logical nativation path. For example, for <code>site/foo/bar/quux.html</code>
       it's <code>["foo", "bar"]</code>.
+  <dt><code>page_url</code></dt>
+  <dd>Relative page URL, e.g. <code>/articles</code> or <code>/articles/index.html</code>, depending on the <code>clean_urls</code> setting.</dd>
   <dt><code>config</code></dt>
   <dd>A table with widget config options.</dd>
 </dl>
 
 <p>
-<strong>Note:</strong> only string options can be passed to plugins through the <code>config</code> table.
-As in, they must be TOML strings like <code>"foo"</code> or <code>"42.0"</code>. Lua will convert strings
-to numbers when appropriate, so you can pass numbers by writing them as strings. You <em>cannot</em> pass TOML lists
-or inline tables to plugins in the current soupault version.
+<strong>Note:</strong> only string and integer options can be passed to plugins through the <code>config</code> table.
+You <em>cannot</em> pass TOML lists or inline tables to plugins in the current soupault version.
+You <em>sort of</em> can pass booleans, but they will be converted to strings <code>"true"</code> and <code>"false"</code>,
+so you need to compare explicitly.
 </p>
 
 <h3>Plugin API</h3>
 <p>
-Apart from the standard Lua 2.5 functions, soupault provides two additional modules: <code>HTML</code>
-for HTML element tree manipulation and <code>Regex</code> for simple regex operations.</p>
+Apart from the standard Lua 2.5 functions, soupault provides additional modules.</p>
 <h4>The HTML module</h4>
 <table>
   <tr>
@@ -1456,9 +1648,19 @@ for HTML element tree manipulation and <code>Regex</code> for simple regex opera
     <td>Creates an HTML element node.</td>
   </tr>
   <tr>
+    <td><code>HTML.create_text(string)</code></td>
+    <td><code>h = HTML.create_text("hello world")</code></td>
+    <td>Creates a text node that can be inserted into the page just like element nodes. This function automatically escapes all HTML special characters inside the string.</td>
+  </tr>
+  <tr>
     <td><code>HTML.inner_html(html)</code></td>
-    <td><code>h = HTML.inner_html(HTML.create_element("<p>hello world</p>"))</code></td>
+    <td><code>h = HTML.inner_html(HTML.select(page, "body"))</code></td>
     <td>Returns element content as a string.</td>
+  </tr>
+  <tr>
+    <td><code>HTML.strip_tags(html)</code></td>
+    <td><code>h = HTML.strip_tags(HTML.select(page, "body"))</code></td>
+    <td>Returns element content as a string, with all HTML tags removed.</td>
   </tr>
   <tr>
     <td><code>HTML.select(html, selector)</code></td>
@@ -1534,11 +1736,85 @@ Regular expressions used by this module are mostly Perl-compatible. Capturing gr
   <tr>
     <td><code>Regex.replace(string, regex, string)</code></td>
     <td><code>s = Regex.replace("/foo/bar", "^/", "")</code></td>
-    <td>Replaces the first occurence of a matching strings. It returns a new string and doesn't modify the argument.</td>
+    <td>Replaces the first occurence of a matching substring. It returns a new string and doesn't modify the argument.</td>
   </tr>
   <tr>
     <td><code>Regex.replace_all(string, regex, string)</code></td>
-    <td><code>Regex.replace("/foo/bar", "/", "")</code></td>
+    <td><code>Regex.replace_all("/foo/bar", "/", "")</code></td>
     <td>Replaces every matching substring. It returns a new string and doesn't modify the argument.</td>
   </tr>
+  <tr>
+    <td><code>Regex.split(string, regex)</code></td>
+    <td><code>substrings = Regex.find_all("foo/bar", "/")</code></td>
+    <td>Splits a strings at a separator.</td>
+  </tr>
 </table>
+
+<h4>The Plugin module</h4>
+<p>Provides functions for communicating with the plugin runner code.</p>
+<table>
+  <tr>
+    <th>Function</th>
+    <th>Example</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>Plugin.fail</code></td>
+    <td><code>Plugin.fail("Error occured")</code></td>
+    <td>Stops plugin execution immediately and signals an error. Errors raised this way are treated as widget processing errors by soupault, for the purpose of the <code>strict</code> option.</td>
+  </tr>
+  <tr>
+    <td><code>Plugin.exit</code></td>
+    <td><code>Plugin.exit("Nothing to do")</code>, <code>Plugin.exit()</code></td>
+    <td>Stops plugin execution immediately. The message is optional. This kind of termination is not considered an error by soupault.</td>
+  </tr>
+  <tr>
+    <td><code>Plugin.require_version</code></td>
+    <td><code>Plugin.require_version("1.8.0")</code></td>
+    <td>Stops plugin execution if soupault version is less than required version. You can give a full version like 1.8.0 or a short version like 1.8.
+    This function was introduced in 1.8, so plugins that use it will fail to work in 1.7 and below.
+    </td>
+  </tr>
+</table>
+
+<h4>The Sys module</h4>
+<table>
+  <tr>
+    <th>Function</th>
+    <th>Example</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>Sys.read_file</code></td>
+    <td><code>Sys.read_file("site/index.html")</code></td>
+    <td>Reads a file into a string. The path is relative to the working directory.</td>
+  </tr>
+  <tr>
+    <td><code>Sys.random(max)</code></td>
+    <td><code>Sys.ranrom(1000)</code></td>
+    <td>Generates a random number from 0 to max.</td>
+  </tr>
+</table>
+
+<h4>The String module</h4>
+<table>
+  <tr>
+    <th>Function</th>
+    <th>Example</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td><code>String.trim</code></td>
+    <td><code>String.trim(" my string ")</code></td>
+    <td>Removed leading and trailing whitespace from a string.</td>
+  </tr>
+  <tr>
+    <td><code>String.slugify_ascii</code></td>
+    <td><code>String.slugify_ascii("My Heading")</code></td>
+    <td>Replaces all characters other than English letters and digits with hyphens, exactly like the <a href="#widgets-toc">ToC widget</a>.</td>
+  </tr>
+</table>
+
+</div>
+
+</div>

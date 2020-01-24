@@ -12,7 +12,7 @@ element. First let's see how it's done and then discuss the use cases for deleti
 <p>
 We'll start with a simple and absurd example: deleting the page body for real:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.delete-body]
   widget = "delete_element"
   selector = "body"
@@ -29,7 +29,7 @@ but leave them intact if there's some content inside.
 Suppose you are using a <a href="/howto/#preprocessors">preprocessor</a> for some format that is fond of leaving empty paragraphs.
 Then you can clean them up with this config:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.delete-empty-paragraphs]
   widget = "delete_element"
   selector = "p"
@@ -43,7 +43,7 @@ I have breadcrumbs, which can be seen on pages inside sections, like
 At the top level, breadcrumbs make no sense though, so my config limits them to appear
 only on pages nested at least one level deep:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.breadcrumbs]
   widget = "breadcrumbs"
   selector = "div#breadcrumbs"
@@ -60,7 +60,7 @@ it leaves an empty div in top level pages, which is not harmful, but still a bit
 <p>
 The <code>delete_element</code> widget offers a simple way to clean it up:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.breadcrumbs-cleanup]
   widget = "delete_element"
   selector = "div#breadcrumbs"
@@ -82,7 +82,7 @@ element is identifiable with a CSS selector, you can use this widget to delete i
 If a hypothetical HTML Gallery Generator Pro inserts a prominent logo in, say,
 <code>&lt;div id="watermark"&gt;</code>, nothing prevents you from deleting it with:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.no-watermark]
   widget = "delete_element"
   selector = "div#watermark"

@@ -34,7 +34,7 @@ ToC link like <a href="#">Properties of e<sup>x</sup></a>.
 
 This is the ToC config for this website:
 
-```
+```toml
 [widgets.table-of-contents]
   widget = "toc"
   selector = "#generated-toc"
@@ -60,7 +60,7 @@ The best place to see the ToC in action is the <a href="/reference-manual">refer
 
 The simplest possible config is:
 
-```
+```toml
 [widgets.toc]
   widget = 'toc'
   selector = 'body'
@@ -93,7 +93,7 @@ But that's not all. You can also make it use a different class for each level if
 
 Suppose you setup it like this:
 
-```
+```toml
 [widgets.toc]
   widget = "toc"
   selector = "body"
@@ -104,7 +104,7 @@ Suppose you setup it like this:
 
 Then your generated HTML will look like:
 
-```
+```html
 <ul class="toc-1">
   <li> <a href="#chapter-1">Chapter 1</a> </li>
   <ul class="toc-2">

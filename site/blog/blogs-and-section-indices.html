@@ -1,16 +1,10 @@
 <h1 id="post-title">Making section indices and blogs</h1>
 
-<span>Last update: <time>2019-10-11</time><span>
+<span>Last update: <time>2019-12-05</time><span>
 <p>
 This website and the blog are made with soupault, quite obviously. How exactly the blog is made?
-While soupault doesn't include any blog functionality, it allows you to add a custom index generator
-to the pipeline and feed it metadata extracted from your existent pages. No front matter needed.
-Let's see how to use that feature.
-</p>
-<p>
-Admittedly, using it does require some programming skills, but it's the only soupault's feature that does.
-It's not so hard to use either, so it can be a fun thing to do if you want to learn some programming but don't know
-where to start.
+While soupault doesn't include any blog functionality, it allows you to extract metadata from existing pages
+and either render it using a built-in index generator or feed it to an external script.
 </p>
 <p>
 Please note that if you want a full-grown blog with tags, archives searchable by date and so on,
@@ -20,14 +14,40 @@ You can reimplement that functionality in a soupault workflow, but it may be mor
 <p>
 The indexing feature is there to simplify creating and maintaining lists of all pages
 in a site section, and it's also good for simple blogs, but it only gives you the index data,
-and what you do with that data is up to you. Its power is that you can technically do anything you want,
-but the downsite is that you have to do it yourself. For my blog workflow, I didn't have to do much,
-and you can easily reuse the solution.
+and what you do with that data is up to you. 
+</p>
+<h2>How indexing works in soupault?</h2>
+<p>
+Since soupault works on the element tree of the page rather than its text, it can extract content from
+specific elements. For example, the first <code>&lt;h1&gt;</code> of a page is usually its title.
+The first paragraph is often (though not always) written to give the reader a summary of the page,
+and makes a good abstract/excerpt. Their content can be extracted using CSS selectors like <code>h1</code>
+and <code>p</code> (or something more specific like <code>main p</code>, if you want the first paragraph
+inside the <code>&lt;main&gt;</code> element).
 </p>
 <p>
-First of all, we will look at the beginning of the <a href="https://github.com/dmbaturin/soupault.neocities.org/blob/master/site/blog/why-soupault.html">first blog entry</a>:
+This way you can make use of your existing site structure to automatically create an index for it,
+rather than have to extract and duplicate all metadata.
 </p>
-<pre>
+<p>
+In a classic static site generator, a post would be preceded by &ldquo;front matter&rdquo;: a metadata section that generator uses to create both the final page
+and its blog feed entry, something like:
+</p>
+<pre class="language-yaml">
+---
+title: Why soupault?
+date: 2019-10-10
+---
+There are many...
+</pre>
+<p>
+There is nothing like it in my blog. The key idea of soupault is to work on existing HTML, so those posts are valid bodies
+of complete pages, not just a raw material for the generator. Other SSGs generate HTML, while soupault transforms and enhances it.
+</p>
+<p>
+Let's examine the beginning of the <a href="https://github.com/dmbaturin/soupault.neocities.org/blob/master/site/blog/why-soupault.html">first blog entry</a>:
+</p>
+<pre class="language-html">
 &lt;h1 id="post-title"&gt;Why soupault?&lt;/h1&gt;
 
 &lt;span&gt;Date: &lt;time id="post-date"&gt;2019-10-10&lt;/time&gt; &lt;/span&gt;
@@ -40,49 +60,42 @@ explain the decisions behing it and reasons why anyone else may want to use it.
 &lt;/p&gt;
 </pre>
 <p>
-In classic blog generator, a post would be preceded by &ldquo;front matter&rdquo;: a metadata section that generator uses to create both the final page
-and its blog feed entry, something like:
-</p>
-<pre>
----
-title: Why soupault?
-date: 2019-10-10
----
-There are many...
-</pre>
-<p>
-There is nothing like it in my blog. The key idea of soupault is to work on existing HTML, so those posts are valid bodies
-of complete pages, not just a raw material for the generator. Other SSGs generate HTML, while soupault transforms and enhances it.
-</p>
-<p>
-However, you see there are some element ids that are not strictly necessary, like <code>id="post-date"</code>. On my website,
+That's just normal HTML. However, you see there are some element ids that are not strictly necessary, like <code>id="post-date"</code>. On my website,
 there are no special styles for those elements. They serve as a <a href="https://en.wikipedia.org/wiki/Microformat">microformat</a>
 that tells soupault what exactly to extract from the page to create its blog feed entry. Of course, they could also be used for styling
 or as page anchors.
 </p>
 <p>
-Now let's see how the blog feed is created from those pages. First, examine the index section from my <code>soupault.conf</code>:
+Now let's see how the blog feed is created from those pages. First, we'll examine the <code>[index]</code> section from my <code>soupault.conf</code>.
+This is a slightly simplified version of it that you can easily copy into your config:
 </p>
-<pre>
+<pre class="language-toml">
 [index]
   index = true
   index_selector = "#blog-index"
-  index_processor = "scripts/index.py"
 
-  index_title_selector = "h1#post-title"
+  index_title_selector = ["h1#post-title", "h1"]
   index_date_selector = ["time#post-date", "time"]
   index_excerpt_selector = ["p#post-excerpt", "p"]
+
+  newest_entries_first = true
+
+  index_item_template = """
+&lt;h2&gt;&lt;a href="{{url}}"&gt;{{title}}&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Last update:&lt;/strong&gt; {{date}}.&lt;/p&gt;
+&lt;p&gt;{{{excerpt}}}&lt;/p&gt;
+&lt;a href="{{url}}"&gt;Read more&lt;/a&gt;
+"""
 </pre>
 <p>
-In short, it tells soupault what to extract, what program to run the extracted data through,
-and where to insert the output.
+In short, it tells soupault what to extract, how to render the index, and where to extract it.
 </p>
 <p>
 First of all, don't forget the <code>index = true</code> option. Index data extraction is disabled
 by default, so you need to enable it if you want to use it.
 </p>
 <p>
-The <code>index_selector</code> option is a CSS selector of the index container element where generated
+The <code>index_selector</code> option is a CSS selector of the element where generated
 index is inserted.
 In my <code>site/blog/index.html</code> it's a <code>&lt;div id="blog-index"&gt;</code>,
 so it can be uniquely identified with <code>#blog-index</code>. This is equivalent to <code>$("#blog-index")</code>
@@ -90,22 +103,28 @@ in jQuery or <code>getElementById("blog-index")</code> in plain JS.
 </p>
 <p>
 The <code>index_title_selector</code>, <code>index_date_selector</code>, and <code>index_excerpt_selector</code>
-options tell soupault what to extract. Since the first <code>&lt;h1&gt;</code> in every page on this website is the site header,
-the &ldquo;real&rdquo; post title needs to be explicitly identified as such, so I give it a <code>post-title</code> id.
+options tell soupault what to extract. Notice that there are multiple selectors for each of them.
+For example, <code>index_excerpt_selector = ["p#post-excerpt", "p"]</code> means &ldquo;extract data from a <code>&lt;p id="post-excerpt"&gt;</code>
+if it exists, otherwise, extract the first paragraph&rdquo;. This makes it possible to use something else than the first paragraph
+for the post excerpt, without duplicating the data. I can just mark the excerpt paragraph explicitly with an <code>id</code> attribute.
 </p>
 <p>
-Note that <code>index_excerpt_selector</code> option has more than one selector. All index options support this syntax.
-It works like this: if it cannot find an element with <code>id="post-excerpt"</code>, it goes for the first <code>&lt;p&gt;</code> element.
-This allows you to use something else than the first paragraph for the post excerpt. Markdown-based blog generators usually don't give
-you any choice, but with soupault, you can choose which paragraph appears in the blog index.
+The <code>newest_entries_first</code> tells soupault to sort entries by date in descending order. The default date format is
+<code>YYYY-MM-DD</code>, though it's configurable. It uses the date extracted by the <code>index_date_selector</code> option.
 </p>
 <p>
-The <code>index_processor = "scripts/index.py"</code> option tells soupault to run <code>scripts/index.py</code>
-script. On UNIX-like systems, don't forget to make it executable (<kbd>chmod +x scripts/index.py</kbd>).
-On Windows, you should make sure <code>.py</code> files are associated with Python and you also need to adjust the path (see below).
+Finally, there's a <a href="https://mustache.github.io/">Mustache</a> template used for rendering index entries. This is supported since version 1.6.
+Mustache is a simple, logicless template language that should cover the basics. You can read about available fields and other details in the
+<a href="/reference-manual/#indexing">reference manual</a>.
 </p>
-<p>Index data is encoded in JSON and sent to that script's input:</p>
-<pre>
+<h2>Using external index processors</h2>
+<p>
+The built-in index generator is fast and easy to use, but it's not very flexible. However, soupault can export extracted data and feed it to an
+external script, then include its output back in the page. This way you can do literally <em>anything</em> with that data, though it requires
+some programming skill (on the other hand, it can be a good first project for learning programming).
+</p>
+<p>Index data is encoded in JSON and sent to the script's input (<code>stdin</code>):</p>
+<pre class="language-json">
 [
   {
     "nav_path": ["blog"],
@@ -127,11 +146,10 @@ On Windows, you should make sure <code>.py</code> files are associated with Pyth
 </pre>
 <p>
 I reformatted it for better readability and shortened the excerpts. In reality it's sent as a single line with a newline character
-as an end of input marker, and the full text of excerpt is included. It's a list of index entries. If the date field is present,
-they are sorted by date. The default date format is <code>YYYY-MM-DD</code>.
+as an end of input marker, and the full text of excerpt is included.
 </p>
-<p>Now let's look at the script. It's written in <a href="https://python.org">Python</a>:</p>
-<pre>
+<p>This is how we could reimplement what my setup does using a <a href="https://python.org">Python</a> script:</p>
+<pre class="language-python">
 #!/usr/bin/env python3
 import sys
 import json
@@ -148,33 +166,30 @@ renderer = pystache.Renderer()
 
 input = sys.stdin.readline()
 index_entries = json.loads(input)
-index_entries.reverse()
 
 for entry in index_entries:
     print(renderer.render(template, entry))
 </pre>
 <p>
-Generating HTML from data is a task template processors really excel at, so I'm using a simple logicless template library,
-pystache (you can install it with <code>python3 -m pip install pystache</code>).
+How to make soupault run that script? Suppose you saved it to <code>scripts/index.py</code>. Then instead of the <code>index_item_template</code> option,
+you need to add <code>index_processor = "scripts/index.py"</code>.
 </p>
 <p>
-Index entries are sorted by date in the ascending order, which is bad for blogs that go from newest to oldest posts.
-That is why I have <code>index_entries.reverse()</code> there. In the next version, sort order will be a configurable option,
-but in 1.3.2 that's what we've got.
+On UNIX-like systems, don't forget to make it executable (<kbd>chmod +x scripts/index.py</kbd>).
+On Windows, you should make sure <code>.py</code> files are associated with Python and you also need to adjust the path (see below).
 </p>
-<p>
-It's only using the <code>title</code> and <code>url</code> fields since this blog has a single author so far.
-Rendered entries are printed to standard output, then soupault reads it, parses the HTML, and inserts it in the
-<code>&lt;div id="blog-index"&gt;</code> element.
-</p>
-<p>
-If you want a simple list of pages rather than a blog feed, the template can be even simpler. If you want something more
-flexible, there are also configurable date formats, custom fields, and an option to save generated index data to a file
-for later processing, but that's for another time.
-</p>
-<h2>A note for Windows users</h2>
+
+<h3>A note for Windows users</h3>
 <p>
 Soupault uses native file path syntax on every OS, so for you the script option will be <code>index_processor = 'scripts\index.py'</code>.
 Note the single quotes! Inside double quotes, the back slash is an escape character that can be used for inserting special characters inside your strings
 (like <code>"\n"</code>, the newline character). Inside single quotes it has no special meaning.
+</p>
+
+<h2>If that is not enough</h2>
+<p>
+This is a simple blog recipe that is easy to copy. However, there are more features that add flexibility. First, soupault is not limited
+to those built-in fields, you can define your own fields with their names and selectors, and they will be available to the built-in templates
+and external scripts alike. Second, it can dump the complete site index data to a JSON file that you can use to create taxonomies etc.
+That's for another time though.
 </p>

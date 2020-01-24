@@ -40,6 +40,76 @@ elements:
 
 <p>Download: <a href="/files/plugins/insert-if.lua">insert-if.lua</a>.</p>
 
+<h3>File inclusion</h3>
+<p>
+For those who miss <code>{% include "path/to/file" %}</code> directives from template processors.
+</p>
+<p>
+This plugin adds a fake HTML element <code>&lt;include&gt;path/to/file&lt;/include&gt;</code>.
+For example:
+</p>
+<pre>&lt;include&gt; includes/footer.html &lt;/include&gt;</pre>
+<p>
+When it encounters this element, it reads the <code>includes/footer.html</code> file and replaces the include element with its content.
+</p>
+<p>
+By default the file is parsed as HTML, but you can also include it as raw text with HTML special
+characters escaped, using <code>&lt;include raw="raw"&gt;...&lt;/include&gt;</code>.
+</p>
+<p>
+You can specify either an absolute or a relative path. If a relative path is given,
+it's relative to the current directory where you run soupault.
+</p>
+
+<p>Sample configuration:</p>
+<pre>
+[plugins.include-tag]
+  file = "plugins/include.lua"
+
+[widgets.process-include-tags]
+  widget = "include-tag"
+</pre>
+
+<p>Download: <a href="/files/plugins/include.lua">include.lua</a>.</p>
+
+<h2>Content</h2>
+
+<h3>Reading time</h3>
+<p>
+Calculates estimated reading time based on word count and inserts it into the page. Sample configuration
+that counts words inside a <code>&lt;div id="content"&gt;</code> and inserts the result in <code>&lt;span id="reading-time"&gt;</code>:
+</p>
+<pre>
+[plugins.reading-time]
+  file = "plugins/reading-time.lua"
+
+[widgets.insert-reading-time]
+  widget = "reading-time"
+  selector = "span#reading-time"
+  content_selector = "div#content"
+</pre>
+<p>Download: <a href="/files/plugins/reading-time.lua">reading-time.lua</a>.</p>
+
+<h3>Escape HTML special characters</h3>
+<p>
+Writing <em>about</em> HTML in HTML can be especially annoying since you have to replace all special characters (&lt;, &gt;, &amp;) with
+HTML entities. I always wished the <code>&lt;pre&gt;</code> tag content was treated as raw data, since we sadly gave up on XHTML anyway.
+With this plugin you can do it easily.
+</p>
+<p>
+It converts the content of an element to its HTML source. E.g. <code>&lt;pre&gt;&lt;p&gt;hello world&lt;/p&gt;&lt;/pre&gt;</code>
+to <code>&lt;pre&gt;&amp;lt;p&amp;gt;hello world&amp;lt;/p&amp;gt;&lt;/pre&gt;</code>.
+</p>
+<pre>
+[plugins.escape_html]
+  file = "plugins/escape-html.lua"
+
+[widgets.raw-html-in-pre]
+  widget = "escape_html"
+  selector = "pre"
+</pre>
+<p>Download: <a href="/files/plugins/escape-html.lua">escape-html.lua</a>.</p>
+
 <h2>Navigation</h2>
 <h3>Site URL</h3>
 <p>

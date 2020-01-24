@@ -12,7 +12,7 @@ matching that selector. If there's no element where it could insert its output, 
 In the functional programming jargon, widgets are &ldquo;lazily evaluated&rdquo;.
 </p>
 <p>For example, suppose you have this config for footnotes:</p>
-<pre>
+<pre class="language-toml">
 [widgets.footnotes]
   widget = "footnotes"
 
@@ -44,7 +44,7 @@ This is why soupault has options for explicitly limiting widgets to certain page
 file with site news in <code>templates/news.html</code> that you only want to include in the main page of your website (i.e. <code>site/index.html</code>.
 You can do it by adding a <code>page = "index.html"</code> option to the widget config:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.site-news]
   page = "index.html"
 
@@ -53,7 +53,7 @@ You can do it by adding a <code>page = "index.html"</code> option to the widget 
   selector = "body"
 </pre>
 <p>You can also specify more than one page there. For example, this is how you could apply a special CSS style to <code>cv.html</code> and <code>about.html</code>:</p>
-<pre>
+<pre class="language-toml">
 [widgets.special-style]
   page = ["cv.html", "about.html"]
 
@@ -66,7 +66,7 @@ You can do it by adding a <code>page = "index.html"</code> option to the widget 
 You can also apply a widget to all pages in one or more sections using the <code>section</code> option. This is how you can do something to all pages in
 <code>blog/</code>:
 </p>
-<pre>
+<pre class="language-toml">
 [widgets.some-widget]
   section = "blog/"
 
@@ -89,7 +89,7 @@ Each of those options has a negative counterpart that allows you to do something
 <code>exclude_page</code>, <code>exclude_section</code>, and <code>exclude_regex</code>.
 </p>
 <p>This is how you can set a style for every page <em>except</em> your main page:</p>
-<pre>
+<pre class="language-toml">
 [widgets.common-style]
   exclude_page = "index.html"
 

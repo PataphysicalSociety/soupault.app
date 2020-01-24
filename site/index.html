@@ -8,11 +8,17 @@ so it can manipulate pages in ways many other tools can't.
 <dd>All control flow is defined in a configuration file. The &ldquo;template&rdquo; (which is optional anyway) is just a page with some elements left empty.</dd>
 <dt><strong>It can automatically manipulate pages regardless of their layout</strong></dt>
 <dd>
-For example, insert a table of contents before the first <code>&lt;h1&gt;</code>, or into a <code>&lt;div id="toc"&gt;</code>. 
-Targets for HTML manipulation rules are specified with CSS selectors.
+Targets for HTML manipulation rules are specified with CSS selectors. This is how you can include a file into <code>&lt;div id="header"&gt;</code>:
+<pre class="language-toml">
+[widgets.insert-header]
+  widget = "include"
+  selector = "div#header"
+  file = "includes/header.html"
+</pre>
+this rule will work for every page that has a <code>&lt;div id="header"&gt;</code>, no matter where exactly is it in the page.
 </dd>
 <dt><strong>It can extract metadata from pages</strong></dt>
-<dd>There is no &ldquo;front matter&rdquo;. Instead, you tell soupault what to extract using CSS selectors again.</dd>
+<dd>There is no &ldquo;front matter&rdquo;. Instead, you tell soupault what to extract using CSS selectors again. </dd>
 </dl>
 <p>
 This makes soupault equally suitable for uniform Web 2.0 style websites and free-form Web 1.0 websites with lots of unique pages.
@@ -28,6 +34,16 @@ You can also use it to enhance an existing website, whether it's handwritten or 
   <li>Automatically call convertors from other formats (Markdown etc.) to HTML.</li>
   <li>Delete unwanted elements.</li>
 </ul>
+
+<p>Read a step by step tutorial to see what it's like:</p>
+<ul>
+  <li>If you already have a website: how to use soupault as an <a href="/getting-started-html-processor">HTML processor</a>.</li>
+  <li>If you are starting a new site: run <code>soupault --init</code> in an empty directory and read the generated <code>soupault.conf</code> file,
+      it's pretty detailed and well-commented.</li>
+</ul>
+<p>
+You can also browse the <a href="https://github.com/dmbaturin/soupault.neocities.org">source</a> of this website and play with it.
+</p>
 
 <h2>Static website generator</h2>
 <p>
@@ -82,16 +98,14 @@ Instead of inserting template tags like <code>{{content}}</code> in your page, y
 So, if you have ever written a CSS stylesheet or worked with functions like <code>$()</code> from jQuery or <code>Document.querySelector()</code> from vanilla JS,
 you already know the syntax.
 <p>
-It allows you to do things that are impossible with tools based on template processors. For example, you can insert the content of <code>header.html</code> before the first element
-in the page <code>&lt;body&gt;</code> and <code>footer.html</code> after the last element. Or insert the table of contents into a <code>&lt;div id="toc"&gt;</code>
-even if it's in a different place in every page. Or set the page title to the content of the first <code>&lt;h1&gt;</code> element.
-</p>
-<p>For example, this config snippet will insert the content of <code>includes/footer.html</code> inside the <code>&lt;div id="footer"&gt;</code> element of every page:</p>
+It allows you to do things that are impossible with tools based on template processors. 
+For example, this config snippet will insert a table of contents before the first <code>&lt;h1&gt;</code> element of the page:</p>
 <pre>
-[widgets.insert-footer]
-  widget = "include"
-  selector = "div#footer"
-  file = "includes/footer.html"
+[widgets.insert-toc]
+  widget = "toc"
+  selector = "h1"
+  min_level = 2
+  action = "insert_before"
 </pre>
 
 <h3>No forced Markdown</h3>
@@ -137,25 +151,28 @@ You can also define custom fields and export the entire site index to JSON for p
 <h2>Want to see it in action?</h2>
 <p>Here's a screencast of basic usage:</p>
 <div> <script id="asciicast-271350" src="https://asciinema.org/a/271350.js" async></script> <br /></div>
-<p>
-You can also download the <a href="https://github.com/dmbaturin/soupault.neocities.org">source</a> of this website and play with it.
-</p>
 
 <h2 id="downloads">Download and install</h2>
-<p>The installation procedure is simple: just unpack the archive and you are ready to go.</p>
+<p>The simplest way to start using soupault is to download a prebuilt executable. Just unpack the archive and you are ready to go.</p>
 <p>Downloads:</p>
 <dl>
-  <dt>Linux (x86-64, statically linked)</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.5/soupault-1.5-linux-x86_64.tar.gz">soupault-1.5-linux-x86_64.tar.gz</a></dd>
+  <dt>Linux (x86-64)<span class="footnote" id="linux-musl">Before you have a chance to interject for a moment,
+      I'll say that it's compiled statically with <a href="https://www.musl-libc.org/">musl</a>, so it will work on any Linux-based OS,
+      not just GNU/Linux.</span></dt>
+  <dd><a href="https://files.baturin.org/software/soupault/1.8.0/soupault-1.8.0-linux-x86_64.tar.gz">soupault-1.8.0-linux-x86_64.tar.gz</a></dd>
   <dt>Microsoft Windows (7 and newer, 32-bit)</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.5/soupault-1.5-win32.zip">soupault-1.5-win32.zip</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.8.0/soupault-1.8.0-win32.zip">soupault-1.8.0-win32.zip</a></dd>
   <dt>macOS</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.5/soupault-1.5-macos.tar.gz">soupault-1.5-macos.tar.gz</a></dd>
+  <dd><a href="https://files.baturin.org/software/soupault/1.8.0/soupault-1.8.0-macos.tar.gz">soupault-1.8.0-macos.tar.gz</a></dd>
 </dl>
 <p>
 Soupault is free software published under the <a href="https://mit-license.org/">MIT license</a>. You can build it from source for any
 platform supported by the <a href="https://ocaml.org">OCaml</a> programming language and contribute to it.
 The source code is available from <a href="https://github.com/dmbaturin/soupault">github.com/dmbaturin/soupault</a>.
+</p>
+<p>
+If you already have OCaml and <a href="https://opam.ocaml.org">opam</a> installed, you can also install from the opam repository:
+<code>opam install soupault</code>.
 </p>
 
 <h2>How to use it?</h2>

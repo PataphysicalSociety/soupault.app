@@ -22,7 +22,7 @@ problems like &ldquo;why my widget doesn't run on a page&rdquo;.
 Now there are separate <code>--verbose</code> and <code>--debug</code> options, that you can also make
 permanent by adding them to the <code>[settings]</code> section of your <code>soupault.conf</code>.
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   verbose = true
   debug = true
@@ -62,7 +62,7 @@ in a script, but it's an extra operation and everyone who wants a blog will want
 add <code>newest_entries_first = true</code> to the <code>[index]</code> section and get the entries in the natural order
 for a blog.
 </p>
-<pre>
+<pre class="language-toml">
 [index]
   newest_entries_first = true
 </pre>
@@ -75,7 +75,7 @@ meta tag in the best traditions of FrontPage. All options now come with comments
 <p>
 I hope it will give newcomers a better feel of what kind of things they can do with it. For the record, this is the new default config:
 </p>
-<pre>
+<pre class="language-toml">
 [settings]
   # Stop on page processing errors?
   strict = true

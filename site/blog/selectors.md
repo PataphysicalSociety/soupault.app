@@ -38,7 +38,7 @@ if a page is not a complete HTML document (i.e. doesn't have an `<html>` element
 
 That option defines where exactly in the template it will be inserted. By default it's appended to the document body element:
 
-```
+```toml
 [settings]
   content_selector = 'body'
 ```
@@ -61,7 +61,7 @@ One thing that doesn't work but I hope will work some day is comma-separated sel
 Some widgets allow lists of selectors to work around it. For example, this is how you can set the page title to the first `<h1>` if page has it,
 or to the `<h2>` if there's no `<h1>`:
 
-```
+```toml
 [widgets.set-title]
   widget = 'title'
   selector = ['h1', 'h2']
@@ -79,7 +79,7 @@ Many pages already have elements with `class` or `id` attributes used for CSS st
 The id selector will find any element with a certain id. For example, if you have a `<div id="footer">` in your page and want to insert a footer file in that div,
 you can do it like this:
 
-```
+```toml
 [widgets.footer]
   widget = 'include'
   selector = '#footer"
@@ -104,7 +104,7 @@ If you like that approach and want your footer to be inserted in the `<footer>` 
 
 The simplest possible selector is a tag name, like `selector = 'footer'`.
 
-```
+```toml
 [widgets.footer]
   widget = 'include'
   selector = 'footer"
@@ -114,7 +114,7 @@ The simplest possible selector is a tag name, like `selector = 'footer'`.
 If you are working with existing pages, you may find descendent and child selectors useful. This is how you can set the page title
 to the first `<h1>` found _inside_ a `<div id="content">`:
 
-```
+```toml
 [widget.set-title]
   widget = 'title'
   selector = 'div#content h1'
@@ -130,7 +130,7 @@ but never made it to the standard. However, when working with existing pages, it
 
 This is how you can append &ldquo;<a href="https://en.wikipedia.org/wiki/Carthago_delenda_est">Carthage must be destroyed</a>&rdquo; to any paragraph that mentions Carthage:
 
-```
+```toml
 [widgets.cato-the-elder]
   widget = "insert_html"
   selector = 'p:contains("Carthage")'
