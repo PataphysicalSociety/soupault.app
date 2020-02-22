@@ -67,6 +67,8 @@ a.footnote
 
 ul.toc { list-style: none; }
 
+h5 { font-size: 100%; }
+
 /** Typography */
 
 @supports (hyphens: auto) or (-ms-hyphens: auto)
@@ -119,12 +121,17 @@ code { background-color: #efefef; }
 
 
 /* Custom ToC style for the reference manual */
-div#refman { display: flex;  }
-div#refman-sidebar { align-self: flex-start; margin-right: 20px; min-width: 20em;}
-div#refman-main {  }
-
 div#refman-sidebar ul { list-style-type: none; }
 
 div#refman-sidebar ul.toc-3 { font-weight: normal; }
 div#refman-sidebar ul.toc-2 { font-weight: bold; color: black; }
+
+/* Reference manual ToC on the left for widescreen, desktop computers */
+@media only screen and (min-width: 1000px) and (pointer: fine)
+{
+  div#refman { display: flex;  }
+  div#refman-sidebar { align-self: flex-start; margin-right: 20px; min-width: 20em;}
+  div#refman-main {  }
+}
+
 

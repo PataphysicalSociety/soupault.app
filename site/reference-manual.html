@@ -1631,82 +1631,72 @@ so you need to compare explicitly.
 <p>
 Apart from the standard Lua 2.5 functions, soupault provides additional modules.</p>
 <h4>The HTML module</h4>
-<table>
-  <tr>
-    <th>Function</th>
-    <th>Example</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>HTML.parse(string)</code></td>
-    <td><code>h = HTML.parse("&lt;p&gt;hello world&lt;p&gt;")</code></td>
-    <td>Parses a string into an HTML element tree</td>
-  </tr>
-  <tr>
-    <td><code>HTML.create_element(tag, text)</code></td>
-    <td><code>h = HTML.create_element("p", "hello world")</code></td>
-    <td>Creates an HTML element node.</td>
-  </tr>
-  <tr>
-    <td><code>HTML.create_text(string)</code></td>
-    <td><code>h = HTML.create_text("hello world")</code></td>
-    <td>Creates a text node that can be inserted into the page just like element nodes. This function automatically escapes all HTML special characters inside the string.</td>
-  </tr>
-  <tr>
-    <td><code>HTML.inner_html(html)</code></td>
-    <td><code>h = HTML.inner_html(HTML.select(page, "body"))</code></td>
-    <td>Returns element content as a string.</td>
-  </tr>
-  <tr>
-    <td><code>HTML.strip_tags(html)</code></td>
-    <td><code>h = HTML.strip_tags(HTML.select(page, "body"))</code></td>
-    <td>Returns element content as a string, with all HTML tags removed.</td>
-  </tr>
-  <tr>
-    <td><code>HTML.select(html, selector)</code></td>
-    <td><code>links = HTML.select(page, "a")</code></td>
-    <td>Returns a list of elements matching specified selector</td>
-  </tr>
-  <tr>
-    <td><code>HTML.select_one(html, selector)</code></td>
-    <td><code>content_div = HTML.select(page, "div#content")</code></td>
-    <td>Returns	the first element matching specified selector, or <code>nil</code> if none are found.</td>
-  </tr>
-  <tr>
-    <td><code>HTML.get_attribute(html_element, attribute)</code></td>
-    <td><code>href = HTML.get_attribute(link, "href")</code></td>
-    <td>Returns the value of an element attribute, or nil if the attribute is absent. The first argument must be an element reference
-        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
-  </tr>
-  <tr>
-    <td><code>HTML.set_attribute(html_element, attribute)</code></td>
-    <td><code>HTML.set_attribute(content_div, "id", "content")</code></td>
-    <td>Sets an attribute value. The first argument must be an element reference
-        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
-  </tr>
-  <tr>
-    <td><code>HTML.add_class(html_element, class_name)</code></td>
-    <td><code>HTML.add_class(p, "centered")</code></td>
-    <td>Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
-        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
-  </tr>
-  <tr>
-    <td><code>HTML.remove_class(html_element, class_name)</code></td>
-    <td><code>HTML.remove_class(p, "centered")</code></td>
-    <td>Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
-        produced by <code>HTML.select/HTML.select_one/HTML.select_element</code></td>
-  </tr>
-  <tr>
-    <td><code>HTML.append_child(parent, child)</code></td>
-    <td><code>HTML.append_child(page, HTML.create_element("br"))</code></td>
-    <td>Appends a child element to the parent.</td>
-  </tr>
-  <tr>
-    <td><code>HTML.delete(html_element)</code></td>
-    <td><code>HTML.delete(HTML.select_one(page, "h1"))</code></td>
-    <td>Deletes an element from the page. The second argument must be an element reference returns by a select function.</td>
-  </tr>
-</table>
+<h5<code>HTML.parse(string)</code></h5>
+<p>Example: <code>h = HTML.parse("&lt;p&gt;hello world&lt;p&gt;")</code></p>
+<p>Parses a string into an HTML element tree</p>
+
+<h5><code>HTML.create_element(tag, text)</code></h5>
+<p>Example: <code>h = HTML.create_element("p", "hello world")</code></p>
+<p>Creates an HTML element node.</p>
+
+<h5><code>HTML.create_text(string)</code></h5>
+<p>Example: <code>h = HTML.create_text("hello world")</code></p>
+<p>
+Creates a text node that can be inserted into the page just like element nodes. This function automatically escapes all HTML special characters inside the string.
+</p>
+
+<h5><code>HTML.inner_html(html)</code></h5>
+<p>Example: <code>h = HTML.inner_html(HTML.select(page, "body"))</code></p>
+<p>Returns element content as a string.</p>
+
+<h5><code>HTML.strip_tags(html)</code></h5>
+<p>Example: <code>h = HTML.strip_tags(HTML.select(page, "body"))</code></p>
+<p>Returns element content as a string, with all HTML tags removed.</p>
+
+<h5><code>HTML.select(html, selector)</code></h5>
+<p>Example: <code>links = HTML.select(page, "a")</code></p>
+<p>Returns a list of elements matching specified selector</p>
+
+<h5><code>HTML.select_one(html, selector)</code></h5>
+<p><code>content_div = HTML.select(page, "div#content")</code></p>
+<p>Returns the first element matching specified selector, or <code>nil</code> if none are found.</p>
+
+<h5><code>HTML.get_attribute(html_element, attribute)</code></h5>
+<p>Example: <code>href = HTML.get_attribute(link, "href")</code></p>
+<p>
+Returns the value of an element attribute, or nil if the attribute is absent. The first argument must be an element reference
+produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
+</p>
+
+<h5><code>HTML.set_attribute(html_element, attribute)</code></h5>
+<p>Example: <code>HTML.set_attribute(content_div, "id", "content")</code></p>
+<p>
+Sets an attribute value. The first argument must be an element reference
+produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
+</p>
+
+<h5><code>HTML.add_class(html_element, class_name)</code></h5>
+<p>Example: <code>HTML.add_class(p, "centered")</code></p>
+<p>
+Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
+produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
+</p>
+
+<h5><code>HTML.remove_class(html_element, class_name)</code></h5>
+<p>Example: <code>HTML.remove_class(p, "centered")</code></p>
+<p>
+Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
+produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
+</p>
+
+<h5><code>HTML.append_child(parent, child)</code></h5>
+<p>Example: <code>HTML.append_child(page, HTML.create_element("br"))</code></p>
+<p>Appends a child element to the parent.</p>
+
+<h5><code>HTML.delete(html_element)</code></h5>
+<p>Example: <code>HTML.delete(HTML.select_one(page, "h1"))</code></p>
+<p>Deletes an element from the page. The second argument must be an element reference returns by a select function.</p>
+
 <p>
 Apart from <code>HTML.append_child</code>, there's a family of functions that insert an element at a different position in the tree:
 <code>HTML.prepend_child</code>, <code>HTML.insert_before</code>, <code>HTML.insert_after</code>, <code>HTML.replace_element</code>,
@@ -1717,104 +1707,64 @@ and <code>HTML.replace_content</code>.
 <p>
 Regular expressions used by this module are mostly Perl-compatible. Capturing groups and back references are not supported.
 </p>
-<table>
-  <tr>
-    <th>Function</th>
-    <th>Example</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>Regex.match(string, regex)</code></td>
-    <td><code>Regex.match("/foo/bar", "^/")</code></td>
-    <td>Checks if a string matches a regex.</td>
-  </tr>
-    <tr>
-    <td><code>Regex.find_all(string, regex)</code></td>
-    <td><code>matches = Regex.find_all("/foo/bar", "([a-z]+)")</code></td>
-    <td>Returns a list of substrings matching a regex.</td>
-  </tr>
-  <tr>
-    <td><code>Regex.replace(string, regex, string)</code></td>
-    <td><code>s = Regex.replace("/foo/bar", "^/", "")</code></td>
-    <td>Replaces the first occurence of a matching substring. It returns a new string and doesn't modify the argument.</td>
-  </tr>
-  <tr>
-    <td><code>Regex.replace_all(string, regex, string)</code></td>
-    <td><code>Regex.replace_all("/foo/bar", "/", "")</code></td>
-    <td>Replaces every matching substring. It returns a new string and doesn't modify the argument.</td>
-  </tr>
-  <tr>
-    <td><code>Regex.split(string, regex)</code></td>
-    <td><code>substrings = Regex.find_all("foo/bar", "/")</code></td>
-    <td>Splits a strings at a separator.</td>
-  </tr>
-</table>
+
+<h5><code>Regex.match(string, regex)</code></h5>
+<p>Example: <code>Regex.match("/foo/bar", "^/")</code></p>
+<p>Checks if a string matches a regex.</p>
+
+<h5><code>Regex.find_all(string, regex)</code></h5>
+<p>Example: <code>matches = Regex.find_all("/foo/bar", "([a-z]+)")</code></p>
+<p>Returns a list of substrings matching a regex.</p>
+
+<h5><code>Regex.replace(string, regex, string)</code></h5>
+<p>Example: <code>s = Regex.replace("/foo/bar", "^/", "")</code></p>
+<p>Replaces the first occurence of a matching substring. It returns a new string and doesn't modify the argument.</p>
+
+<h5><code>Regex.replace_all(string, regex, string)</code></h5>
+<p>Example: <code>Regex.replace_all("/foo/bar", "/", "")</code></p>
+<p>Replaces every matching substring. It returns a new string and doesn't modify the argument.</p>
+
+<h5><code>Regex.split(string, regex)</code></h5>
+<p>Example: <code>substrings = Regex.find_all("foo/bar", "/")</code></p>
+<p>Splits a strings at a separator.</p>
 
 <h4>The Plugin module</h4>
 <p>Provides functions for communicating with the plugin runner code.</p>
-<table>
-  <tr>
-    <th>Function</th>
-    <th>Example</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>Plugin.fail</code></td>
-    <td><code>Plugin.fail("Error occured")</code></td>
-    <td>Stops plugin execution immediately and signals an error. Errors raised this way are treated as widget processing errors by soupault, for the purpose of the <code>strict</code> option.</td>
-  </tr>
-  <tr>
-    <td><code>Plugin.exit</code></td>
-    <td><code>Plugin.exit("Nothing to do")</code>, <code>Plugin.exit()</code></td>
-    <td>Stops plugin execution immediately. The message is optional. This kind of termination is not considered an error by soupault.</td>
-  </tr>
-  <tr>
-    <td><code>Plugin.require_version</code></td>
-    <td><code>Plugin.require_version("1.8.0")</code></td>
-    <td>Stops plugin execution if soupault version is less than required version. You can give a full version like 1.8.0 or a short version like 1.8.
-    This function was introduced in 1.8, so plugins that use it will fail to work in 1.7 and below.
-    </td>
-  </tr>
-</table>
+
+<h5><code>Plugin.fail</code></h5>
+<p>Example: <code>Plugin.fail("Error occured")</code></p>
+<p>Stops plugin execution immediately and signals an error. Errors raised this way are treated as widget processing errors by soupault, for the purpose of the <code>strict</code> option.</p>
+
+<h5><code>Plugin.exit</code></h5>
+<p>Example: <code>Plugin.exit("Nothing to do")</code>, <code>Plugin.exit()</code></p>
+<p>Stops plugin execution immediately. The message is optional. This kind of termination is not considered an error by soupault.</p>
+
+<h5><code>Plugin.require_version</code></h5>
+<p>Example: <code>Plugin.require_version("1.8.0")</code></p>
+<p>
+Stops plugin execution if soupault version is less than required version. You can give a full version like 1.8.0 or a short version like 1.8.
+This function was introduced in 1.8, so plugins that use it will fail to work in 1.7 and below.
+</p>
 
 <h4>The Sys module</h4>
-<table>
-  <tr>
-    <th>Function</th>
-    <th>Example</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>Sys.read_file</code></td>
-    <td><code>Sys.read_file("site/index.html")</code></td>
-    <td>Reads a file into a string. The path is relative to the working directory.</td>
-  </tr>
-  <tr>
-    <td><code>Sys.random(max)</code></td>
-    <td><code>Sys.ranrom(1000)</code></td>
-    <td>Generates a random number from 0 to max.</td>
-  </tr>
-</table>
+
+<h5><code>Sys.read_file</code></h5>
+<p>Example: <code>Sys.read_file("site/index.html")</code></p>
+<p>Reads a file into a string. The path is relative to the working directory.</p>
+
+<h5><code>Sys.random(max)</code></h5>
+<p>Example: <code>Sys.ranrom(1000)</code></p>
+<p>Generates a random number from 0 to max.</p>
 
 <h4>The String module</h4>
-<table>
-  <tr>
-    <th>Function</th>
-    <th>Example</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td><code>String.trim</code></td>
-    <td><code>String.trim(" my string ")</code></td>
-    <td>Removed leading and trailing whitespace from a string.</td>
-  </tr>
-  <tr>
-    <td><code>String.slugify_ascii</code></td>
-    <td><code>String.slugify_ascii("My Heading")</code></td>
-    <td>Replaces all characters other than English letters and digits with hyphens, exactly like the <a href="#widgets-toc">ToC widget</a>.</td>
-  </tr>
-</table>
+
+<h5><code>String.trim</code></h5>
+<p>Example: <code>String.trim(" my string ") -- produces "my string"</code></p>
+<p>Removed leading and trailing whitespace from a string.</p>
+
+<h5><code>String.slugify_ascii</code></h5>
+<p>Example: <code>String.slugify_ascii("My Heading") -- produces "my-heading" </code></p>
+<p>Replaces all characters other than English letters and digits with hyphens, exactly like the <a href="#widgets-toc">ToC widget</a>.</p>
 
 </div>
-
 </div>
