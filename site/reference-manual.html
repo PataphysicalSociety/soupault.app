@@ -1563,10 +1563,9 @@ end
 
 links = HTML.select(page, "a")
 
--- That's Lua 2.5, hand-cranked iteration...
-index, link = next(links)
-
-while index do
+local index = 1
+while links[index] do
+  link = links[index]
   href = HTML.get_attribute(link, "href")
   if href then
     -- Check if URL schema is present
@@ -1577,7 +1576,7 @@ while index do
       HTML.set_attribute(link, "href", href)
     end
   end
-  index, link = next(links, index)
+  index = index + 1
 end
 </pre>
 <h3>Configuring plugins</h3>
@@ -1631,7 +1630,7 @@ so you need to compare explicitly.
 <p>
 Apart from the standard Lua 2.5 functions, soupault provides additional modules.</p>
 <h4>The HTML module</h4>
-<h5<code>HTML.parse(string)</code></h5>
+<h5><code>HTML.parse(string)</code></h5>
 <p>Example: <code>h = HTML.parse("&lt;p&gt;hello world&lt;p&gt;")</code></p>
 <p>Parses a string into an HTML element tree</p>
 

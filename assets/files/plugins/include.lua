@@ -24,7 +24,7 @@ index = 1
 function include_file(file_path, elem, raw)
   data = Sys.read_file(file_path)
   if not data then
-    Log.warning("No data, nothing to include")
+    Log.info(format("Could not get any data from file %s, nothing to include", file_path))
   else
     if raw then
       html = HTML.create_text(data)
@@ -35,14 +35,15 @@ function include_file(file_path, elem, raw)
   end
 end
 
-while (index <= count) do
+local index = 1
+while elements[index] do
   elem = elements[index]
   file_path = String.trim(HTML.inner_html(elem))
   raw = HTML.get_attribute(elem, "raw")
   if not file_path then
     Log.warning("Ignoring empty <include> element")
   else
-    Log.info("Inserting file " .. file_path)
+    Log.info(format("Inserting file %s", file_path))
     include_file(file_path, elem, raw)
   end
 

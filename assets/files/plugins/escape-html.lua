@@ -31,11 +31,8 @@ if not elements then
   Plugin.exit("No elements found, nothing to do")
 end
 
-count = size(elements)
-index = 1
-
-while (index <= count) do
-  Log.info("Iteraction started")
+local index = 1
+while elements[index] do
   escape_html(elements[index])
   index = index + 1
 end

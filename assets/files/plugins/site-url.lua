@@ -29,10 +29,9 @@ end
 
 links = HTML.select(page, "a")
 
--- That's Lua 2.5, hand-cranked iteration...
-index, link = next(links)
-
-while index do
+local index = 1
+while links[index] do
+  link = links[index]
   href = HTML.get_attribute(link, "href")
   if href then
     -- Check if URL schema is present
@@ -43,6 +42,6 @@ while index do
       HTML.set_attribute(link, "href", href)
     end
   end
-  index, link = next(links, index)
+  index = index + 1
 end
 

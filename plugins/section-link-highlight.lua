@@ -33,25 +33,33 @@ end
 
 links = HTML.select(menu, "a")
 
-index, link = next(links)
-while index do
-  href = strlower(HTML.get_attribute(link, "href"))
+local index = 1
+while links[index] do
+  link = links[index]
 
-  -- Remove leading and trailing slashes
-  href = Regex.replace_all(href, "(\\/?$|^\\/)", "")
-  page_url = Regex.replace_all(page_url, "(\\/?$|^\\/)", "")
+  href = HTML.get_attribute(link, "href")
 
-  -- Normalize slashes
-  href = Regex.replace_all(href, "\\/+", "\\/")
+  if not href then
+    -- Link has no href attribute, ignore
+  else
+    href = strlower(href)
 
-  -- Edge case: the / link that becomes "" after normalization
-  -- Anything would match the empty string and higlight all links,
-  -- so we handle this case explicitly
-  if ((page_url == "") and (href == ""))
-    or ((href ~= "") and Regex.match(page_url, "^" .. href))
-  then
-    HTML.add_class(link, active_link_class)
+    -- Remove leading and trailing slashes
+    href = Regex.replace_all(href, "(\\/?$|^\\/)", "")
+    page_url = Regex.replace_all(page_url, "(\\/?$|^\\/)", "")
+
+    -- Normalize slashes
+    href = Regex.replace_all(href, "\\/+", "\\/")
+
+    -- Edge case: the / link that becomes "" after normalization
+    -- Anything would match the empty string and higlight all links,
+    -- so we handle this case explicitly
+    if ((page_url == "") and (href == ""))
+      or ((href ~= "") and Regex.match(page_url, "^" .. href))
+    then
+      HTML.add_class(link, active_link_class)
+    end
   end
 
-  index, link = next(links, index)
+  index = index + 1
 end
