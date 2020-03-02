@@ -911,6 +911,19 @@ until widgets specified in the <code>extract_after_widgets</code> option have ru
 after metadata is extracted, you should specify all those widgets in its dependencies. There is no easier way to do that now.
 </p>
 
+<h3>Limiting index extraction to pages or sections</h3>
+<p>
+Since soupault 1.9, you can extract index data only from some pages/sections, or exclude specific pages/sections from indexing.
+The options are the same as for <a href="#limiting-widgets-to-pages-or-sections">widgets</a>.
+</p>
+
+<h3>Extracting the index without generating pages</h3>
+<p>
+Since 1.9, soupault supports <code>--index-only</code> option. In the index-only mode, it will extract the index data from pages
+and save it in JSON, but will not generate any pages. It will only run widgets that must run before index extraction.
+if you have <code>extract_after_widgets</code> option configured.
+</p>
+
 <h2>Widgets</h2>
 
 <p>
@@ -1240,6 +1253,8 @@ graph next to the source, and then highlight the source:
 <p>The result will look like this:</p>
 <img src="/images/graphviz_sample.png"></img>
 
+<p><strong>Note:</strong> this widget supports multiple selectors, e.g. <code>selector = ["pre", "code"]</code>.</p>
+
 <h4>Environment variables</h4>
 <p>
 External program executed by <code>exec</code> and <code>preprocess_element</code> widgets get
@@ -1430,7 +1445,7 @@ to <code>&lt;h6&gt;</code>.
   # Default is false
   use_heading_text = false
 </pre>
-<h5>Choosing the heading anchor options</h5>
+<h6>Choosing the heading anchor options</h6>
 <p>
 For the table of contents to work, every heading needs a unique <code>id</code>
 attribute that can be used as an anchor.
@@ -1660,6 +1675,40 @@ Creates a text node that can be inserted into the page just like element nodes. 
 <p><code>content_div = HTML.select(page, "div#content")</code></p>
 <p>Returns the first element matching specified selector, or <code>nil</code> if none are found.</p>
 
+<p>Returns element's parent.</p>
+<p>Example: if there's an element that has a <code>&lt;blink&gt;</code> in it, insert a warning just before that element.</p>
+<pre class="language-lua">
+blink_elem = HTML.select_one(page, "blink")
+if elem then
+  parent = HTML.parent(blink_elem)
+  warning = HTML.create_element("p", "Warning: blink element ahead!")
+  HTML.insert_before(parent, warning)
+end
+</pre>
+
+<h5>Access to surrounding elements</h5>
+<p>
+This family of functions provides access to element's neighboring elements in the tree.
+They all return a (possibly empty) list.
+</p>
+<ul>
+  <li><code>HTML.children</code></li>
+  <li><code>HTML.ancestors</code></li>
+  <li><code>HTML.descendants</code></li>
+  <li><code>HTML.siblings</code></li>
+</ul>
+<p>Example: add <code>class="silly-class"</code> to every element inside the page <code>&lt;body&gt;</code>.</p>
+<pre class="language-lua">
+body = HTML.select_one(page, "body")
+children = HTML.children(body)
+
+local i = 1
+while children[i] do
+  HTML.add_class(children[i], "silly-class")
+  i = i + 1
+end
+</pre>
+
 <h5><code>HTML.get_attribute(html_element, attribute)</code></h5>
 <p>Example: <code>href = HTML.get_attribute(link, "href")</code></p>
 <p>
@@ -1688,19 +1737,42 @@ Adds a <code>class="class_name"</code> attribute. The first argument must be an 
 produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
 </p>
 
+<h5><code>HTML.set_tag_name(html_element)</code></h5>
+<p>Changes the tag name of an element.</p>
+<p>Example: &rdquo;modernize&rdquo; <code>&lt;blink&gt;</code> elements by converting them to <code>&lt;span class="blink"&gt;</code>.</p>
+<pre class="language-lua">
+blinks = HTML.select(page, "blink")
+
+local i = 1
+while blinks[i] do
+  elem = blinks[i]
+  HTML.set_tag_name(elem, "span")
+  HTML.add_class(elem, "blink")
+
+  i = i + 1
+end
+</pre>
+
 <h5><code>HTML.append_child(parent, child)</code></h5>
 <p>Example: <code>HTML.append_child(page, HTML.create_element("br"))</code></p>
 <p>Appends a child element to the parent.</p>
-
-<h5><code>HTML.delete(html_element)</code></h5>
-<p>Example: <code>HTML.delete(HTML.select_one(page, "h1"))</code></p>
-<p>Deletes an element from the page. The second argument must be an element reference returns by a select function.</p>
 
 <p>
 Apart from <code>HTML.append_child</code>, there's a family of functions that insert an element at a different position in the tree:
 <code>HTML.prepend_child</code>, <code>HTML.insert_before</code>, <code>HTML.insert_after</code>, <code>HTML.replace_element</code>,
 and <code>HTML.replace_content</code>.
 </p>
+
+<h5><code>HTML.delete(html_element)</code></h5>
+<p>Example: <code>HTML.delete(HTML.select_one(page, "h1"))</code></p>
+<p>Deletes an element from the page. The argument must be an element reference returned by a select function.</p>
+
+<h5><code>HTML.delete_content(html_element)</code></h5>
+<p>Deletes all children of an element (but leaves the element itself in place).</p>
+
+<h5><code>HTML.clone_content(html_element)</code></h5>
+<p>Creates a new element tree from the content of an element.</p>
+<p>Useful for duplicating an element elsewhere in the page.</p>
 
 <h4>The Regex module</h4>
 <p>
@@ -1741,7 +1813,7 @@ Regular expressions used by this module are mostly Perl-compatible. Capturing gr
 <h5><code>Plugin.require_version</code></h5>
 <p>Example: <code>Plugin.require_version("1.8.0")</code></p>
 <p>
-Stops plugin execution if soupault version is less than required version. You can give a full version like 1.8.0 or a short version like 1.8.
+Stops plugin execution if soupault version is less than required version. You can give a full version like 1.9.0 or a short version like 1.9.
 This function was introduced in 1.8, so plugins that use it will fail to work in 1.7 and below.
 </p>
 
@@ -1750,6 +1822,36 @@ This function was introduced in 1.8, so plugins that use it will fail to work in
 <h5><code>Sys.read_file</code></h5>
 <p>Example: <code>Sys.read_file("site/index.html")</code></p>
 <p>Reads a file into a string. The path is relative to the working directory.</p>
+
+<h5><code>Sys.run_program(command)</code></h5>
+<p>Executes given command in the system shell (<code>/bin/sh</code> on UNIX, <code>cmd.exe</code> on Windows).</p>
+<p>The output of the command is ignored. If command fails, its stderr is logged.</p>
+<p>Example: creating a silly file in the directory where generated page will be stored.</p>
+<pre class="language-lua">
+res = Sys.run_program(format("echo \"Kilroy was here\" > %s/graffiti", target_dir))
+if not res then
+  Log.warning("Damn, busted")
+end
+</pre>
+<p>
+The intended use case for it is creating and processing assets, e.g. converting images to different formats.
+</p>
+
+<h5><code>Sys.get_program_output(command)</code></h5>
+<p>Executes a command in the system shell and returns its output.</p>
+<p>
+If the command fails, it returns <code>nil</code>. The stderr is shown in the execution log,
+but there's no way a plugin can access its stderr or the exit code.
+</p>
+<p>Example: getting the last mofidication date of a page from git.</p>
+<pre class="language-lua">
+git_command = "git log -n 1 --pretty=format:%ad --date=format:%Y-%m-%d -- " .. page_file
+timestamp = Sys.get_program_output(git_command)
+
+if not timestamp then
+  timestamp = "1970-01-01"
+end
+</pre>
 
 <h5><code>Sys.random(max)</code></h5>
 <p>Example: <code>Sys.ranrom(1000)</code></p>
@@ -1764,6 +1866,10 @@ This function was introduced in 1.8, so plugins that use it will fail to work in
 <h5><code>String.slugify_ascii</code></h5>
 <p>Example: <code>String.slugify_ascii("My Heading") -- produces "my-heading" </code></p>
 <p>Replaces all characters other than English letters and digits with hyphens, exactly like the <a href="#widgets-toc">ToC widget</a>.</p>
+
+<h5><code>String.truncate(string, length)</code></h5>
+<p>Truncates a string to given length.</p>
+<p>Example: <code>String.truncate("foobar", 3) -- "foo"</code>.</p>
 
 </div>
 </div>
