@@ -558,6 +558,11 @@ the <code>soupault.conf</code> file. This is <code>[settings]</code> section of 
   # When false: site/about.html -> build/about.html
   # When true: site/about.html -> build/about/index.html
   clean_urls = true
+
+  # Since 1.10, soupault has plugin auto-discovery
+  # A file like plugins/my-plugin.lua will be registered as a widget named my-plugin
+  plugin_discovery = true
+  plugin_dirs = ["plugins"]
 </pre>
 
 <p>
@@ -756,6 +761,8 @@ It's a list of objects with following fields:
   it will be <code>["pictures", "cats"]</code>.</dd>
   <dt><code>title, date, excerpt, author</code><dt>
   <dd>Metadata extracted from the page. Any of them can be <code>null</code>.</dd>
+  <dt><code>page_file</dt>
+  <dd>Original page file path.</dd>
 </dl>
 <p>
 Here's an example of very simple indexing setup that will take the first <code>h1</code>
@@ -1559,10 +1566,71 @@ Since version 1.2, soupault can be extended with Lua plugins. Currently there ar
 <p>
 Plugins are treated like widgets and are configured the same way.
 </p>
+<p>You can find ready to use plugins in the <a href="/plugins">Plugins</a> section on this site.</p>
+
+<h3>Installing plugins</h3>
+<h4>Plugin discovery</h4>
+<p>
+By default, soupault looks for plugins in the <code>plugins/</code> directory.
+Suppose you want to use the <a href="/plugins/#site-url">Site URL</a> plugin.
+To use that plugin, save it to <code>plugins/site-url.lua</code>. Then a widget named <code>site-url</code>
+will automatically become available and you can use it like this.
+The <code>site_url</code> option from the widget config
+will be accessible to the plugin as <code>config["site_url"]</code>.
+</p>
+<pre class="language-toml">
+[widgets.absolute-urls]
+  widget = "site-url"
+  site_url = "https://www.example.com"
+</pre>
+<p>
+You can specify multiple plugin directories using the <code>plugin_dirs</code> option under <code>[settings]</code>:
+</p>
+<pre class="language-toml">
+[settings]
+  plugin_dirs = ["plugins", "/usr/share/soupault/plugins"]
+</pre>
+<p>
+If a file with the same name is found in multiple directories, soupault will use the file from the first
+directory in the list.
+</p>
+<p>
+You can also disable plugin discovery with:
+</p>
+<pre class="language-toml">
+[settings]
+  plugin_discovery = false
+</pre>
+<h4>Explicit plugin loading</h4>
+<p>
+You can also load plugins explicitly. This can be useful if you want to:
+</p>
+<ul>
+  <li>load a plugin from an unusual directory</li>
+  <li>use a widget name not based on the plugin file name</li>
+  <li>override a built-in widget with a plugin</li>
+</ul>
+<p>Suppose you want to associate the <code>site-url.lua</code> plugin with <code>absolute-links</code> widget name. Add this snippet to <code>soupault.conf</code>:</p>
+<pre class="language-toml">
+[plugins.absolute-links]
+  file = "plugins/site-url.lua"
+</pre>
+<p>It will register the plugin as a widget named <code>absolute-links</code>.</p>
+<p>
+Then you can use it like any other widget. Plugin subtable name becomes the name of the widget,
+in our case <code>absolute-links</code>.
+</p>
+<pre class="language-toml">
+[widgets.make-urls-absolute]
+  widget = "absolute-links"
+  site_url = "https://www.example.com"
+</pre>
+
+<p>If you want to write your own plugins, read on.</p>
 
 <h3>Plugin example</h3>
 <p>
-Here is an example of a plugin that converts relative links to absolute URLs by prepending a site URL to them:
+Here's the source of that Site URL plugin that converts relative links to absolute URLs by prepending a site URL to them:
 </p>
 
 <pre class="language-lua">
@@ -1578,6 +1646,7 @@ end
 
 links = HTML.select(page, "a")
 
+-- Lua array indices start from 1
 local index = 1
 while links[index] do
   link = links[index]
@@ -1594,27 +1663,14 @@ while links[index] do
   index = index + 1
 end
 </pre>
-<h3>Configuring plugins</h3>
-<p>
-Plugin files can be placed in any directory. By convention, we'll use <code>plugins/</code>.
-So, to use that plugin, first save it to <code>plugins/site-url.lua</code>
-</p>
-<p>Then you need to configure soupault to load the plugin. Add this snippet to <code>soupault.conf</code>:</p>
-<pre class="language-toml">
-[plugins.site-url]
-  file = "plugins/site-url.lua"
-</pre>
-<p>It will register the plugin as a widget named <code>site-url</code>.</p>
-<p>
-Then you can use it like any other widget. Plugin subtable name becomes the name of the widget,
-in our case <code>site-url</code>. The <code>site_url</code> option from the widget config
-will be accessible to the plugin as <code>config["site_url"]</code>.
-</p>
-<pre class="language-toml">
-[widgets.absolute-urls]
-  widget = "site-url"
-  site_url = "https://www.example.com"
-</pre>
+
+<p>In short:</p>
+<ul>
+  <li>Widget options can be retrieved from the <code>config</code> hash table.</li>
+  <li>The element tree of the page is in the <code>page</code> variable. You can think of it as an equivalent of <code>document</code> in JavaScript.</li>
+  <li><code>HTML.select()</code> function is like <code>document.querySelectorAll</code> in JS.</li>
+  <li>The <code>HTML</code> module provides an API <em>somewhat</em> similar to DOM API in browsers, though it's procedural rather than object-oriented.</li>
+</ul>
 
 <h3>Plugin environment</h3>
 <p>Plugins have access to the following global variables:</p>
@@ -1669,11 +1725,19 @@ Creates a text node that can be inserted into the page just like element nodes. 
 
 <h5><code>HTML.select(html, selector)</code></h5>
 <p>Example: <code>links = HTML.select(page, "a")</code></p>
-<p>Returns a list of elements matching specified selector</p>
+<p>Returns a list of elements matching specified selector.</p>
 
 <h5><code>HTML.select_one(html, selector)</code></h5>
 <p><code>content_div = HTML.select(page, "div#content")</code></p>
 <p>Returns the first element matching specified selector, or <code>nil</code> if none are found.</p>
+
+<h5><code>HTML.select_any_of(html, selectors)</code></h5>
+<p>Example: <code>link_or_pic = HTML.select_any_of(page, {"a", "img"})</code></p>
+<p>Returns the first element matching any of specified selectors.</p>
+
+<h5><code>HTML.select_all_of(html, selectors)</code></h5>
+<p>Example: <code>links_and_pics = HTML.select_all_of(page, {"a", "img"})</code></p>
+<p>Returns all elements matching any of specified selectors.</p>
 
 <p>Returns element's parent.</p>
 <p>Example: if there's an element that has a <code>&lt;blink&gt;</code> in it, insert a warning just before that element.</p>
@@ -1712,8 +1776,15 @@ end
 <h5><code>HTML.get_attribute(html_element, attribute)</code></h5>
 <p>Example: <code>href = HTML.get_attribute(link, "href")</code></p>
 <p>
-Returns the value of an element attribute, or nil if the attribute is absent. The first argument must be an element reference
+Returns the value of an element attribute. The first argument must be an element reference
 produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
+</p>
+<p>
+If the attribute is missing, it returns <code>nil</code>. If the attribute is present but
+its value is empty (like in <code>&lt;elem attr=""&gt;</code> or <code>&lt;elem attr&gt;</code>),
+it returns an empty string. In Lua, both empty string and <code>nil</code> are false for the purpose of <code>if value then ... end</code>,
+so if you want to check for <em>presence</em> of an attribute regardless of its value, you should
+explicitly check for <code>nil</code>.
 </p>
 
 <h5><code>HTML.set_attribute(html_element, attribute)</code></h5>
@@ -1736,6 +1807,10 @@ produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
 Adds a <code>class="class_name"</code> attribute. The first argument must be an element reference
 produced by <code>HTML.select/HTML.select_one/HTML.select_element</code>
 </p>
+
+<h5><code>HTML.get_tag_name(html_element)</code></h5>
+<p>Returns the tag name of an element.</p>
+<p>Example: <code>link_or_pic = HTML.select_any_of(page, {"a", "img"}); tag_name = HTML.get_tag_name(link_of_pic)</code> </p>
 
 <h5><code>HTML.set_tag_name(html_element)</code></h5>
 <p>Changes the tag name of an element.</p>
@@ -1773,6 +1848,16 @@ and <code>HTML.replace_content</code>.
 <h5><code>HTML.clone_content(html_element)</code></h5>
 <p>Creates a new element tree from the content of an element.</p>
 <p>Useful for duplicating an element elsewhere in the page.</p>
+
+<h5>Behaviour</h5>
+<p>
+If an element tree access function cannot find any elements (e.g. there are no elements that match a selector),
+it returns <code>nil</code>.
+</p>
+<p>
+If a function that expects an HTML element receives <code>nil</code>, it immediately returns <code>nil</code>,
+so you don't need to check for <code>nil</code> at every step and can safely chain calls to those functions.
+</p>
 
 <h4>The Regex module</h4>
 <p>
@@ -1856,6 +1941,12 @@ end
 <h5><code>Sys.random(max)</code></h5>
 <p>Example: <code>Sys.ranrom(1000)</code></p>
 <p>Generates a random number from 0 to max.</p>
+
+<h5><code>Sys.is_unix ()</code></h5>
+<p>Returns true on UNIX-like systems (Linux, Mac OS, BSDs), false otherwise.</p>
+
+<h5><code>Sys.is_windows ()</code></h5>
+<p>Returns true on Microsoft Windows, false otherwise.</p>
 
 <h4>The String module</h4>
 
