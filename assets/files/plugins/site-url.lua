@@ -27,21 +27,35 @@ if not Regex.match(site_url, "(.*)/$") then
   site_url = site_url .. "/"
 end
 
-links = HTML.select(page, "a")
+function make_absolute(elem_name, attr)
+  elems = HTML.select(page, elem_name)
 
-local index = 1
-while links[index] do
-  link = links[index]
-  href = HTML.get_attribute(link, "href")
-  if href then
-    -- Check if URL schema is present
-    if not Regex.match(href, "^([a-zA-Z0-9]+):") then
-      -- Remove leading slashes
-      href = Regex.replace(href, "^/*", "")
-      href = site_url .. href
-      HTML.set_attribute(link, "href", href)
+  local index = 1
+  while elems[index] do
+    elem = elems[index]
+    target = HTML.get_attribute(elem, attr)
+    if target then
+      -- Check if URL schema is present
+      if not Regex.match(target, "^([a-zA-Z0-9]+):") then
+        -- If not, check if it starts with a /
+        -- Truly relative URLs like "about.html" or "../" should be left alone.
+        if Regex.match(target, "^/(.*)") then
+          -- Remove leading slashes
+          target = Regex.replace(target, "^/*", "")
+          target = site_url .. target
+          HTML.set_attribute(elem, attr, target)
+        end
+      end
     end
+    index = index + 1
   end
-  index = index + 1
 end
 
+make_absolute("a", "href")
+make_absolute("link", "href")
+make_absolute("img", "src")
+make_absolute("script", "src")
+make_absolute("audio", "src")
+make_absolute("video", "src")
+make_absolute("embed", "src")
+make_absolute("object", "data")
