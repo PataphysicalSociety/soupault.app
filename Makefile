@@ -11,8 +11,12 @@ site:
 assets:
 	cp -r assets/* $(BUILD_DIR)/
 
+.PHONY: feed
+feed: site
+	scripts/json2feed.py > $(BUILD_DIR)/atom.xml
+
 .PHONY: all
-all: site assets
+all: site assets feed
 
 .PHONY: clean
 clean:

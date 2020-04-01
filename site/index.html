@@ -89,12 +89,21 @@ or check out websites of other <a href="/users">soupault users</a>.
   <dt>Linux (x86-64)<span class="footnote" id="linux-musl">Before you have a chance to interject for a moment,
       I'll say that it's compiled statically with <a href="https://www.musl-libc.org/">musl</a>, so it will work on any Linux-based OS,
       not just GNU/Linux.</span></dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.10.0/soupault-1.10.0-linux-x86_64.tar.gz">soupault-1.10.0-linux-x86_64.tar.gz</a></dd>
+  <dd><soupault-release platform="linux-x86_64">1.10.0</soupault-release>
   <dt>Microsoft Windows (7 and newer, 32-bit)</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.10.0/soupault-1.10.0-win32.zip">soupault-1.10.0-win32.zip</a></dd>
+  <dd><soupault-release platform="win32">1.10.0</soupault-release></dd>
   <dt>macOS</dt>
-  <dd><a href="https://files.baturin.org/software/soupault/1.10.0/soupault-1.10.0-macos.tar.gz">soupault-1.10.0-macos.tar.gz</a></dd>
+  <dd><soupault-release platform="macos">1.10.0</soupault-release></dd>
 </dl>
+<p>You can verify digital signature using this public key: <code>RWRfW+gkhk/+iA7dOUtTio6G6KeJCiAEp4Zfozw7eqv2shN90+5z20Cy</code></p>
+<p>
+Soupault uses <a href="https://jedisct1.github.io/minisign/">minisign</a> for release signing. To learn about its advantages
+over GPG, read <a href="https://www.openbsd.org/papers/bsdcan-signify.html">signify: Securing OpenBSD From Us To You</a>.
+One obvious advantage is that you don't need to import the key anywhere, you can pass it as a command line argument:
+</p>
+<pre>
+minisign -Vm soupault-1.10.0-win32.zip -P RWRfW+gkhk/+iA7dOUtTio6G6KeJCiAEp4Zfozw7eqv2shN90+5z20Cy
+</pre>
 <p>
 Soupault is free software published under the <a href="https://mit-license.org/">MIT license</a>. You can build it from source for any
 platform supported by the <a href="https://ocaml.org">OCaml</a> programming language and contribute to it.
@@ -128,6 +137,7 @@ at a random word and landed on &ldquo;dada (n.), a colloquial for a stick horse&
 <img src="/images/powered_by_soupault_88x31.png" />
 <img src="/images/soupault_logo.svg" width="128" height="128"/>
 <img src="/images/powered_by_soupault_88x31_alt.png" />
+<img src="/images/soupault_logo_3.svg" width="128" height="128"/>
 
 <p>If you are using soupault for your site or want to raise awareness of it, feel free to put a button there.</p>
 

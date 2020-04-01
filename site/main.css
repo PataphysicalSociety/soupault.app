@@ -48,6 +48,8 @@ a { color: #d65906; }
 
 a.nav-active { font-weight: bold; }
 
+div#nav-menu a { text-decoration: none; }
+
 a.here { text-decoration: none; }
 
 hr
