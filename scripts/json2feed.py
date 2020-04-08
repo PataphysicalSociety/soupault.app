@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import json
 import datetime
 import dateutil.tz
@@ -18,7 +19,7 @@ feed_subtitle = "Static website generator and HTML processor"
 feed_logo = "https://soupault.neocities.org/images/soupault_stick_horse.png"
 feed_language = "en"
 feed_author = "Daniil Baturin"
-feed_author_email = "daniil+soupault@neocities.org"
+feed_author_email = "daniil+soupault@baturin.org"
 
 def get_date(ds):
     try:
@@ -37,7 +38,7 @@ fg.author( {'name': feed_author, 'email': feed_author_email} )
 fg.logo(feed_logo)
 fg.language(feed_language)
 
-index_file = 'index.json'
+index_file = sys.argv[1]
 
 with open(index_file, 'r') as f:
     entries = json.load(f)

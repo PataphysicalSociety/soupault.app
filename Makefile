@@ -6,6 +6,7 @@ SOUPAULT := soupault
 .PHONY: site
 site:
 	$(SOUPAULT)
+	scripts/json2feed.py index.json > $(BUILD_DIR)/atom.xml
 
 .PHONY: assets
 assets:
