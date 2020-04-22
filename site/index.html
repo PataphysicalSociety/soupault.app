@@ -12,7 +12,7 @@ of editing it. It can insert files, HTML snippets, and output of external progra
 of contents and footnotes, and more. It can also delete elements from pages.
 </p>
 <p>
-For example, suppose you want to add a link to a stylesheet to the <code>&lt;head&gt;</code> of every page,
+Suppose you want to add stylesheet link to the <code>&lt;head&gt;</code> of every page,
 before all other elements. You can tell soupault to do exactly that:</p>
 <pre class="language-toml">
 [widgets.css-reset]
@@ -23,7 +23,7 @@ before all other elements. You can tell soupault to do exactly that:</p>
 </pre>
 
 <h2>Friendly to existing sites and unique pages</h2>
-<p>One of goals of soupault is to make working with freeform Web 1.0 and uniform Web 2.0 style websites equally easy.</p>
+<p>One of the goals of soupault is to make working with freeform Web 1.0 and uniform Web 2.0 style websites equally easy.</p>
 <p>
 Classic website generators like Jekyll or Hugo assume all pages are built from a template, and pages with unique layout can only be included as static assets.
 Soupault works with the element tree of the page rather than text, so it can automatically manipulate pages regardless of their exact layout—you write manipulation rules using CSS selectors.

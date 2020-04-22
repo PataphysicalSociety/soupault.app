@@ -22,6 +22,7 @@ table
 body
 {
     margin: 0;
+    line-height: 1.4;
 }
 
 /** Structural blocks */
@@ -38,17 +39,36 @@ body
 }
 
 /* Visual styles */
-#logo { font-variant-caps: small-caps; font-size: 200%; font-weight: bold; margin-bottom: 10px; }
+header 
+{
+    text-align: center;
+}
 
-#nav-menu { font-size: 110%; }
+nav
+{
+    font-size: 110%;
 
-#footer { text-align: center; }
+    border-bottom: 2px solid #c90309;
+
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    text-align: center;
+}
+
+footer
+{
+    text-align: center;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 2px solid #c90309;
+}
 
 a { color: #d65906; }
 
-a.nav-active { font-weight: bold; }
+a.nav-active { color: #c90309; font-weight: bold; }
 
-div#nav-menu a { text-decoration: none; }
+nav a { text-decoration: none; }
 
 a.here { text-decoration: none; }
 
@@ -75,7 +95,7 @@ h5 { font-size: 100%; }
 
 @supports (hyphens: auto) or (-ms-hyphens: auto)
 {
-    #content
+    main
     {
         text-align: justify;
         hyphens: auto;
@@ -127,6 +147,7 @@ div#refman-sidebar ul { list-style-type: none; }
 
 div#refman-sidebar ul.toc-3 { font-weight: normal; }
 div#refman-sidebar ul.toc-2 { font-weight: bold; color: black; }
+div#refman-sidebar a { text-decoration: none; }
 
 /* Reference manual ToC on the left for widescreen, desktop computers */
 @media only screen and (min-width: 1000px) and (pointer: fine)
