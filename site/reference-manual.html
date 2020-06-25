@@ -1768,10 +1768,33 @@ children = HTML.children(body)
 
 local i = 1
 while children[i] do
-  HTML.add_class(children[i], "silly-class")
+  if HTML.is_element(children[i]) then
+    HTML.add_class(children[i], "silly-class")
+  end
   i = i + 1
 end
 </pre>
+
+<h5><code>HTML.is_element</code></h5>
+<p>
+Web browsers provide a narrower API than general purpose HTML parsers. In the JavaScript DOM API, <code>element.children</code>
+provides access to all <em>child elements</em> of an element.
+</p>
+<p>
+However, in the HTML parse tree, the picture is more complex. Text nodes are also child nodes—browsers just filter those out
+because JavaScript code rarely has a need to do anything with text nodes.
+</p>
+<p>
+Consider this HTML: <code>&lt;p&gt;This is a &lt;em&gt;great&lt;/em&gt; paragraph&lt;/p&gt;</code>. How many children does
+the <code>&lt;p&gt;</code> element have? In fact, <em>three</em>: <code>text("This is a "), element("em", "great"), text(" paragraph")</code>.
+</p>
+<p>
+The goal of soupault is to allow modifying HTML pages in any imagineable ways, so it cannot ignore this complexity. Many operations like
+<code>HTML.add_class</code> still make no sense for text nodes, so there has to be a way to check if something is an element or not.
+</p>
+<p>
+That's where <code>HTML.is_element</code> comes in handy.
+</p>
 
 <h5><code>HTML.get_attribute(html_element, attribute)</code></h5>
 <p>Example: <code>href = HTML.get_attribute(link, "href")</code></p>
