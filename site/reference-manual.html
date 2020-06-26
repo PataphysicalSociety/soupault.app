@@ -1058,7 +1058,7 @@ It's also possible to explicitly exclude pages or sections.
 <pre class="language-toml">
 [widgets.toc]
   # Don't add a TOC to the main page
-  exlude_page = "index.html"
+  exclude_page = "index.html"
   ...
 
 [widgets.evil-analytics]
@@ -1085,9 +1085,8 @@ may solve your problem. They take a Perl-compatible regular expression (not a gl
 
 <h3>Widget processing order</h3>
 <p>
-If in your <code>soupault.conf</code> one config for widget A is before widget B,
-it doesn't guarantee that widget A will be processed first. By default, soupault
-assumes that widgets are independent and can be processed in arbitrary order.
+The order of widgets in your config file doesn't determine their processing order.
+By default, soupault assumes that widgets are independent and can be processed in arbitrary order.
 In future versions they may even be processed in parallel, who knows.
 </p>
 <p>
@@ -1143,7 +1142,7 @@ Soupault will only process that widget if you run <code>soupault --profile live<
 
 <h2>Built-in widgets</h2>
 <h3>File and output inclusion</h3>
-<p>These widgets include something into your page: a file, a snippet, or putput of an external program.</p>
+<p>These widgets include something into your page: a file, a snippet, or output of an external program.</p>
 <h4 id="widgets-include">include</h4>
 <p>
 The <code>include</code> widget simply reads a file and inserts its content
@@ -1222,12 +1221,12 @@ to automatically add line numbers:
 </pre>
 <p>
 You can pass element metadata to the program for better control. The tag name is passed in the <code>TAG_NAME</code>
-environment variables, and all attributes are passed in environment variables prefixed with <code>ATTR</code>:
+environment variable, and all attributes are passed in environment variables prefixed with <code>ATTR</code>:
 <code>ATTR_ID</code>, <code>ATTR_CLASS</code>, <code>ATTR_SRC</code>...
 </p>
 <p>
-For example, <a href="http://www.andre-simon.de/">highlight</a>, a popular syntax highliting tool,
-accepts the language in an option like <code>--syntax=python</code>. If your elements that contain
+For example, <a href="http://www.andre-simon.de/">highlight</a>, a popular syntax highlighting tool,
+has a language syntax option, e.g. <code>--syntax=python</code>. If your elements that contain
 source code samples have language specified in a class (like <code>&lt;pre class="language-python"&gt;</code>),
 you can extract the language from the <code>ATTR_CLASS</code> variable like this:
 </p>
@@ -1264,7 +1263,7 @@ graph next to the source, and then highlight the source:
 
 <h4>Environment variables</h4>
 <p>
-External program executed by <code>exec</code> and <code>preprocess_element</code> widgets get
+External programs executed by <code>exec</code> and <code>preprocess_element</code> widgets get
 a few useful environment variables:
 </p>
 <dl>
@@ -1298,7 +1297,7 @@ for example, you can use it to fetch the page author and modification date
 from a revision control system like git or mercurial.
 </p>
 <p>
-The <code>TARGET_DIR</code> variables is useful for scripts that modify or create page assets.
+The <code>TARGET_DIR</code> variable is useful for scripts that modify or create page assets.
 For example, this snippet will create PNG images from <a href="https://graphviz.org">Graphviz</a> graphs
 inside <code>&lt;pre class="graphviz-png"&gt;</code> elements and replace those pre's with relative
 links to images.
@@ -1533,7 +1532,7 @@ to themselves.
 
 <h4>delete_element</h4>
 
-<p>The opposite of <code>insert_html</code>. Deletes an element with given selector. It can be useful in two situations:</p>
+<p>The opposite of <code>insert_html</code>. Deletes an element that matches a selector. It can be useful in two situations:</p>
 <ul>
   <li>Another widget may leave an element empty and you want to clean it up.</li>
   <li>Your pages are generated with another tool and it inserts something you don't want.</li>
@@ -1549,7 +1548,7 @@ You can limit it to deleting only empty elements with <code>only_if_empty = true
 Element is considered empty if there's nothing but whitespace inside it.
 </p>
 <p>
-It's possible to delete only the first element matching the selector by adding <code>delete_all = false</code>
+It's possible to delete only the first element matching a selector by adding <code>delete_all = false</code>
 to its config.
 </p>
 
@@ -1574,7 +1573,7 @@ Plugins are treated like widgets and are configured the same way.
 By default, soupault looks for plugins in the <code>plugins/</code> directory.
 Suppose you want to use the <a href="/plugins/#site-url">Site URL</a> plugin.
 To use that plugin, save it to <code>plugins/site-url.lua</code>. Then a widget named <code>site-url</code>
-will automatically become available and you can use it like this.
+will automatically become available.
 The <code>site_url</code> option from the widget config
 will be accessible to the plugin as <code>config["site_url"]</code>.
 </p>
@@ -1595,7 +1594,7 @@ If a file with the same name is found in multiple directories, soupault will use
 directory in the list.
 </p>
 <p>
-You can also disable plugin discovery with:
+You can also disable plugin discovery and load all plugins explicitly.
 </p>
 <pre class="language-toml">
 [settings]
