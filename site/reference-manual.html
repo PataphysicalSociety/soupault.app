@@ -452,6 +452,38 @@ a template and doesn't require the <code>default_template</code> to exist.
   clean_urls = false
 </pre>
 
+<h3>Page templates</h3>
+<p>
+Some people want all their pages to have a consistent look, and then having just a <code>default_template</code>
+option works perfectly. Some people prefer to give every page a unique look, and then disabling generator mode
+is a right thing to do. Yet a third category of people want just some pages or sections to look different.
+</p>
+<p>
+For this use case, soupault supports multiple page templates. You can define them in the <code>[templates]</code>
+section.
+</p>
+
+<pre class="language-toml">
+[templates.serious-template]
+  file = "templates/serious.html"
+  section = "serious-business"
+
+[templates.fun-template]
+  file = "templates/fun.html"
+  path_regex = "(.*)/funny-(.*)"
+</pre>
+
+<p>
+As of soupault 1.12, there is no way to specify a <code>content_selector</code> option per template,
+and they all will use the <code>content_selector</code> option from <code>[settings]</code>.
+</p>
+<p>Page/section targeting options are discussed in detail in the <a href="#limiting-widgets-to-pages-or-sections">widgets section</a>.</p>
+<p>
+Note that proper template targeting is your responsibility. Omitting the <code>page, section, path_regex</code> option will not cause errors,
+but soupault may use a wrong template for some pages. If that happens, make your targeting options more specific. 
+</p>
+
+
 <h3>Nested structures</h3>
 <p>
 A flat layout is not always desirable. If you want to create site sections, just add some
