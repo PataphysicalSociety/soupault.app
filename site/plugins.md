@@ -52,6 +52,28 @@ elements:
 
 Download: [insert-if.lua](/files/plugins/insert-if.lua).
 
+### Collapsible lists
+
+Converts a list to a tree with collapsible/expansible nodes using HTML5 `<details>` element.
+
+Configuration example:
+
+```toml
+[widgets.list-to-tree]
+  widget = "collapsible-list"
+  selector = ["ul.tree", "ol.tree"]
+  collapsible_class = "collapsible"
+```
+
+It will convert `<li>` elements that have `<ul>` or `<ol>` elements nested inside them
+to collapsible tree nodes. If `collapsible_class` option is given, that class will be
+added to the affected `<li>` elements.
+
+A live example this plugin's output can be seen in the table of contents of the
+[iproute2 manual](https://baturin.org/docs/iproute2/).
+
+Download: <a href="/files/plugins/collapsible-list.lua">collapsible-list.lua</a>.
+
 ## Content
 
 ### Reading time

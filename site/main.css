@@ -145,8 +145,8 @@ code { background-color: #efefef; }
 /* Custom ToC style for the reference manual */
 div#refman-sidebar ul { list-style-type: none; }
 
-div#refman-sidebar ul.toc-3 { font-weight: normal; }
-div#refman-sidebar ul.toc-2 { font-weight: bold; color: black; }
+div#refman-sidebar ul.refman-toc-2 { font-weight: normal; }
+div#refman-sidebar ul.refman-toc-1 { font-weight: bold; color: black; }
 div#refman-sidebar a { text-decoration: none; }
 
 /* Reference manual ToC on the left for widescreen, desktop computers */

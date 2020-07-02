@@ -14,7 +14,7 @@ assets:
 
 .PHONY: feed
 feed: site
-	scripts/json2feed.py > $(BUILD_DIR)/atom.xml
+	scripts/json2feed.py index.json > $(BUILD_DIR)/atom.xml
 
 .PHONY: all
 all: site assets feed
