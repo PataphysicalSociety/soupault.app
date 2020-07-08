@@ -1482,6 +1482,9 @@ to <code>&lt;h6&gt;</code>.
   # Optional: use unchanged header text for anchors
   # Default is false
   use_heading_text = false
+
+  # Place nested lists inside a &lt;li&gt; rather than next to it
+  valid_html = false
 </pre>
 <h6>Choosing the heading anchor options</h6>
 <p>
@@ -1903,6 +1906,27 @@ and <code>HTML.replace_content</code>.
 <p>Creates a new element tree from the content of an element.</p>
 <p>Useful for duplicating an element elsewhere in the page.</p>
 
+<h5><code>HTML.get_heading_level(html_element)</code></h5>
+<p>For elements whose tag name matches <code>&lt;h[1-9]&gt;</code> pattern, returns the heaving level.</p>
+<p>Returns zero for elements whose tag name doesn't look like a heading and for values that aren't HTML elements.</p>
+
+<h5><code>HTML.get_headings_tree(html_element)</code></h5>
+<p>Returns a table that represents the tree of HTML document headings in a format like this:.</p>
+<pre>
+[
+  {
+    "heading": ...,
+    "children": [
+      {"heading": ..., "children": []}
+    ]
+  },
+  {"heading": ..., "children": []}
+]
+</pre>
+<p>
+Values of the <code>heading</code> fields are HTML element references.
+</p>
+
 <h5>Behaviour</h5>
 <p>
 If an element tree access function cannot find any elements (e.g. there are no elements that match a selector),
@@ -2015,6 +2039,10 @@ end
 <h5><code>String.truncate(string, length)</code></h5>
 <p>Truncates a string to given length.</p>
 <p>Example: <code>String.truncate("foobar", 3) -- "foo"</code>.</p>
+
+<h5><code>String.to_number</code></h5>
+<p>Example: <code>String.to_number("2.7") -- produces 2.7 (float)</code></p>
+<p>Converts strings to numbers. Returns <code>nil</code> is a string isn't a valid representation of a number.</p>
 
 </div>
 </div>
