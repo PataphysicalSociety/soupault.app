@@ -113,11 +113,14 @@ function convert() {
         var oldFieldName = `index_${fieldName}_selector`;
         console.log(oldFieldName);
         console.log(config.index[oldFieldName]);
+        config.index.fields[fieldName] = {};
         if(oldFieldName in config.index) {
             log(`Converting obsolete field <strong>${oldFieldName}</strong> to <strong>[index.fields.${fieldName}]</strong>`);
-            config.index.fields[fieldName] = {};
             config.index.fields[fieldName].selector = config.index[oldFieldName];
             delete config.index[oldFieldName];
+        } else {
+            log(`Option <strong>${oldFieldName}</strong> was not set, recreating it with the old default value as <strong>[index.fields.${fieldName}]</strong>`);
+            config.index.fields[fieldName].selector = field.value;
         }
     });
 
