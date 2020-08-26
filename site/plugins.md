@@ -147,6 +147,20 @@ otherwise the `highlight-active-link` widget may run before navigation links are
 
 Download: <a href="/files/plugins/section-link-highlight.lua">section-link-highlight.lua</a>.
 
+### Safe links
+
+Allows you to add `rel` attributes to external links (those with a URL schema).
+By default it adds `rel="nofollow noopener"`.
+
+Sample configuration:
+```toml
+[widgets.make-links-safe]
+  widget = "safe-links"
+  attributes = "nofollow noopener noreferrer"
+```
+
+Download: <a href="/files/plugins/safe-links.lua">safe-links.lua</a>.
+
 ### Page source link
 
 For people who store their site source in a public repository. This plugin inserts a link to the page source file
