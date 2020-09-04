@@ -1,12 +1,12 @@
 -- Adds a bunch of fake HTML elements for easily making links to popular websites
 --
 -- Supported elements:
---   <wikipedia lang="fr" page="Philippe Soupault">surrealist writer</wikipedia>
+--   <wikipedia lang="de" page="Philippe Soupault">surrealist writer</wikipedia>
 --   <github project="dmbaturin/soupault">soupault</github>
 --   <sourcehut project="dmbaturin/soupault">soupault</sourcehut>
 --   <mastodon user="@dmbaturin@mastodon.social">me on mastodon</mastodon>
 --   <twitter user="dmbaturin">me on twitter</twitter>
---   <rfc number="1945">HTTP RFC</rfc>
+--   <rfc number="1918">HTTP RFC</rfc>
 --
 -- All elements also support a short form where the content becomes the link data:
 --   <wikipedia>Philippe Soupault</wikipedia>
@@ -16,7 +16,10 @@
 --   <twitter>@dmbaturin</twitter> -- "@" is optional
 --   <rfc>RFC1945</rfc> -- yes, it can extract the number from this
 --
--- Sample configuration:
+-- To run it, you need to add something like this to soupault.conf:
+-- [plugins.quick-links]
+--   file = "plugins/quick-links.lua"
+--
 -- [widgets.convert-quick-links]
 --   widget = "quick-links"
 --   wikipedia_default_language = "fr"
@@ -159,7 +162,7 @@ function make_twitter_link(element)
 end
 
 elements = HTML.select_all_of(page, {
-  "wikipedia", "github", "sourcehut", "mastodon", "twitter", "rfc"
+  "wikipedia", "github", "sourcehut", "mastodon", "twitter", "linkedin", "rfc"
 })
 
 local index = 1
@@ -177,6 +180,8 @@ while elements[index] do
     new_elem = make_mastodon_link(elem)
   elseif (tag_name == "twitter") then
     new_elem = make_twitter_link(elem)
+  elseif (tag_name == "linkedin") then
+    new_elem = make_simple_link(elem, "user", "https://www.linkedin.com/in/%s")
   elseif (tag_name == "rfc") then
     new_elem = make_rfc_link(elem)
   end

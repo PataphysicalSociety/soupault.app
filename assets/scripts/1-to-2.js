@@ -130,8 +130,8 @@ function convert() {
             view = config.index.views[key];
             if(view.index_item_template) {
                 log("Replacing triple braces with double braces in an <strong>index_item_template</strong>");
-                view.index_item_template = view.index_item_template.replaceAll("{{{", "{{");
-                view.index_item_template = view.index_item_template.replaceAll("}}}", "}}");
+                view.index_item_template = view.index_item_template.replace(/{{{/g, "{{");
+                view.index_item_template = view.index_item_template.replace(/}}}/g, "}}");
             }
         }
     }
