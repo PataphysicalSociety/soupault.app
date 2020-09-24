@@ -283,3 +283,38 @@ Sample configuration:
 ```
 
 Download: [quick-links.lua](/files/plugins/quick-links.lua)
+
+### Hyperlinked glossary
+
+Requires soupault 2.0.0 or newer.
+
+Provides a way to make a hyperlinked glossary.
+
+This plugin has no configurable options (as of now). You only need to enable it to run on your pages.
+
+```toml
+[widgets.make-glossary]
+  widget = "glossary"
+```
+
+To make a glossary, first, define a `<glossary>` element with terms:
+
+```html
+<glossary>
+  <definition name="sepulka">
+    A prominent element of the civilization of Ardrites from the planet of Enteropia; see "sepuling".
+  </definition>
+  <definition name="sepuling">
+   An activity of Ardrites from the planet of Enteropia; see "sepulka".
+  </definition>
+</glossary>
+```
+
+Then you can refer to them like this: `<term>sepulka</term>`.
+Any `<term>` elements that have glossary definitions will be automatically converted to hyperlinks.
+All other terms will be ignored. The glossary itself will be made into a `<dl>`.
+
+You can see this plugin at work in the [reference manual](/reference-manual) page.
+
+Download: [glossary.lua](/files/plugins/glossary.lua)
+

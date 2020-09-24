@@ -16,6 +16,8 @@
 -- These <term> elements will be automatically converted to hyperlinks,
 -- and the glossary will be made into a <dl>
 --
+-- Author: Daniil Baturin
+-- License: MIT
 
 Plugin.require_version("2.0.0")
 
