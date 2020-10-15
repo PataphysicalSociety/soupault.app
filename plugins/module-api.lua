@@ -23,6 +23,12 @@ while (n <= count) do
     fn = fns[k]
     HTML.set_tag_name(fn, "span")
 
+    -- Set the heading id for linking
+    heading = HTML.parent(fn)
+    fn_name = Regex.replace(HTML.strip_tags(fn), "\\(.*\\)", "")
+    Log.warning(fn_name)
+    HTML.set_attribute(heading, "id", fn_name)
+
     k = k + 1
   end
 
