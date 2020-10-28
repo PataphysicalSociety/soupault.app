@@ -22,7 +22,7 @@ function make_release_link(elem)
   end
 
   extension = "tar.gz"
-  if platform == "win32" then
+  if (platform == "win32") or (platform == "win64") then
     extension = "zip"
   end
 
