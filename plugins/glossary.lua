@@ -70,15 +70,24 @@ local count = size(terms)
 local n = 1
 while (n <= count) do
   term_elem = terms[n]
+
+  term_name = HTML.get_attribute(term_elem, "name")
   term_text = strlower(String.trim(HTML.inner_text(term_elem)))
-  if glossary[term_text] then
+
+  if not term_name then
+    term_name = term_text
+  else
+    term_name = strlower(String.trim(term_name))
+  end
+
+  if glossary[term_name] then
     term_link = HTML.create_element("a")
-    HTML.set_attribute(term_link, "href", "#" .. make_term_slug(term_text))
+    HTML.set_attribute(term_link, "href", "#" .. make_term_slug(term_name))
     HTML.append_child(term_link, HTML.clone_content(term_elem))
     HTML.replace_element(term_elem, term_link)
   else
     -- No such term, unwrap the element from <term>
-    Log.warning(format("Ignoring undefined term \"%s\"", term_text))
+    Log.warning(format("Ignoring undefined term \"%s\"", term_name))
     HTML.replace_element(term_elem, HTML.clone_content(term_elem))
   end
 

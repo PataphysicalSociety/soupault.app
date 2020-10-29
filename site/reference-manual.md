@@ -127,8 +127,11 @@ Very few soupault settings are fixed, and most can be changed in the configurati
   # By default the content is inserted into the 
   content_selector = "body"
 
-  # Soupault currently doesn't preserve the original doctype declaration
-  # and uses the HTML5 doctype by default. You can change it using this option.
+  # Whether to keep the original page doctype or not
+  keep_doctype = false
+
+  # Doctype to use for pages that don't have one (when keep_doctype = true)
+  # or for all pages (when keep_doctype = false)
   doctype = "<!DOCTYPE html>"
 
   # Enables or disables clean URLs.
@@ -177,17 +180,20 @@ This is the default configuration:
 [settings]
   default_template_file = "templates/main.html"
   default_content_selector = "body"
+  default_content_action = "append_child"
 ```
 
 It means that when soupault processes a page, it first loads and parses the HTML from `templates/main.html`, then parses a page, processes it,
-and inserts the result in the `<body>` element of the template.
+and inserts the result in the `<body>` element of the template, after the last existing child element.
+
+The `default_content_selector` option can be any valid CSS3 selector. The `default_content_action` can be an valid content insertion <term>action</term>.
 
 This is the miminal template good for `default_content_selector = "body"`:
 
 ```html
 <html>
   <body>
-    <!-- content will go here -->
+    <!-- content goes here -->
   </body>
 </html>
 ```
@@ -206,6 +212,7 @@ Note that you cannot omit the default template.
 [templates.funny-template]
   file = "templates/funny-template.html"
   content_selector = "div#fun-content"
+  content_action = "prepend_child"
   section = "fun/"
 ```
 
@@ -552,7 +559,7 @@ It may seem confusing and redundant, but it allows you to use more than one widg
 
 By default, widget output is inserted after the last child of its target element.
 
-If you are modifying existing pages or just want more control and flexibility, you can specify the insert position explicitly.
+If you are modifying existing pages or just want more control and flexibility, you can specify the position explicitly using an <term>action</term> option.
 
 For example, you can insert a header file before the first element in the page `<body>`:
 
@@ -573,14 +580,7 @@ Or insert a table of contents before the first `<h1>` element (it a page has it)
   action = "insert_before"
 ```
 
-Possible values of that option are:
-
-* `prepend_child`
-* `append_child`
-* `insert_before`
-* `insert_after`
-* `replace_element`
-* `replace_content`
+You can find the complete list of valid actions in the <term name="action">glossary</term>.
 
 ### Limiting widgets to pages or sections
 
@@ -714,6 +714,10 @@ The following configuration will insert the content of `templates/header.html` f
 ```
 
 This widget provides a parse option that controls whether the file is parsed or included as a text node. Use `parse = false` if you want to include a file verbatim, with HTML special characters escaped.
+
+Note: you can specify multiple selectors, like `selector = ["div#footer", "footer", "body"]`.
+In that case soupault will first try to insert the content in a `<div id="footer">` if a page has one,
+the try `<footer>`, and if neither is found, just insert in the page `<body>`.
 
 #### insert_html
 
@@ -964,9 +968,23 @@ Here is the ToC configuration from this website:
   # Default is false
   heading_links_append = false
 
+  # Maximum level for headings to create section links for. Can be greater than max_level
+  # Implicitly defaults to max_level
+  # max_heading_link_level = 
+
   # Optional: use header text slugs for anchors
   # Default is false
   use_heading_slug = true
+
+  # Only replace non-whitespace characters when generating heading ids
+  soft_slug = false
+
+  # Force heading ids to lowercase
+  slug_force_lowercase = true
+
+  # You can redefine the whole slugification process using these options
+  slug_regex = '[^a-zA-Z0-9\-]'
+  slug_replacement_string = "-"
 
   # Optional: use unchanged header text for anchors
   # Default is false
@@ -1476,6 +1494,25 @@ Example: `String.to_number("2.7")` produces `2.7` (float).
 
 Converts strings to numbers. Returns `nil` is a string isn't a valid representation of a number.
 
+##### <function>String.join(separator, list)</function>
+
+Concatenates a list of strings.
+
+Example: `String.join(" ", {"hello", "world"})`.
+
+##### <function>String.render_template(template_string, env)</function>
+
+Renders data using a <term>jingoo</term> template.
+
+Example:
+
+```lua
+env = {}
+env["greeting"] = "hello"
+env["addressee"] = "world"
+s = String.render_template("{{greeting}} {{addressee}}", env)
+```
+
 </module>
 
 <module name="Sys">
@@ -1597,6 +1634,13 @@ These levels are always on and cannot be silenced.
     you can enable something only for some pages. Using <code>exclude_page, exclude_section, exclude_path_regex</code> options, you can enable
     something for all pages except some. You can also combine those options. All those options take a single string or a list of strings.
     Examples: <code>page = ["foo.html", "bar.html"]</code>, <code>section = "blog/"</code>, <code>exclude_path_regex = '^(.*)/index\.html$'</code>.
+  </definition>
+  <definition name="action">
+    Action defines what to do with the content. In inclusion widgets (<code>include</code>, <code>insert_html</code>, <code>exec</code>, <code>preprocess_element</code>)
+    it's defined by the <code>action</code> option,  in <code>[settings]</code> it's <code>default_content_action</code>, and in custom templates it's <code>content_action</code>.
+    <br>
+    Its possible values are: <code>prepend_child</code>, <code>append_child</code>, <code>insert_before</code>, <code>insert_after</code>,
+    <code>replace_content</code>, <code>replace_element</code>.
   </definition>
   <definition name="jingoo">
   A logic-aware template processor with syntax and capabilities similar to Jinja2. You can find the details in its
