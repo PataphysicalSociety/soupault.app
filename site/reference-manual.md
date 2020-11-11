@@ -1613,6 +1613,24 @@ These levels are always on and cannot be silenced.
 
 </module>
 
+<module name="JSON">
+
+##### <function>JSON.from_string(string)</function>
+
+Parses a JSON string and returns a table. Fails plugin execution if `string` isn't syntactically correct JSON.
+
+##### <function>JSON.to_string(value)</function>
+
+Converts a Lua value to JSON. The value doesn't have to be a table, any value will work.
+
+It produces minified JSON.
+
+##### <function>JSON.pretty_pring(value)</function>
+
+Same as `JSON.to_string` but produces human-readable, indented JSON.
+
+</module>
+
 ## Glossary
 
 <hr>
