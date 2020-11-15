@@ -3,12 +3,12 @@
 <p>Date: <time id="post-date">2020-08-26</time> </p>
 
 <p id="post-excerpt">
-I was planning to give a talk about Soupault at an online conference conference, but the conference ended up completely cancelled, so the paper I wrote for it ended up unused.
+I was planning to give a talk about Soupault at an online conference, but the conference ended up completely cancelled, so the paper I wrote for it ended up unused.
 If you know of an upcoming conference that may be interested in it, let me know. Otherwise, it can remain a good introduction to the project I suppose.
 </p>
 
-_Soupault is a static website generator that rejects classic CMS-like architecture and uses ideas of client-side DOM API and microformats to manipulate static HTML files and extract metadata from them.
-It is extensible with external programs and Lua plugins despite being available as a statically linked executable, and can be configured to adapt to existing workflows._
+Soupault is a static website generator that rejects the classic CMS-like architecture and uses ideas of client-side DOM APIs and microformats to manipulate static HTML files and extract metadata from them.
+It is extensible with external programs and Lua plugins despite being available as a statically linked executable, and can be configured to adapt to existing workflows.
 
 Static websites generators are growing in popularity and in numbers. The  [staticgen.com](https://staticgen.com/) directory alone lists about 1250 projects. However, their typical architecture has a few unsolved problems.
 
