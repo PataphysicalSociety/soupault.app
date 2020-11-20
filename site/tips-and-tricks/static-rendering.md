@@ -89,7 +89,7 @@ This is a real configuration from this website:
 
 And it works nicely:
 
-```html
+```toml
 [settings]
   site_dir = "site"
 ```

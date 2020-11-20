@@ -21,9 +21,8 @@ you'll need to download it as a part of your website build process.
 
 The primary location for soupault downloads is [files.baturin.org/software/soupault/](https://files.baturin.org/software/soupault/).
 
-However, for a CI process, you may rather want to use a CDN'ed link. For this reason I keep mirrors on [GitHub](https://github.com/dmbaturin/soupault/releases).
+However, for a CI process, you may rather want to use a CDN'ed link. For this reason I mirror releases to [GitHub](https://github.com/dmbaturin/soupault/releases).
 Examples below use GitHub links.
-
 
 ## Netlify
 
@@ -40,7 +39,7 @@ First you need a build script.
 ```bash
 #!/bin/sh
 
-SOUPAULT_VERSION="2.0.0"
+SOUPAULT_VERSION="2.1.0"
 
 wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
 if [ $? != 0 ]; then
@@ -71,7 +70,7 @@ Advantages:
 * For GitHub users: tight integration with the rest of GitHub.
 * Newer distros available in build host images.
 
-I'm using it for building the [OCaml book](https://ocamlbook.org) and deploying it to Netlify,
+I use it for building the [OCaml book](https://ocamlbook.org) and deploying it to Netlify,
 so you can use its [build script](https://github.com/dmbaturin/ocaml-book/blob/master/.github/workflows/main.yml) as a basis.
 
 The build part in `.github/workflows/main.yml` boils down to this:
@@ -89,7 +88,7 @@ jobs:
 
     - name: Install soupault
       env:
-        SOUPAULT_VERSION: 2.0.0
+        SOUPAULT_VERSION: 2.1.0
       run: |
         echo Downloading and unpacking soupault
         wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
