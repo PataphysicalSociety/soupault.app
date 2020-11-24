@@ -52,7 +52,8 @@ tar xvf soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
 ./soupault-$SOUPAULT_VERSION-linux-x86_64/soupault
 ```
 
-Then you need to tell the builder in `netlify.toml` what script to run and which directory to publish.
+Then you need to tell the builder what script to run and which directory to publish.
+This is specified in the `netlify.toml` file.
 
 ```toml
 [build]
@@ -67,11 +68,12 @@ You can also deploy a website from my [sample repo](https://app.netlify.com/star
 GitHub Actions is Microsoft GitHub's built-in CI service.
 
 Advantages:
+
 * For GitHub users: tight integration with the rest of GitHub.
-* Newer distros available in build host images.
+* Good selection of build images, newer GNU/Linux distro versions.
 
 I use it for building the [OCaml book](https://ocamlbook.org) and deploying it to Netlify,
-so you can use its [build script](https://github.com/dmbaturin/ocaml-book/blob/master/.github/workflows/main.yml) as a basis.
+so you can use its [build script](https://github.com/dmbaturin/ocaml-book/blob/master/.github/workflows/main.yml) as a basis for your own.
 
 The build part in `.github/workflows/main.yml` boils down to this:
 
@@ -101,4 +103,3 @@ jobs:
 
     # Your deployment steps here
 ```
-
