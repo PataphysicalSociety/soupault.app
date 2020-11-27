@@ -77,9 +77,11 @@ and add this to your <code>soupault.conf</code>:
 [preprocessors]
   md = "cmark --unsafe --smart"
 </pre>
+<p>Now all Markdown pages with <code>.md</code> extensions will be automatically converted to HTML by piping them through <code>cmark --unsafe --smart</code> command.</p>
 <p>
-Now all Markdown pages with <code>.md</code> extensions will be automatically converted to HTML with <code>cmark --unsafe --smart</code> command.
-You can use any external program as a page preprocessor, and you can have as many preprocessors as you want.
+You can use any external program as a page preprocessor, and you can have as many preprocessors as you want. Whether you are a fan of
+<a href="https://pandoc.org/">Pandoc</a>, <a href="https://asciidoctor.org">AsciiDoctor</a> or something else—as long as it can read from standard input
+and write HTML to standard output, you can use it as a preprocessor.
 </p>
 
 <h3>Element preprocessors</h3>
