@@ -1,23 +1,17 @@
 BUILD_DIR := build
 
-# In practice it's in my ~/.local/bin
 SOUPAULT := soupault
 
 .PHONY: site
 site:
 	$(SOUPAULT)
-	scripts/json2feed.py index.json > $(BUILD_DIR)/atom.xml
 
 .PHONY: assets
 assets:
 	cp -r assets/* $(BUILD_DIR)/
 
-.PHONY: feed
-feed: site
-	scripts/json2feed.py index.json > $(BUILD_DIR)/atom.xml
-
 .PHONY: all
-all: site assets feed
+all: site assets
 
 .PHONY: clean
 clean:
