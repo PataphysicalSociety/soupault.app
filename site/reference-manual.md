@@ -673,7 +673,7 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
   ...
 ```
 
-# Limiting widgets to “build profiles”
+### Limiting widgets to “build profiles”
 
 Sometimes you may want to enable certain widgets only for some builds. For example, include analytics scripts only in production builds. It can be done with “build profiles”.
 
@@ -687,7 +687,7 @@ For example, this way you can only include includes/analytics.html file in your 
   selector = "body"
 ```
 
-Soupault will only process that widget if you run `soupault --profile live`. If you run `soupault --profile dev`, or run it without the `--profile option`, it will ignore that widget.
+Soupault will only process that widget if you run `soupault --profile live`. If you run `soupault --profile dev`, or run it without the `--profile` option, it will ignore that widget.
 
 ## Built-in widgets
 
@@ -1190,9 +1190,11 @@ Plugins have access to the following global variables:
   <dt>nav_path</dt>
   <dd>A list of strings representing the logical <term>nativation path</term>. For example, for site/foo/bar/quux.html it's <code>["foo", "bar"]</code>.</dd>
   <dt>page_url</dt>
-  <dd>Relative page URL, e.g. /articles or /articles/index.html, depending on the clean_urls setting.</dd>
+  <dd>Relative page URL, e.g. /articles or /articles/index.html, depending on the <code>clean_urls</code> setting.</dd>
   <dt>config</dt>
   <dd>A table with widget config options.</dd>
+  <dt>soupault_config</dt>
+  <dd>The global soupault config (deserialized contents of <code>soupault.conf</code>).</dd>
   <dt>site_index</dt>
   <dd>Site index data structure</dd>
 </dl>  
@@ -1523,6 +1525,25 @@ Example: `Sys.read_file("site/index.html")`
 
 Reads a file into a string. The path is relative to the working directory.
 
+##### <function>Sys.read_file(file_path, data)</function>
+
+Writes data to a file, in text mode. If a file doesn't exist, it will be created.
+If a file already exists, it will be overwritten.
+
+##### <function>Sys.get_file_size(file_path)</function>
+
+Returns file size in bytes. Returns `nil` if it cannot read the file
+(whether because it doesn't exist or due to permission errors).
+
+##### <function>Sys.join_path(left, right)</function>
+
+Joins two file paths, using a correct, OS-specific separator.
+E.g. `Sys.join_path("directory", "file")` will produce `directory/file` on UNIX, but `directory\file` on Windows.
+
+**Note:** This function **will not** replace existing separators in its arguments.
+
+You also **should not** use this function for concatenating _URLs_, at least not when using soupault on Windows.
+
 ##### <function>Sys.run_program(command)</function>
 
 Executes given command in the <term>system shell</term>.
@@ -1593,6 +1614,11 @@ Example: `Plugin.require_version("1.8.0")`
 
 Stops plugin execution if soupault is older than the required version.
 You can use a full version like `1.9.0` or a short version like `1.9`. This function was introduced in 1.8, so plugins that use it will fail to work in 1.7 and older. 
+
+##### <function>Plugin.soupault_version()</function>
+
+Returns soupault version string (e.g. `"2.2.0"`).
+
 </module>
 
 <module name="Log">
@@ -1617,7 +1643,13 @@ These levels are always on and cannot be silenced.
 
 ##### <function>JSON.from_string(string)</function>
 
-Parses a JSON string and returns a table. Fails plugin execution if `string` isn't syntactically correct JSON.
+Parses a JSON string and returns a table. Fails plugin execution if `string` isn't syntactically correct JSON data.
+
+##### <function>JSON.unsafe_from_string(string)</function>
+
+Same as `JSON.from_string`, but returns `nil` on parse errors. Parse error message is logged (warning level).
+
+Note that there are valid JSON strings that parse to `nil` (e.g. `"null"`), so `nil` doesn't always mean a parse error.
 
 ##### <function>JSON.to_string(value)</function>
 
@@ -1628,6 +1660,90 @@ It produces minified JSON.
 ##### <function>JSON.pretty_pring(value)</function>
 
 Same as `JSON.to_string` but produces human-readable, indented JSON.
+
+</module>
+
+<module name="Date">
+
+##### <function>Date.now_timestamp()</function>
+
+Returns a UNIX timestamp (seconds passed since 1970-01-01 00:00 UTC).
+
+##### <function>Date.now_format(fmt)</function>
+
+Returns as a string representation of the current datetime in UTC.
+
+Example: `Date.now_format("%Y-%m-%d %H:%M")`
+
+##### <function>Date.to_timestamp(date_string, input_formats)</function>
+
+Converts a datetime string to a UNIX timestamp, using a list of allowed datetime formats.
+
+Returns `nil` if none of the formats match the datetime string.
+
+Example: `Date.to_timestamp("2006-08-16", {"%Y-%m-%d"})`
+
+##### <function>Date.reformat(date_string, input_formats, output_format)</function>
+
+Parses and reformats a datetime string.
+
+Example: `Date.reformat("2007-06-23", {"%Y-%m-%d", "%d.%m.%Y"}, "%Y/%d/%m")`
+
+</module>
+
+<module name="Table">
+
+##### <function>Table.has_key(table, key)</function>
+
+Returns `nil` if and only if `table` does not have a field `key`. 
+
+Why is this function needed? There are two possible reasons why `if my_table["some_key"] then` may not run:
+
+* `my_table` does not have a field `some_key`
+* `my_tables` has a field `some_key` but its truth value is false.
+
+This functions tells you for certain.
+
+##### <function>Table.iter(func, table)</function>
+
+Executes a function `func(key, value)` for every item in a table.
+
+Example:
+
+```lua
+my_table = {}
+my_table["foo"] = 0
+my_table["bar"] = "quux"
+my_table["baz"] = {1,2}
+
+function show_pair(k, v)
+  Log.debug(format("Key: %s, value: %s", k, JSON.to_string(v)))
+end
+
+Table.iter(show_pair, my_table)
+```
+
+##### <function>Table.iter_values(func, table)</function>
+
+Executes a function `func(key)` for every _key_ in a table.
+
+##### <function>Table.fold(func, table, initial_value)</function>
+
+[Folds](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) a table using a `func(key, value, accumulator)` function.
+
+Since tables are not ordered collections, the question whether it's a left or right fold is meaningless.
+
+##### <function>Table.fold_values(func, table, initial_value)</function>
+
+Folds a table using a `func(value, accumulator)` function.
+
+##### <function>Table.apply(func, table)</function>
+
+Applies `func(key, value)` to every table item, in place. That is, executes `table[key] = func(key, value)` for every key.
+
+Can be seen as an imperative equivalent of [map](https://en.wikipedia.org/wiki/Map_(higher-order_function)).
+
+Since assigning `nil` to a field is equivalent to deleting that field from a table, this function can be used as ab in-place filter too.
 
 </module>
 

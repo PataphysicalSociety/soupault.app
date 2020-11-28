@@ -10,7 +10,9 @@ date_input_formats = soupault_config["index"]["date_formats"]
 feed_file = config["feed_file"]
 
 data["site_url"] = soupault_config["custom_options"]["site_url"]
-data["feed_id"] = soupault_config["custom_options"]["site_url"]
+data["feed_id"] = Sys.join_path(soupault_config["custom_options"]["site_url"], feed_file)
+
+data["soupault_version"] = Plugin.soupault_version()
 
 
 function in_section(entry)
@@ -61,7 +63,7 @@ feed_template = [[
   <generator uri="https://soupault.neocities.org" version="{{soupault_version}}">soupault</generator>
   <logo>{{feed_logo}}</logo>
   <subtitle>{{feed_subtitle}}</subtitle>
-  {%- for e in entries -%}
+  {%- for e in entries %}
   <entry>
     <id>{{site_url}}{{e.url}}</id>
     <title>{{e.title}}</title>
@@ -71,7 +73,7 @@ feed_template = [[
     </content>
     <link href="{{site_url}}{{e.url}}" rel="alternate"/>
   </entry>
-  {%- endfor %}
+  {% endfor %}
 </feed>
 ]]
 
