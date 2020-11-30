@@ -1,5 +1,14 @@
 <p>Soupault (<em>soup-oh</em>) is a tool that helps you create and manage static websites.</p>
-<p>It's best described as a robotic webmaster. Like a human webmaster, it understands HTML, but doesn't get tired of editing it.</p>
+<p>
+It's best described as a robotic webmaster. Like a human webmaster, it understands HTML, but doesn't get tired of editing it.
+You can tell it to do things like &ldquo;insert the HTML from <code>footer.html</code> after the last element in the page <code>&lt;body&gt;</code>&rdquo;.
+</p>
+<p>
+Traditionally, there was a dichotomy between unlimited possibilities of handwritten Web 1.0 pages and convenience of &ldquo;cookie cutter&rdquo;
+tools (CMSes and classic static site generators). People often had to add JavaScript to non-interactive pages if they wanted a good table of contents,
+syntax highlighting and so on. Soupault removes that dichotomy: it can do all the DOM manipulation you could do with JavaScript, but the result
+is a static page.
+</p>
 <p>It can generate complete pages from a &ldquo;theme&rdquo; and content files, automatically modify existing pages, and extract site metadata.</p>
 <p>Soupault is...</p>
 <ul>
@@ -165,6 +174,9 @@ The source code is available from <a href="https://github.com/dmbaturin/soupault
 <p>
 If you already have OCaml and <a href="https://opam.ocaml.org">opam</a> installed, you can also install from the opam repository:
 <code>opam install soupault</code>.
+</p>
+<p>
+If you want CDNed links for your <a href="/tips-and-tricks/deployment/">CI scripts</a>, you can use [GitHub releases](https://github.com/dmbaturin/soupault/releases).
 </p>
 
 <h2>Why it's named soupault?</h2>
