@@ -1515,6 +1515,14 @@ env["addressee"] = "world"
 s = String.render_template("{{greeting}} {{addressee}}", env)
 ```
 
+##### <function>String.base64_encode</function>
+
+Encodes a string in Base64.
+
+##### <function>String.base64_decode</function>
+
+Decodes Base64 data.
+
 </module>
 
 <module name="Sys">
@@ -1525,15 +1533,55 @@ Example: `Sys.read_file("site/index.html")`
 
 Reads a file into a string. The path is relative to the working directory.
 
-##### <function>Sys.read_file(file_path, data)</function>
+##### <function>Sys.write_file(file_path, data)</function>
 
-Writes data to a file, in text mode. If a file doesn't exist, it will be created.
+Writes data to a file. If a file doesn't exist, it will be created.
 If a file already exists, it will be overwritten.
+
+##### <function>Sys.delete_file(path)</function>
+
+Deletes a file.
+
+##### <function>Sys.delete_recursive(path)</function>
+
+Deletes a file or a directory recursively.
 
 ##### <function>Sys.get_file_size(file_path)</function>
 
 Returns file size in bytes. Returns `nil` if it cannot read the file
 (whether because it doesn't exist or due to permission errors).
+
+##### <function>Sys.file_exists(file_path)</function>
+
+Checks if a file exists.
+
+##### <function>Sys.is_file(file_path)</function>
+
+Checks if a path is a regular file (not a directory). Returns `nil` if the file path does not exist at all.
+
+##### <function>Sys.is_dir(file_path)</function>
+
+Checks if a path is a directory. Returns `nil` if the file path does not exist at all.
+
+##### <function>Sys.get_extension(file_path)</function>
+
+Returns the file extension, if it has one. For files without an extension it returns an empty string.
+For files with multiple extensions like `.tar.bz2`, returns the last extension.
+
+Examples:
+
+* `"cat.jpg" → "jpg"`
+* `"/bin/bash" → ""`
+* `"soupault.tar.gz" → "gz"`
+
+##### <function>Sys.basename(file_path)</function>
+
+Returns the base name of a path (its file name part), e.g. `"/usr/local/bin/soupault" → "soupault"`.
+
+##### <function>Sys.dirname(file_path)</function>
+
+Returns the directory name of a path, e.g. `"/usr/local/bin/soupault" → "/usr/local/bin"`.
+
 
 ##### <function>Sys.join_path(left, right)</function>
 
@@ -1547,6 +1595,7 @@ You also **should not** use this function for concatenating _URLs_, at least not
 ##### <function>Sys.run_program(command)</function>
 
 Executes given command in the <term>system shell</term>.
+Returns 1 (sic!) on success, `nil` on failure, so that `if Sys.run_program(...)` statements work as expected.
 
 The output of the command is ignored. If command fails, its stderr is logged.
 
@@ -1560,6 +1609,8 @@ end
 ```
 
 The intended use case for it is creating and processing assets, e.g. converting images to different formats.
+
+There's also `Sys.run_program_get_exit_code` that does the same, but returns the raw exit code (0 on success).
 
 ##### <function>Sys.get_program_output(command)</function>
 
