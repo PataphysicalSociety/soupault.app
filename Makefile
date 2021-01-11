@@ -20,7 +20,3 @@ clean:
 .PHONY: serve
 serve:
 	python3 -m http.server --directory $(BUILD_DIR)
-
-.PHONY: deploy
-deploy:
-	neocities push build/
