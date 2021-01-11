@@ -36,6 +36,11 @@ while (n <= count) do
     end
     entries[m] = entry
     m = m + 1
+
+    -- Remove unwanted elements (e.g. footnotes) from the excerpt
+    local excerpt = HTML.parse(entry["excerpt"])
+    Table.iter_values(HTML.delete, HTML.select_all_of(excerpt, config["delete_elements"]))
+    entry["excerpt"] = tostring(excerpt)
   end
   n = n + 1
 end
