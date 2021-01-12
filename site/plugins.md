@@ -8,7 +8,7 @@ If you made a plugin and want it included in this directory, let me know!
 
 The simplest way to install a plugin is to create a `plugins` directory inside your project directory
 (next to `site`) and save a plugin file there. Since 1.10 release, soupault will automaticaly find them,
-for example, `plugins/my-plugin.lua` will be registered as `my-lugin` widget.
+for example, `plugins/my-plugin.lua` will be registered as `my-plugin` widget.
 
 However, if you want to load a plugin from an unusual directory, or you want to give its widget a different name,
 you can also load it explicitly like this:
