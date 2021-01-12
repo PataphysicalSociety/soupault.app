@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Install build dependencies from the repos
+      run: |
+        echo Installing build dependencies
+        sudo apt-get update
+        sudo apt-get -y install pandoc highlight make
+
+    # Fixup for old highlight that doesn't have a TOML syntax definition
+    - name: Install TOML syntax definition for highlight
+      run: |
+        sudo cp scripts/toml.lang /usr/share/highlight/langDefs/
+  
+    - name: Install soupault
+      env:
+        SOUPAULT_VERSION: 2.3.0
+      run: |
+        echo Downloading and unpacking soupault
+        wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
+        tar xvf soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
+        sudo mv -v ./soupault-$SOUPAULT_VERSION-linux-x86_64/soupault /usr/bin/
+
+    - name: Build the site
+      run: |
+        make all
+        zip -r soupault-website.zip build/
+        
+    - name: Deploy to Netlify
+      env:
+        NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+      run: |
+        curl -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_TOKEN" --data-binary "@soupault-website.zip" https://api.netlify.com/api/v1/sites/soupault.netlify.app/deploys
+
