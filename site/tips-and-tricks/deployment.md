@@ -29,8 +29,9 @@ Examples below use GitHub links.
 [Netlify](https://netlify.com) is a popular static site hosting platform
 that has a built-in continuous integration service.
 
-One disadvantage is that as of late 2020, Netlify only provides an Ubuntu 16/Xenial [build image](https://github.com/netlify/build-image).
-If you want to use external programs with soupault, installing their latest versions on older GNU/Linux distros may be somewhat challenging.
+One disadvantage is that as of early 2021, Netlify only provides an Ubuntu 16/Xenial [build image](https://github.com/netlify/build-image).
+Worse yet, they do not give you root permissions in the container, so you _cannot install packages from APT repositories_.
+So, if you want to use external programs in your workflow, Netlify's built-in CI isn't for you.
 
 On the plus side, Netlify allows rather free-form build scripts and doesn't make you write fragile YAML files.
 
