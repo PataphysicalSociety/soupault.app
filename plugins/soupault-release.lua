@@ -1,14 +1,14 @@
-Plugin.require_version("1.8")
+Plugin.require_version("2.3.0")
 
 base_url = "https://files.baturin.org/software/soupault"
 
-elements = HTML.select(page, "soupault-release")
+version = soupault_config["custom_options"]["latest_soupault_version"]
 
-count = size(elements)
-index = 1
+if not version then
+  Plugin.fail("custom_options.latest_soupault_version is undefined, cannot generate release links")
+end
 
 function make_release_link(elem)
-  version = String.trim(HTML.strip_tags(elem))
   platform = HTML.get_attribute(elem, "platform")
 
   if not platform then
@@ -16,12 +16,7 @@ function make_release_link(elem)
     return nil
   end
 
-  if not version then
-    Log.warning("Found a <soupault-release> element without version data")
-    return nil
-  end
-
-  extension = "tar.gz"
+  local extension = "tar.gz"
   if (platform == "win32") or (platform == "win64") then
     extension = "zip"
   end
@@ -36,16 +31,8 @@ function make_release_link(elem)
 
   dl_links = HTML.parse(format("<a href=\"%s\">%s</a> (<a href=\"%s\">sig</a>)", dl_url, dl_file, sig_url))
 
-  HTML.insert_after(elem, dl_links)
+  HTML.replace(elem, dl_links)
 end
 
-local index = 1
-while elements[index] do
-  elem = elements[index]
-
-  make_release_link(elem)
-  HTML.delete_element(elem)
-
-  index = index + 1
-end
-
+elements = HTML.select(page, "soupault-release")
+Table.iter_values(make_release_link, elements)
