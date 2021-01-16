@@ -13,7 +13,8 @@
 
 Soupault is distributed as a single, self-contained executable, so installing it from a binary release package it trivial.
 
-You can download it from files.baturin.org/software/soupault. Prebuilt executables are available for Linux (x86-64, statically linked), macOS (x86-64), and Microsoft Windows (32-bit, Windows 7 and newer).
+You can download it from [files.baturin.org/software/soupault](https://files.baturin.org/software/soupault) or from [GitHub releases](https://github.com/dmbaturin/soupault/releases).
+Prebuilt executables are available for Linux (x86-64, statically linked), macOS (x86-64), and Microsoft Windows (64-bit).
 
 Just unpack the archive and copy the executable wherever you want.
 
@@ -49,7 +50,7 @@ So, if you are on Windows, remember to adjust the paths if needed, e.g.:
   selector = 'body'
 ```
 
-Note that inside double quotes, the back slash is an escape character, so you should either use single quotes for such paths (`'scripts\myscript.bat'`) or use a double back slash (`"scripts\\myscript.bat"`).
+Note that inside double quotes, the backslash is an escape character, so you should either use single quotes for such paths (`'scripts\myscript.bat'`) or use a double backslash (`"scripts\\myscript.bat"`).
 
 ## Overview
 
@@ -149,9 +150,9 @@ Note that if you create a `soupault.conf` file before running `soupault --init`,
 
 In this document, whenever a specific site or build dir has to be mentioned, we'll use default values.
 
-If you misspell and option or make another mistake, soupault will notify you about an invalid option and try to suggest a correction.
+If you misspell an option, soupault will notify you about it and try to suggest a correction.
 
-Note that the config is typed and wrong value type has the same effect as missing option. All boolean values must be true or false (without quotes),
+Note that config values are typed and wrong value type has the same effect as missing option. All boolean values must be `true` or `false` (without quotes),
 all integer values must not have quotes around numbers, and all strings must be in single or double quotes.
 
 ### Custom directory layouts
