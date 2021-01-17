@@ -414,8 +414,7 @@ Soupault provides technical metadata of the page as built-in fields.
 
 ### Index views
 
-Soupault can insert HTML rendered from site metadata into the site index pages. By default those are pages
-named `index.*`.
+Soupault can insert HTML rendered from site metadata into the site index pages. By default those are pages named `index.*`.
 
 Note that you cannot insert an index into an arbitrary page, and you cannot extract any metadata
 from an index page.
@@ -491,6 +490,23 @@ this is the only way to guarantee it:
   ...
 ```
 
+### Treating index pages as normal pages
+
+Since soupault can transform normal pages to clean URLs by itself, normally it's best to keep a logical site structure: directory = section, file = page, and leave creation of clean URLs to the software.
+
+However, sometimes creating a degenerate section by hand is a sensible thing to do. One use case is bundling a page with its assets.
+Suppose you are making a page with a lot of photos, and those photos aren't going to be used by any other page.
+In that case, placing those photos in a shared asset directory will only make it harder to remember or find what pages they are used by, and will make all links to those images longer.
+Storing them in a directory with the page offers the easiest mental model. 
+
+Using the `force_indexing_path_regex` option in the `[index]` table, you can make soupault treat some pages as normal pages even though their files are named `index.*`.
+This can be helpful if you only have a few such pages, or they all are within a single directory.
+
+If you want to be able to mark any directory as a "leaf" (hand-made clean URL), there's another way: a `leaf_file` option to the `[index]` table.
+Suppose you set `leaf_file = ".leaf"`. In that case, when soupault finds a directory that has files named `index.html` and `.leaf`, it treats `index.html` as a normal page and extracts metadata from it.
+
+There's no default value for the `leaf_file option`, you need to set it explicitly if you want it. 
+
 ### Exporting metadata to JSON
 
 If built-in functionality is not enough, you can export the site index data to a JSON file
@@ -510,14 +526,14 @@ This way you can use a TeX-like workflow:
 3. Run soupault one more time to have them included in the build.
 
 To save time and avoid useless operations, you can run `soupault --index-only`.
-With this option, soupault will stop after extracting the metadata and exporting it to JSON.
+With that option, soupault will stop after extracting the metadata and exporting it to JSON.
 It will run widgets that index extraction depends on (that is, those specified in `extract_after_widgets`),
-but will not run the rest of the widget, nor will it copy assets or generate pages.
+but will not run the rest of the widgets, nor will it copy assets or generate pages.
 
 ## Widgets
 
-Widgets mo Soupault has built-in widgets for deleting specific HTML elements, including files into pages,
-setting page title and so on. 
+Soupault has built-in widgets for deleting specific HTML elements, including files into pages,
+setting page title and more. 
 
 ### Widget behaviour
 
@@ -678,7 +694,7 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
 
 Sometimes you may want to enable certain widgets only for some builds. For example, include analytics scripts only in production builds. It can be done with “build profiles”.
 
-For example, this way you can only include includes/analytics.html file in your pages for a build profile named “live”:
+For example, this way you can only include `includes/analytics.html` file in your pages when the build profile is set to “live”:
 
 ```toml
 [widgets.analytics]
@@ -864,7 +880,12 @@ Example:
   default = "My Website"
   append = " on My Website"
   prepend = "Page named "
+
+  # Insert a <title> element if a page doesn't have one
   force = false
+
+  # Keep the existing <title> if it exists and isn't empty
+  keep = false
 ```
 
 If `selector` is not specified, it uses the first `<h1>` as the title source element by default.
@@ -879,10 +900,8 @@ By default this widget skips pages that don't have a `<title>` element. You can 
 
 <h4 id="footnotes-widget">footnotes</h4>
 
-The footnotes widget finds all elements matching a selector, moves them to a designated footnotes container, and replaces them with numbered links<fn>As if anyone doesn't know what footnotes look like</fn>.
+The footnotes widget finds all elements matching a selector, moves them to a designated footnotes container, and replaces them with numbered links<fn>As if anyone doesn't know what footnotes look like.</fn>.
 As usual, the container element can be anywhere in the page—you can have footnotes at the top if you feel like it.
-
-
 
 ```toml
 [widgets.footnotes]
@@ -1560,9 +1579,18 @@ Checks if a file exists.
 
 Checks if a path is a regular file (not a directory). Returns `nil` if the file path does not exist at all.
 
+##### <function>Sys.get_file_modification_date(file_path)
+
+Returns the UNIX timestamp of the moment when the file was last modified.
+
 ##### <function>Sys.is_dir(file_path)</function>
 
 Checks if a path is a directory. Returns `nil` if the file path does not exist at all.
+
+##### <function>Sys.mkdir(path)</function>
+
+Creates a directory. If a path is several directories deep,
+and some are missing, creates them as needed (like `mkdir -p`).
 
 ##### <function>Sys.get_extension(file_path)</function>
 
@@ -1749,12 +1777,16 @@ Example: `Date.reformat("2007-06-23", {"%Y-%m-%d", "%d.%m.%Y"}, "%Y/%d/%m")`
 
 Returns `nil` if and only if `table` does not have a field `key`. 
 
-Why is this function needed? There are two possible reasons why `if my_table["some_key"] then` may not run:
+Why is this function needed? There are two possible reasons why `if my_table["some_key"] then` may not be true:
 
 * `my_table` does not have a field `some_key`
-* `my_tables` has a field `some_key` but its truth value is false.
+* `my_table` has a field `some_key` but its truth value is false (e.g. `""` or `0`).
 
 This functions tells you for certain.
+
+##### <function>Table.get_key_default(table, key, default_value)</function>
+
+Returns `table[key]` if the table has that key, otherwise returns the `default_value`.
 
 ##### <function>Table.iter(func, table)</function>
 
@@ -1795,7 +1827,38 @@ Applies `func(key, value)` to every table item, in place. That is, executes `tab
 
 Can be seen as an imperative equivalent of [map](https://en.wikipedia.org/wiki/Map_(higher-order_function)).
 
-Since assigning `nil` to a field is equivalent to deleting that field from a table, this function can be used as ab in-place filter too.
+Since assigning `nil` to a field is equivalent to deleting that field from a table, this function can be used as an in-place filter too.
+
+</module>
+
+<module name="Value">
+
+Contains function for working with Lua values in ways Lua never intended.
+
+##### <function>Value.is_nil(value)</function>
+
+Returns true if `value` is `nil`.
+
+##### <function>Value.is_int(value)</function>
+
+Returns true if `value` is an integer number.
+
+##### <function>Value.is_float(value)</function>
+
+Returns true if `value` is a number. Integers are considered a subset of floats,
+so it returns true for integers.
+
+##### <function>Value.is_string(value)</function>
+
+Returns true if `value` is a string.
+
+##### <function>Value.is_table(value)</function>
+
+Returns true if `value` is a table.
+
+##### <function>Value.is_list(value)</function>
+
+Returns true if `value` is a table whose every key is an integer number.
 
 </module>
 
@@ -1829,9 +1892,13 @@ Since assigning `nil` to a field is equivalent to deleting that field from a tab
     <code>replace_content</code>, <code>replace_element</code>.
   </definition>
   <definition name="jingoo">
-  A logic-aware template processor with syntax and capabilities similar to Jinja2. You can find the details in its
-  <a href="http://tategakibunko.github.io/jingoo/templates/templates.en.html">documentation</a>.
+    A logic-aware template processor with syntax and capabilities similar to Jinja2. You can find the details in its
+    <a href="http://tategakibunko.github.io/jingoo/templates/templates.en.html">documentation</a>.
   </definition>
+  <!-- If we get to use these definitions, we'll know the development has gone too far. -->
+  <definition name="CHIM">The secret syllable of royalty.</definition>
+  <definition name="AASR">Ancient and Accepted Scottish Rite.</definition>
+  <definition name="tao">The tao that can be told is not the true Tao.</definition>
 </glossary>
 
 <hr>
