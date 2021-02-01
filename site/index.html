@@ -15,6 +15,7 @@ is a static page.
   <li><a href="#html-aware">HTML-aware</a></li>
   <li><a href="#dependency-free">Dependency-free</a></li>
   <li><a href="#extensible">Extensible</a></li>
+  <li><a href="#unix-way">UNIX-way</a></li>
 </ul>
 <p>
 To get started, <a href="#downloads">download</a> and unpack a release archive. Then run <code>soupault --init</code> in an empty directory
@@ -48,19 +49,29 @@ It also helps you avoid unnecessary client-side JavaScript and create pages <a h
 
 <h2 id="dependency-free">Dependency-free</h2>
 <p>
-Soupault is available as a single, statically linked executable (~16&nbsp;MB) for Linux, Microsoft Windows, and macOS.
+Soupault is available as a single, statically linked executable (~16&nbsp;MB) for Linux, macOS (x86_64 only, so far), and Microsoft Windows (64-bit).
 </p>
 <p>
 It's easy to install on your own computer or incorporate in a <a href="/tips-and-tricks/deployment/">CI script</a>. Just download and unpack a release
 archive and it's ready to use.
 </p>
-<p>
-This means you can keep using soupault indefinitely even if it becomes unmaintained.
-</p>
+<p>This means you can keep using soupault indefinitely even if it becomes unmaintained.</p>
 <p>
 Even though you are never forced to upgrade to a new version, soupault tries to make upgrading as easy as possible too.
 The maintainer uses <a href="https://semver.org/">semantic versioning</a>, properly marks backwards-incompatible releases
 with a major version change, and documents breaking changes.
+</p>
+
+<h2 id="unix-way">UNIX-way</h2>
+<p>Soupault aims to do one thing: manipulate HTML element trees offline, and do it well.</p>
+<p>
+It purposely doesn't include things like a development web server, a SASS compiler, or an image processing library.
+It avoids bloating the executable with built-in functionality that only some users will want, and that some users will want
+to work <em>different from the built-in</em>.
+</p>
+<p>
+Instead, it makes it easy to plug your own tools into the pipeline. Statically linked and dependency-free doesn't have to mean &ldquo;not extensible&rdquo;.
+Soupault is extensible in several ways.
 </p>
 
 <h2 id="extensible">Extensible</h2>
@@ -71,7 +82,7 @@ Its <a href="/reference-manual/#plugin-api">API</a> is similar to the JavaScript
 </p>
 <p>
 There are many things plugins can do. They can expand custom elements to real HTML (think a static version of <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">web components</a>,
-or shortcodes on steroids). They can also call external programs, read data from files, and modify the entire page: not just the content, but also HTML coming from the page template.
+or shortcodes on steroids). They can also call external programs, read data from files, and modify the entire page: not just the content, but also the HTML coming from the page template.
 </p>
 
 <h3>Page preprocessors</h3>
@@ -136,7 +147,7 @@ You can also export it to a JSON file for further processing.
       it's pretty detailed and well-commented.</li>
 </ul>
 <p>
-You can also browse the <a href="https://github.com/dmbaturin/soupault.neocities.org">source</a> of this website and play with it,
+You can also browse the <a href="https://github.com/dmbaturin/soupault-website">source</a> of this website and play with it,
 or check out websites of other <a href="/users">soupault users</a>.
 </p>
 <p>

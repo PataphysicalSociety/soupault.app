@@ -23,7 +23,7 @@ in cases when a `<title>` element exists and isn't empty.
 Let's face it: "clean URLs" is quite a dirty hack. The World Wide Web doesn't actually have a concept of a site index,
 and doesn't really differentiate "pages" from "sections".<fn>Some other hypertext network projects, like <wikipedia>Gopher (protocol)</wikipedia>,
 do have dedicated menus and explicit site hierarchies.</fn>.
-an index page is simply a page that web servers return when a URL points at a directory rather than a file.
+An index page is simply a page that web servers return when a URL points at a directory rather than a file.
 That page isn't guaranteed or required to provide links to other pages in that directory.
 
 Soupault, however, does have a distinction between normal pages and section index pages. A page is either a metadata _source_,

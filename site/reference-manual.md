@@ -1091,7 +1091,7 @@ It's possible to delete only the first element matching a selector by adding `de
 Since version 1.2, soupault can be extended with Lua plugins.
 
 The supported language is Lua 2.5, not modern Lua 5.x. That means no closures and no for loops in particular.
-Here's a copy of the [Lua 2.5 reference manual](https://soupault.neocities.org/files/lua-2.5-refman.pdf).
+Here's a copy of the [Lua 2.5 reference manual](https://github.com/lindig/lua-ml/blob/master/doc/lua-2.5-refman.pdf).
 
 Plugins are treated like widgets and configured the same way.
 
