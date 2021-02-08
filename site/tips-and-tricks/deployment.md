@@ -19,6 +19,8 @@ and unpack the archive.
 Since none of the hosting and CI services offer build hosts with preinstalled soupault yet,
 you'll need to download it as a part of your website build process.
 
+Since the Linux version of soupault is a statically linked executable, you can run it on any Linux-based build host without any trouble.
+
 The primary location for soupault downloads is [files.baturin.org/software/soupault/](https://files.baturin.org/software/soupault/).
 
 However, for a CI process, you may rather want to use a CDN'ed link. For this reason I mirror releases to [GitHub](https://github.com/dmbaturin/soupault/releases).
@@ -33,6 +35,14 @@ One disadvantage is that as of early 2021, Netlify only provides an Ubuntu 16/Xe
 Worse yet, they do not give you root permissions in the container, so you _cannot install packages from APT repositories_.
 So, if you want to use external programs in your workflow, Netlify's built-in CI isn't for you.
 
+**Warning**: if you are using external CI for your Netlify sites, make sure to go to "Site settings", "Build & deploy",
+and tick the "Stop builds" option there. Otherwise Netlify will try "building" your site with its built-in process
+even if you don't have `netlify.toml` in your repository, which will produce an empty website.
+Thus, if you don't disable those builds by hand, then a) your website will be emptied when a deploy is triggered
+and will stay empty until the external CI job completes b) if the external CI job fails, the website will remain empty forever.
+Make sure to "Stop builds" to prevent that.
+
+If everything you need can be installed without root permissions, then their built-in CI service can be very nice to use though.
 On the plus side, Netlify allows rather free-form build scripts and doesn't make you write fragile YAML files.
 
 First you need a build script.
@@ -40,7 +50,7 @@ First you need a build script.
 ```bash
 #!/bin/sh
 
-SOUPAULT_VERSION="2.1.0"
+SOUPAULT_VERSION="2.4.0"
 
 wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
 if [ $? != 0 ]; then
@@ -73,7 +83,7 @@ Advantages:
 * For GitHub users: tight integration with the rest of GitHub.
 * Good selection of build images, newer GNU/Linux distro versions.
 
-I use it for building the [OCaml book](https://ocamlbook.org) and deploying it to Netlify,
+I use it for building this site and the [OCaml book](https://ocamlbook.org) and deploying it to Netlify,
 so you can use its [build script](https://github.com/dmbaturin/ocaml-book/blob/master/.github/workflows/main.yml) as a basis for your own.
 
 The build part in `.github/workflows/main.yml` boils down to this:
@@ -91,7 +101,7 @@ jobs:
 
     - name: Install soupault
       env:
-        SOUPAULT_VERSION: 2.1.0
+        SOUPAULT_VERSION: 2.4.0
       run: |
         echo Downloading and unpacking soupault
         wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
