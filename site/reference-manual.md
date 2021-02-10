@@ -767,11 +767,11 @@ Simple example: page generation timestamp.
 
 This widget processes element content with an external program and includes its output back in the page.
 
-Element content is sent to program's stdin, so it can be used with any program designed to work as a pipe. HTML entities are expanded, so if you have a `&gt;` or `&amp;` in your page, the program gets a `>` or `&`.
+Element content is sent to program's `stdin`, so it can be used with any program designed to work as a pipe. HTML entities are expanded, so if you have an `&gt;` or an `&amp;` in your page, the program gets a `>` or `&`.
 
 By default it assumes that the program output is HTML and runs it through an HTML parser. If you want to include its output as text (with HTML special characters escaped), you should specify `parse = false`.
 
-For example, this is how you can run content of `<pre>` elements through `cat -n` to automatically add line numbers:
+For example, this is how you can run the content of `<pre>` elements through `cat -n` to automatically add line numbers:
 
 ```toml
 [widgets.line-numbers]
@@ -861,6 +861,34 @@ For example, this snippet will create PNG images from Graphviz graphs inside `<p
   command = 'dot -Tpng > $TARGET_DIR/graph_$ATTR_ID.png && echo \<img src="graph_$ATTR_ID.png"\>'
   action = 'replace_element'
 ```
+
+#### External program behavior
+
+One thing to note when writing or choosing programs to use with `preprocess_element` is that
+soupault will not interactively exchange lines with the external program. It will first send the input _at once_
+and close the child process' `stdin` to signal the end of input, then read the output from the program.
+
+Thus your program should have the following structure:
+
+```
+input = read_until_eof(stdin);
+result = do_things(input);
+write(result, stdout)
+```
+
+For example, a trivial echo script in Python:
+
+```python
+import sys
+
+input = sys.stdin.read()
+print(input)
+```
+
+Attempting to wait for soupault to read your program's output before it finishes reading soupault's input
+may cause a deadlock and hang the build process.
+There's no plan to make communication with the child process asynchronous (that would require quite some trade-offs),
+so be careful to first read the input until the end, then write the output back.
 
 ### Content manipulation
 
