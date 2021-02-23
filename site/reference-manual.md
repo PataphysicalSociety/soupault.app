@@ -399,7 +399,7 @@ rather than content. The `fallback_to_content` option defines what soupault will
 no such attribute. With `fallback_to_content = true` it will extract the element content instead,
 while if it's false, it will leave the field undefined.
 
-## Built-in index fields
+### Built-in index fields
 
 Soupault provides technical metadata of the page as built-in fields.
 
@@ -426,7 +426,7 @@ e.g. if you want to display lists of posts grouped by date and by author.
 
 There are three options that can define view rendering:
 
-* `index_item_template` — a <term>jingoo</term> template for an individual item, applied to each index data entry
+* `index_item_template` — a <term>jingoo</term> template for an individual item, applied to each index data entry.
 * `index_template` — a Jingoo template for the entire index.
 * `index_processor` — external script that receives index data (in JSON) to stdin and write HTML to stdout.
 
@@ -1807,7 +1807,7 @@ Returns `nil` if and only if `table` does not have a field `key`.
 
 Why is this function needed? There are two possible reasons why `if my_table["some_key"] then` may not be true:
 
-* `my_table` does not have a field `some_key`
+* `my_table` does not have a field named `some_key`.
 * `my_table` has a field `some_key` but its truth value is false (e.g. `""` or `0`).
 
 This functions tells you for certain.
@@ -1861,7 +1861,7 @@ Since assigning `nil` to a field is equivalent to deleting that field from a tab
 
 <module name="Value">
 
-Contains function for working with Lua values in ways Lua never intended.
+Contains functions for working with Lua values in ways Lua never intended.
 
 ##### <function>Value.is_nil(value)</function>
 
