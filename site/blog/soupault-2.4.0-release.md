@@ -1,6 +1,6 @@
 <h1 id="post-title">Soupault 2.4.0 release</h1>
 
-<p>Date: <time id="post-date">2021-07-17</time> </p>
+<p>Date: <time id="post-date">2021-01-17</time> </p>
 
 <p id="post-excerpt">
 Soupault 2.4.0, the first release of the new year, is available for download from <a href="https://files.baturin.org/software/soupault/2.4.0">my own server</a>
@@ -22,7 +22,7 @@ in cases when a `<title>` element exists and isn't empty.
 
 Let's face it: "clean URLs" is quite a dirty hack. The World Wide Web doesn't actually have a concept of a site index,
 and doesn't really differentiate "pages" from "sections".<fn>Some other hypertext network projects, like <wikipedia>Gopher (protocol)</wikipedia>,
-do have dedicated menus and explicit site hierarchies.</fn>.
+do have dedicated menus and explicit site hierarchies.</fn>
 An index page is simply a page that web servers return when a URL points at a directory rather than a file.
 That page isn't guaranteed or required to provide links to other pages in that directory.
 
@@ -60,7 +60,7 @@ you can make soupault treat some pages as normal pages even though their files a
 This can be helpful if you only have a few such pages, or they all are within a single directory.
 
 If you want to be able to mark any directory as a "leaf" (hand-made clean URL), there's another way:
-a new `leaf_file` option in the `[index]` table. Suppose you set `leaf_file = ".leaf".
+a new `leaf_file` option in the `[index]` table. Suppose you set `leaf_file = ".leaf"`.
 In that case, when soupault finds a directory that has files named `index.html` and `.leaf`,
 it treats `index.html` as a normal page and extracts metadata from it.
 
