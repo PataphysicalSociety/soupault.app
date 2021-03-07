@@ -6,7 +6,7 @@ One feature that sets soupault apart from other website generators is that the
 &ldquo;generator&rdquo; part is optional.
 You can use it as an HTML processor for existing websites, without modifying any single page.
 
-In this guide we'll setup soupault to add some meta tags to every page, set the `<title>`
+In this guide we'll set up soupault to add some meta tags to every page, set the `<title>`
 to the first heading, and insert tables of contents.
 
 It assumes that you already have a static website, either handwritten or generated with another tool.
@@ -290,7 +290,7 @@ with (hopefully) sensible defaults.
 
 It's a good idea to add a container with a unique id to every page where you want a ToC,
 and point the widget to it. For example, add a `<div id="generated-toc">` to those pages,
-and setup the widget like:
+and set up the widget like:
 
 ```
 [widgets.toc]
