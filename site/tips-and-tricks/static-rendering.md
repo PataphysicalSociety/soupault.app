@@ -25,7 +25,7 @@ Andre Simon's [highlight](http://www.andre-simon.de/doku/highlight/en/highlight.
 Why would I need a highlighter on a desert island is another question. In any case, it's fast,
 cross-platform, and _very_ flexible.
 
-Let's see how to setup soupault to work with it.
+Let's see how to set up soupault to work with it.
 
 ### Obtaining a CSS theme
 

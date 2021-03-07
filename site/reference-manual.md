@@ -665,7 +665,7 @@ When nothing else helps, `path_regex` and `exclude_path_regex` options may solve
 The order of widgets in your config file doesn't determine their processing order. By default, soupault assumes that widgets are independent and can be processed in arbitrary order.
 In future versions they may even be processed in parallel, who knows.
 
-This can be an issue if one widget relies on putput from another. In that case, you can order widgets explicitly with the after parameter.
+This can be an issue if one widget relies on output from another. In that case, you can order widgets explicitly with the after parameter.
 It can be a single widget (`after = "my-widget"`) or a list of widgets (`after = ["some-widget", "another-widget"]`).
 
 Here is an example. Suppose in the template there's a `<div id="breadcrumbs">` where breadcrumbs are inserted by the `add-breadcrumbs` widget.
