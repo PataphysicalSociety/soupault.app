@@ -201,9 +201,13 @@ This is the miminal template good for `default_content_selector = "body"`:
 
 ### Additional templates
 
-It's possible to use multiple templates. Note that additional templates *must* be limited to specific pages with <code>limiting options</code> options!
+It's possible to use multiple templates. However, note that additional templates *must* be limited to specific pages with using a <term>limiting option</term>!
 
-Note that you cannot omit the default template.
+You also cannot omit the default template. This is because there is no reliable way to sort templates and content selector by "specificity" that would satisty every
+user's needs. Without an explicit default template to use for pages that didn't match any of the custom templates, soupault would have to guess,
+but software should never guess, so it requires an explicit default template.
+
+Thus a config that uses custom templates will look like this:
 
 ```toml
 [settings]
@@ -219,7 +223,7 @@ Note that you cannot omit the default template.
 
 ### Page files
 
-With default config, page files are stored in `site/`.
+With default config, soupault will look for page files in `site/`.
 
 #### Page file extensions
 
@@ -247,6 +251,7 @@ For example, this configuration will make soupault preprocess Markdown files wit
 ```
 
 Preprocessor commands are executed in the <term>system shell</term>, so it's fine to use relative paths and specify command arguments. Page file name is appended to the command string.
+For example, with the above config, when soupault processes `site/about.md`, it will run `cmark --unsafe --smart site/about.md` and read the standard output of that process.
 
 ### Partial and complete pages
 
@@ -298,7 +303,7 @@ build/
 
 If you've had a website for a long time and there are links to your page that will break if you change the URLs, you can make soupault mirror your site directory structure exactly and preserve original file names.
 
-Just add `clean_urls = false` to the `[settings]` sectione of your soupault.conf file.
+Just add `clean_urls = false` to the `[settings]` section of your `soupault.conf` file.
 
 ```
 [settings]
@@ -1245,6 +1250,8 @@ Plugins have access to the following global variables:
   <dd>The global soupault config (deserialized contents of <code>soupault.conf</code>).</dd>
   <dt>site_index</dt>
   <dd>Site index data structure</dd>
+  <dt>site_dir, build_dir</dt>
+  <dd>Convenience variables for the corresponding config options.</dd>
 </dl>  
 
 ### Plugin API
