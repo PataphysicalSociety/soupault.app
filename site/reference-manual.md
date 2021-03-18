@@ -695,7 +695,7 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
   ...
 ```
 
-### Limiting widgets to “build profiles”
+<h3 id="build-profiles">Limiting widgets to “build profiles”</h3>
 
 Sometimes you may want to enable certain widgets only for some builds. For example, include analytics scripts only in production builds. It can be done with “build profiles”.
 
