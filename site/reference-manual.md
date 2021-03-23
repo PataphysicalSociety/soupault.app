@@ -19,7 +19,7 @@ Prebuilt executables are available for Linux (x86-64, statically linked), macOS 
 Just unpack the archive and copy the executable wherever you want.
 
 Prebuilt executables are compiled with debug symbols. It makes them a couple of megabytes larger than they could be, but you can get better error messages if something goes wrong.
-If you encounter an internal error, you can get an exception trace by running it with `OCAMLRUNPARAM=b` environment variable.
+If you encounter an internal error, you can run `soupault --debug` to enable detailed logging and exception traces.
 
 ###  Building from source
 
@@ -139,6 +139,10 @@ Very few soupault settings are fixed, and most can be changed in the configurati
   # When false: site/about.html -> build/about.html
   # When true: site/about.html -> build/about/index.html
   clean_urls = true
+
+  # Insert whitespace into HTML for better readability
+  # When set to false, original whitespace (if any) will be preserved as is
+  pretty_print_html = true
 
   # Since 1.10, soupault has plugin auto-discovery
   # A file like plugins/my-plugin.lua will be registered as a widget named my-plugin
@@ -1118,6 +1122,59 @@ Your pages are generated with another tool and it inserts something you don't wa
 You can limit it to deleting only empty elements with `only_if_empty = true`. Element is considered empty if there's nothing but whitespace inside it.
 
 It's possible to delete only the first element matching a selector by adding `delete_all = false` to its config.
+
+#### relative_links
+
+The `relative_links` widget adjusts internal links to account for their depth in the directory tree
+to allow hosting the website in any location.
+
+Suppose you have this in your `templates/main.html`:
+`<img src="/header.png">`. Then in `about/index.html` that element will be rewritten as `<img src="../header.png">`; in `books/magnetic-fields/index.html`
+it will be `<img src="../../header.png">` and so on.
+
+Default configuration:
+
+```toml
+[widgets.relativize]
+  widget = "relative_links"
+  check_file = false
+  exclude_target_regex = '^((([a-zA-Z0-9]+):)|#|\.|//)'
+```
+
+The default regex is meant to exclude links that are either:
+
+* External links with a URI schema.
+* Links to anchors within the same page.
+* Hand-made relative links.
+* Protocol-relative URLs.
+
+If you want to narrow the scope down, you can use the `only_target_regex` option instead.
+For example, with `only_target_regex = '^/[a-zA-Z0-9]', it will only rewrite links like `/style.css`.
+
+The `check_file` option is helpful is you have pages with unmarked relative links, e.g. there's `about/index.html`
+with `<img src="selfie.jpg">` in it, and also `about/selfie.jpg` file. Arguably, it would be a good idea to use
+`<img src="./selfie.jpg">` to make it explicit where the file is, but it may be impractical to modify all old pages
+just to be able to use this widget.
+
+In that case you can set `check_file = true` and this widget will rewrite such links only if there is no such file
+in the directory with the page.
+
+#### absolute_links
+
+This widget is prepends a prefix to every internal link. A polar opposite of the `relative-links` widget.
+
+Sample configuration:
+
+```toml
+[widget.absolutize]
+  widget = absolute_links"
+  prefix = "https://example.com/~jrandomhacker"
+```
+
+A prefix can be simply a directory, a URI schema or a host address is not required.
+
+This widget supports all options of the [`relative_links`](#relative_links) widget.
+
 
 ## Plugins
 
