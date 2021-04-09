@@ -24,7 +24,7 @@ mkdir mysite
 ```
 
 Soupault's workflow is defined in a single configuration file, `soupault.conf`.
-It's a file in the <a href="https://github.com/toml-lang/toml">TOML</a> format.
+It's a file in the <a href="https://toml.io">TOML</a> format.
 
 For the start, we'll write a basic config for running soupault as an HTML processor:
 
@@ -285,7 +285,7 @@ For inserting before the first element, you will need `prepend_child`:
 ### Adding a ToC
 
 Soupault can generate tables of contents from your page headings, as you can see from this website.
-That widget has a large number of <a href="/reference-manual/#widgets-toc">configurable options</a>
+That widget has a large number of <a href="/reference-manual/#toc-widget">configurable options</a>
 with (hopefully) sensible defaults.
 
 It's a good idea to add a container with a unique id to every page where you want a ToC,
