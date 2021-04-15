@@ -352,17 +352,38 @@ These are the basic settings:
   # Default is false, set to true to enable
   index = false
 
-  # Which index field to use as a sorting key
+  # Which index field to use as a sorting key.
+  # There is no default because there's no built-in content model: it's up to you.
   # sort_by =
 
   # By default entries are sorted in descending order.
   # This means if you sort by date, newest entries come first.
   sort_descending = true
 
-  # Date format for sorting
+  # There are three supported ways to sort entries.
+  #
+  # In the "calendar" mode, soupault will try to parse field values as dates
+  # according to the index_date_formats option (see below).
+  #
+  # In the "numeric" mode, it will try to parse fields as integers.
+  #
+  # In the "lexicographic" mode it will simply compare field values as strings.
+  #
+  # The default is "calendar"
+  sort_type = "calendar"
+
+  # Date formats for calendar sorting
   # Default %F means YYYY-MM-DD
-  # For other formats, see http://calendar.forge.ocamlcore.org/doc/Printer.html
+  # Most of the classic UNIX date format specifiers are supported
+  # see https://man7.org/linux/man-pages/man1/date.1.html for example.
   index_date_formats = ["%F"]
+
+  # By default, soupault will require valid values for "calendar" and "numeric" sorting
+  # If a value is invalid, it's assumed to be "less" than any valid value.
+  # Two invalid values are compared lexicographically as strings.
+  #
+  # However, you can make if fail the build if it encounters invalid values using this option:
+  strict_sort = false
 
   # extract_after_widgets = []
 ```
