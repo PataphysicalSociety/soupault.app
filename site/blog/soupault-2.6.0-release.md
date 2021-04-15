@@ -11,7 +11,7 @@ It's a relatively small release with a few bug fixes and one new feature: config
 ## Bug fixes
 
 * Removed a dependency on the [stringext](https://github.com/rgrinberg/stringext) library that is no longer necessary.
-* Fixed empty page output in a situation when the config has `generator_mode = false` and `generator_mode = false`, and the page lacks an `<HTML>` element (#27).
+* Fixed empty page output in a situation when the config has `generator_mode = false` and `keep_doctype = false`, and the page lacks an `<HTML>` element (#27).
 * Malformed dates no longer cause soupault to crash (that could happen due to incomplete exception handling).
 
 ## Configurable entry sorting
@@ -20,7 +20,7 @@ Originally, soupault assumed that the index entry sort key field is some kind of
 `index_date_formats` option, and it would attempt to parse every value as a date, or resorted to lexicographic comparison if parsing failed.
 
 A lot of websites with auto-generated index pages are blogs, so that assumption wasn't terribly unreasonable. However, it still was a rather
-inflexible design. Some people 
+inflexible design.
 
 Now there's a new option: `sort_type` that can have three values: `calendar` (the default), `numeric`, and `lexicographic`.
 
