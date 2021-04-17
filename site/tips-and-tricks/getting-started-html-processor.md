@@ -50,7 +50,7 @@ Save that file to `mysite/soupault.conf`.
 The `generator_mode = false` option tells soupault not to look for or use a page template.
 
 With `clean_urls = false` we tell soupault to preserve file paths exactly, e.g.
-`site/about.html` will become `build/about.html`. 
+`site/about.html` will become `build/about.html`.
 
 If you want to automatically convert your site to use clean URLs along the way, you can use `clean_urls = true` instead.
 Then `site/about.html` will become `build/about/index.html` and so on.
@@ -58,7 +58,6 @@ Then `site/about.html` will become `build/about/index.html` and so on.
 The `page_file_extensions = ["htm", "html"]` option from our config tells soupault
 to treat files with extendions `.htm` and `.html` as pages (parse, process, and output).
 All other files will be simply copied unchanged.
-
 
 ### Configuring the source directory
 
@@ -83,7 +82,7 @@ Or, on Windows:
 
 Note that soupault never modifies anything in the `site_dir`, so it's a safe thing to do.
 
-### Run	soupault
+### Run soupault
 
 Now you can run soupault:
 
@@ -104,7 +103,7 @@ python3 -m http.server --directory build
 ```
 
 The output will be more or less exact copy of your source dir. Soupault will set the doctype of the pages
-to `<!DOCTYPE html>` as per the `doctype` option. It will also 
+to `<!DOCTYPE html>` as per the `doctype` option. It will also
 
 ## Configure widgets
 
@@ -166,6 +165,7 @@ and inserts it in the page `<title>`.
 
 ```toml
 [widgets.set-title]
+  widget = "title"
   selector = "h1"
   default = "My website"
 ```
@@ -174,6 +174,7 @@ Some widgets allow you to specify more than one selector, and `title` is one of 
 
 ```toml
 [widgets.set-title]
+  widget = "title"
   selector = ["h1", "h2"]
   default = "My website"
 ```
@@ -212,21 +213,31 @@ to use two independent widgets for that:
 
 Meta tags always go to the page `<head>`, so naturally we use `selector = "head"`.
 
-By default, soupault inserts new content after the last child in the 
+By default, soupault inserts new content after the last child in the
 
 So if your source page looked like:
+
 ```html
 <head>
-  <style>h1 { color: red; }</style>
+  <style>
+    h1 {
+      color: red;
+    }
+  </style>
 </head>
 ```
 
 after processing it will look like:
+
 ```html
 <head>
-  <style>h1 { color: red; }</style>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="generator" content="soupault">
+  <style>
+    h1 {
+      color: red;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="generator" content="soupault" />
 </head>
 ```
 
