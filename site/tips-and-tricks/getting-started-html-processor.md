@@ -166,6 +166,7 @@ and inserts it in the page `<title>`.
 
 ```toml
 [widgets.set-title]
+  widget = "title"
   selector = "h1"
   default = "My website"
 ```
@@ -174,6 +175,7 @@ Some widgets allow you to specify more than one selector, and `title` is one of 
 
 ```toml
 [widgets.set-title]
+  widget = "title"
   selector = ["h1", "h2"]
   default = "My website"
 ```
