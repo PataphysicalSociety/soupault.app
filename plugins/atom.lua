@@ -56,6 +56,7 @@ end
 data["entries"] = entries
 
 feed_template = [[
+{%- autoescape false -%}
 <?xml version='1.0' encoding='UTF-8'?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <id>{{feed_id}}</id>
@@ -65,7 +66,7 @@ feed_template = [[
     <name>{{feed_author}}</name>
     <email>{{feed_author_email}}</email>
   </author>
-  <generator uri="https://soupault.neocities.org" version="{{soupault_version}}">soupault</generator>
+  <generator uri="https://soupault.app" version="{{soupault_version}}">soupault</generator>
   <logo>{{feed_logo}}</logo>
   <subtitle>{{feed_subtitle}}</subtitle>
   {%- for e in entries %}
@@ -74,12 +75,13 @@ feed_template = [[
     <title>{{e.title}}</title>
     <updated>{{e.date}}</updated>
     <content type="html">
-    {{e.excerpt | escape}}
+    {{e.excerpt}}
     </content>
     <link href="{{site_url}}{{e.url}}" rel="alternate"/>
   </entry>
   {% endfor %}
 </feed>
+{% endautoescape -%}
 ]]
 
 feed = String.render_template(feed_template, data)
