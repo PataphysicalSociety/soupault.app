@@ -724,7 +724,7 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
 
 Sometimes you may want to enable certain widgets only for some builds. For example, include analytics scripts only in production builds. It can be done with “build profiles”.
 
-For example, this way you can only include `includes/analytics.html` file in your pages when the build profile is set to “live”:
+For example, this way you can only include `includes/analytics.html` file in your pages when the build profile is set to `live`:
 
 ```toml
 [widgets.analytics]
@@ -735,6 +735,13 @@ For example, this way you can only include `includes/analytics.html` file in you
 ```
 
 Soupault will only process that widget if you run `soupault --profile live`. If you run `soupault --profile dev`, or run it without the `--profile` option, it will ignore that widget.
+
+Since soupault 2.7.0, it's possible to specify more than one build profile. For example, if you run `soupault --profile foo --profile bar`, it will enable both `foo` and `bar` profiles
+and their associated widgets.
+
+### Disabling widgets
+
+Since soupault 2.7.0, it's possible to disable a widget by adding `disabled = true` to its config.
 
 ## Built-in widgets
 
