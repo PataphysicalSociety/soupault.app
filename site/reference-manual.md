@@ -1151,6 +1151,53 @@ You can limit it to deleting only empty elements with `only_if_empty = true`. El
 
 It's possible to delete only the first element matching a selector by adding `delete_all = false` to its config.
 
+#### wrap
+
+The `wrap` widget wraps an element or elements into a "wrapper snippet". For example, this configuration will transform the `<main>` element
+of every page into `<div class="main-wrapper"> <main /> </div>`.
+
+```toml
+[widgets.wrap-main]
+  widget = "wrap"
+  wrapper = """ <div class="main-wrapper"> """
+  #wrapper_selector = "div.main-wrapper"
+  selector = "main"
+  wrap_all = true
+```
+
+By default it will wrap every element that matches the `selector`, but you can make it wrap only the first one with `wrap_all = false`.
+
+##### Wrapper selectors
+
+If there are multiple HTML elements in the wrapper snippet, it's impossible to automatically decide where to insert the content.
+However, if there's only one element, then asking the user to specify where to insert is redundant and annoying.
+Soupault solves it with a `wrapper_selector` parameter.
+
+If your wrapper snippet has only one element, like `<div class="main-wrapper">`, then you can safely omit the `wrapper_selector` option.
+
+Soupault will check the element count in the wrapper snippet. Iff it has exactly one element, then it just inserts the content into it.
+If not, it checks whether a `wrapper_selector` is specified.
+
+If you don't specify it, you will get an error like this:
+
+```
+[ERROR] Could not process page site/reference-manual.md: the wrapper has more then one child element but the wrapper selector is not specified
+```
+
+Example: wrap all `<article>` elements in `<div class="article-outer"> <div class="article-wrapper" /> </div>`.
+
+```toml
+[widgets.wrap-articles]
+  widget = "wrap"
+  wrapper = """ <div class="article-outer"> <div class="article-wrapper">  </div> </div> """
+  wrapper_selector = "div.article-wrapper"
+  selector = "article"
+  wrap_all = true
+```
+
+If the snippet does not have an element matching the `wrapper_selector`, the build will fail. If there are multiple elements that match the selector,
+then soupault will pick the first one.
+
 #### relative_links
 
 The `relative_links` widget adjusts internal links to account for their depth in the directory tree
