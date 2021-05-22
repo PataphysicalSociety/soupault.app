@@ -107,10 +107,8 @@ body
 /* Visual styles */
 html
 {
-    background: #fff;
-    background: var(--Canvas-bg, #fff);
-    color: #000;
-    color: var(--Canvas-color, #000);
+    background: var(--Canvas-bg);
+    color: var(--Canvas-color);
 }
 
 header
@@ -123,9 +121,8 @@ nav, footer
 {
     border-width: 0;
     border-style: solid;
-    border-color:  #c90309;
-    border-color: var(--Accent1-color, #c90309);
-    border-image: linear-gradient(to right, var(--Accent1-color, #c90309), var(--Accent2-color, #d65906)) 2;
+    border-color: var(--Accent1-color);
+    border-image: linear-gradient(to right, var(--Accent1-color), var(--Accent2-color)) 2;
 }
 
 nav
@@ -139,8 +136,7 @@ nav
 
 main
 {
-    color: #222;
-    color: var(--Main-color, #222);
+    color: var(--Main-color);
     text-rendering: optimizeLegibility;
 }
 
@@ -198,12 +194,10 @@ footer
     font-weight: 400;
     font-size: 1.8rem;
     letter-spacing: 0.025em;
-    text-transform: lowercase;
 }
 
 a { 
-    color: #d65906;
-    color: var(--Accent2-color, #d65906);
+    color: var(--Accent2-color);
 }
 
 a:hover, a:focus
@@ -212,8 +206,7 @@ a:hover, a:focus
 }
 
 a.nav-active { 
-    color: #c90309;
-    color: var(--Accent1-color, #c90309);
+    color: var(--Accent1-color);
     font-weight: bold;
 }
 
@@ -224,8 +217,7 @@ a.here { text-decoration: none; }
 hr
 {
     border: 0 none;
-    color: #d65906;
-    color: var(--Accent2-color, #d65906);
+    color: var(--Accent2-color);
     background-color: currentColor;
     height: 2px;
 }
@@ -244,8 +236,7 @@ h5 { font-size: 1.6rem; }
 
 code, kbd, samp
 {
-    color: #1a8a66;
-    color: var(--Code-color, #1a8a66);
+    color: var(--Code-color);
 }
 
 
@@ -279,8 +270,7 @@ b, strong, h1, h2, h3, h4, h5, h6
 
 table, th, td
 {
-    border: 1px solid #c90309;
-    border-color: var(--Accent1-color, #c90309);
+    border: 1px solid var(--Accent1-color);
     border-collapse: collapse;
 }
 
@@ -310,33 +300,30 @@ th, td
 /* highlight theme: Kwrite Editor */
 body.hl	{ background-color: #e0eaee; }
 pre.hl	{ color: #000000; background-color:#e0eaee; font-size: 10pt; font-family: monospace; }
-.hl.num { color: #b07e00; color: var(--Highlight-num, #b07e00); }
-.hl.esc { color: #ff00ff; color: var(--Highlight-esc, #ff00ff); }
-.hl.str { color: #bf0303; color: var(--Highlight-str, #bf0303); }
-.hl.pps { color: #818100; color: var(--Highlight-pps, #818100); }
-.hl.slc { color: #4c4b4b; color: var(--Highlight-slc, #4c4b4b); font-style: italic; }
-.hl.com { color: #4c4b4b; color: var(--Highlight-com, #4c4b4b); font-style: italic; }
-.hl.ppc { color: #008200; color: var(--Highlight-ppc, #008200); }
-.hl.opt { color: #000000; color: var(--Highlight-opt, #000000); }
-.hl.ipl { color: #0057ae; color: var(--Highlight-ipl, #0057ae); }
-.hl.lin { color: #555555; color: var(--Highlight-lin, #555555); }
-.hl.kwa { color: #000000; color: var(--Highlight-kwa, #000000); font-weight: bold; }
-.hl.kwb { color: #0057ae; color: var(--Highlight-kwb, #0057ae); }
-.hl.kwc { color: #000000; color: var(--Highlight-kwc, #000000); font-weight: bold; }
-.hl.kwd { color: #010181; color: var(--Highlight-kwd, #010181); }
+.hl.num { color: var(--Highlight-num); }
+.hl.esc { color: var(--Highlight-esc); }
+.hl.str { color: var(--Highlight-str); }
+.hl.pps { color: var(--Highlight-pps); }
+.hl.slc { color: var(--Highlight-slc); font-style: italic; }
+.hl.com { color: var(--Highlight-com); font-style: italic; }
+.hl.ppc { color: var(--Highlight-ppc); }
+.hl.opt { color: var(--Highlight-opt); }
+.hl.ipl { color: var(--Highlight-ipl); }
+.hl.lin { color: var(--Highlight-lin); }
+.hl.kwa { color: var(--Highlight-kwa); font-weight: bold; }
+.hl.kwb { color: var(--Highlight-kwb); }
+.hl.kwc { color: var(--Highlight-kwc); font-weight: bold; }
+.hl.kwd { color: var(--Highlight-kwd); }
 
 pre
 {
     box-sizing: border-box;
-    background: #efefef;
-    background: var(--Pre-bg, #efefef);
+    background: var(--Pre-bg);
     padding: 2rem;
     margin-left: -2rem;
     margin-right: -2rem;
-    border: 1px solid #aaaaaa;
-    border-color: var(--Pre-border, #aaaaaa);
-    color: #000;
-    color: var(--Pre-color, #000);
+    border: 1px solid var(--Pre-border);
+    color: var(--Pre-color);
 }
 
 pre code
