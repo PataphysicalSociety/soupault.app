@@ -1,3 +1,65 @@
+/** Variables **/
+
+:root
+{
+    --Canvas-bg: #fff;
+    --Canvas-color: #000;
+    --Pre-bg: #efefef;
+    --Pre-color: #000;
+    --Pre-border: #aaa;
+    --Main-color: #333;
+    --Code-color: #1a8a66; /* teal */
+    --Accent1-color: #e31e23; /* red */
+    --Accent2-color: #d65906; /* orange */
+    /* from KWrite */
+    --Highlight-num: #b07e00;
+    --Highlight-esc: #ff00ff;
+    --Highlight-str: #bf0303;
+    --Highlight-pps: #818100;
+    --Highlight-slc: #4c4b4b;
+    --Highlight-com: #4c4b4b;
+    --Highlight-ppc: #008200;
+    --Highlight-opt: #000000;
+    --Highlight-ipl: #0057ae;
+    --Highlight-lin: #555555;
+    --Highlight-kwa: #000000;
+    --Highlight-kwb: #0057ae;
+    --Highlight-kwc: #000000;
+    --Highlight-kwd: #010181;
+}
+
+@media (prefers-color-scheme: dark)
+{
+    :root
+    {
+        --Canvas-bg: #000;
+        --Canvas-color: #fff;
+        --Pre-bg: #151515;
+        --Pre-color: #fff;
+        --Pre-border: #222;
+        --Main-color: #f2f2f2;
+        --Code-color: #2adba4; /* teal */
+        --Accent1-color: #c90309; /* red */
+        --Accent2-color: #ef7f1a; /* orange */
+        --Accent2-hover: #ef7f1a;
+        /* via @toastal */
+        --Highlight-num: #43a60d;
+        --Highlight-esc: #dfad06;
+        --Highlight-str: #f77f1d;
+        --Highlight-pps: #d60041;
+        --Highlight-slc: #a0a0a0;
+        --Highlight-com: #a0a0a0;
+        --Highlight-ppc: #94e39;
+        --Highlight-opt: #ffffff;
+        --Highlight-ipl: #4dc987;
+        --Highlight-lin: #555555;
+        --Highlight-kwa: #d60041;
+        --Highlight-kwb: #8655e7;
+        --Highlight-kwc: #ffffff;
+        --Highlight-kwd: #00a48f;
+    }
+}
+
 /** Fixups */
 
 /* Avoid elements wider than screen on mobile */
@@ -18,55 +80,135 @@ table
     max-width: 100%;
 }
 
+html {
+    font-size: 62.5%;
+}
 
 body
 {
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
+    font-size: 1.6rem;
 }
 
 /** Structural blocks */
 
 #page-wrapper
 {
-    max-width: 1000px;
+    max-width: 88rem;
 
-    padding-top: 2%;
-    padding-bottom: 4%;
-    
+    padding: 1rem 2rem 2rem;
+
     margin-left:  auto; 
     margin-right: auto;
 }
 
+
 /* Visual styles */
-header 
+html
+{
+    background: var(--Canvas-bg);
+    color: var(--Canvas-color);
+}
+
+header
 {
     text-align: center;
 }
 
+/* shared gradient border */
+nav, footer 
+{
+    border-width: 0;
+    border-style: solid;
+    border-color: var(--Accent1-color);
+    border-image: linear-gradient(to right, var(--Accent1-color), var(--Accent2-color)) 2;
+}
+
 nav
 {
-    font-size: 110%;
-
-    border-bottom: 2px solid #c90309;
-
-    padding-top: 5px;
-    padding-bottom: 5px;
-
+    font-size: 1.8rem;
+    border-bottom-width: 2px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
     text-align: center;
+}
+
+main
+{
+    color: var(--Main-color);
+    text-rendering: optimizeLegibility;
 }
 
 footer
 {
     text-align: center;
-    padding-top: 10px;
-    margin-top: 10px;
-    border-top: 2px solid #c90309;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top-width: 2px;
 }
 
-a { color: #d65906; }
+.banner
+{
+    display: grid;
+    grid-gap: 1rem 3rem;
+    grid-template-columns: 12rem auto;
+    justify-content: center;
+    justify-items: flex-start;
+    align-items: center;
+    align-content: center;
+    line-height: 1;
+    align-items: unsafe;
+}
 
-a.nav-active { color: #c90309; font-weight: bold; }
+.banner-logo
+{
+    margin: auto;
+    grid-row: 1 / 3;
+    grid-column: 1 / 2;
+    max-width: 14rem;
+    width: 100%;
+}
+
+.banner-title, .banner-subtitle
+{
+    margin: 0;
+}
+
+.banner-title
+{
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    align-self: flex-end;
+    font-size: 3.6rem;
+    font-weight: 800;
+    letter-spacing: 0.425em;
+    text-transform: uppercase;
+}
+
+.banner-subtitle
+{
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    align-self: flex-start;
+    font-weight: 400;
+    font-size: 1.8rem;
+    letter-spacing: 0.025em;
+}
+
+a { 
+    color: var(--Accent2-color);
+}
+
+a:hover, a:focus
+{
+    text-decoration: underline;
+}
+
+a.nav-active { 
+    color: var(--Accent1-color);
+    font-weight: 700;
+}
 
 nav a { text-decoration: none; }
 
@@ -75,8 +217,8 @@ a.here { text-decoration: none; }
 hr
 {
     border: 0 none;
-    color: #d65906;
-    background-color: #d65906;
+    color: var(--Accent2-color);
+    background-color: currentColor;
     height: 2px;
 }
 
@@ -85,13 +227,18 @@ hr.footnotes { width: 40%; }
 a.footnote
 {
     text-decoration: none;
+    margin-right: 0.4rem;
 }
 
 ul.toc { list-style: none; }
 
-h5 { font-size: 100%; }
+h5 { font-size: 1.6rem; }
 
-code, kbd { color: green; }
+code, kbd, samp
+{
+    color: var(--Code-color);
+}
+
 
 /** Typography */
 
@@ -100,18 +247,26 @@ code, kbd { color: green; }
     main
     {
         text-align: justify;
+        -ms-hyphens: auto;
         hyphens: auto;
     }
 }
 
 body
 {
-    font-family: sans-serif;
+    font-family: system-ui, sans-serif;
+    font-weight: 400;
+}
+
+main p, main li
+{
+    /* optimizing for around 70–90 characters per line for legibility */
+    max-width: 72ch;
 }
 
 table, th, td
 {
-    border: 1px solid #c90309;
+    border: 1px solid var(--Accent1-color);
     border-collapse: collapse;
 }
 
@@ -124,33 +279,48 @@ th, td
 
 .centered { text-align: center; }
 
-code, kbd { font-size: 110%; }
+@media (prefers-color-scheme: dark)
+{
+    body
+    {
+        font-weight: 350;
+    }
+}
 
 
 /* Style definition file generated by highlight 3.52, http://www.andre-simon.de/ */
 /* highlight theme: Kwrite Editor */
-body.hl	{ background-color:#e0eaee; }
-pre.hl	{ color:#000000; background-color:#e0eaee; font-size:10pt; font-family:'Courier New',monospace;}
-.hl.num { color:#b07e00; }
-.hl.esc { color:#ff00ff; }
-.hl.str { color:#bf0303; }
-.hl.pps { color:#818100; }
-.hl.slc { color:#4c4b4b; font-style:italic; }
-.hl.com { color:#4c4b4b; font-style:italic; }
-.hl.ppc { color:#008200; }
-.hl.opt { color:#000000; }
-.hl.ipl { color:#0057ae; }
-.hl.lin { color:#555555; }
-.hl.kwa { color:#000000; font-weight:bold; }
-.hl.kwb { color:#0057ae; }
-.hl.kwc { color:#000000; font-weight:bold; }
-.hl.kwd { color:#010181; }
+body.hl	{ background-color: #e0eaee; }
+pre.hl	{ color: #000000; background-color:#e0eaee; font-size: 10pt; font-family: monospace; }
+.hl.num { color: var(--Highlight-num); }
+.hl.esc { color: var(--Highlight-esc); }
+.hl.str { color: var(--Highlight-str); }
+.hl.pps { color: var(--Highlight-pps); }
+.hl.slc { color: var(--Highlight-slc); font-style: italic; }
+.hl.com { color: var(--Highlight-com); font-style: italic; }
+.hl.ppc { color: var(--Highlight-ppc); }
+.hl.opt { color: var(--Highlight-opt); }
+.hl.ipl { color: var(--Highlight-ipl); }
+.hl.lin { color: var(--Highlight-lin); }
+.hl.kwa { color: var(--Highlight-kwa); font-weight: bold; }
+.hl.kwb { color: var(--Highlight-kwb); }
+.hl.kwc { color: var(--Highlight-kwc); font-weight: bold; }
+.hl.kwd { color: var(--Highlight-kwd); }
 
 pre
 {
-    background-color: #efefef;
-    padding: 10px;
-    border: 1px solid #aaaaaa;
+    box-sizing: border-box;
+    background: var(--Pre-bg);
+    padding: 2rem;
+    margin-left: -2rem;
+    margin-right: -2rem;
+    border: 1px solid var(--Pre-border);
+    color: var(--Pre-color);
+}
+
+pre code
+{
+    color: inherit;
 }
 
 /* Custom ToC style for the reference manual */
@@ -161,11 +331,28 @@ div#refman-sidebar ul.refman-toc-1 { font-weight: bold; color: black; }
 div#refman-sidebar a { text-decoration: none; }
 
 /* Reference manual ToC on the left for widescreen, desktop computers */
-@media only screen and (min-width: 1000px) and (pointer: fine)
+@media only screen and (min-width: 62.5em) and (pointer: fine)
 {
   div#refman { display: flex;  }
-  div#refman-sidebar { align-self: flex-start; margin-right: 20px; min-width: 20em;}
+  div#refman-sidebar { align-self: flex-start; margin-right: 2rem; min-width: 20em;}
   div#refman-main {  }
 }
 
+@media screen and (max-width: 34em)
+{
+    .banner, .banner-logo, .banner-title, .banner-subtitle
+    {
+        display: block;
+        text-align: center;
+        margin: auto;
+    }
+    .banner
+    {
+        margin-bottom: 2rem;
+    }
+    .banner-logo
+    {
+        max-width: 14rem;
+    }
+}
 
