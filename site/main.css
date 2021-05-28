@@ -207,7 +207,7 @@ a:hover, a:focus
 
 a.nav-active { 
     color: var(--Accent1-color);
-    font-weight: bold;
+    font-weight: 700;
 }
 
 nav a { text-decoration: none; }
@@ -246,6 +246,7 @@ code, kbd, samp
 {
     main
     {
+        text-align: justify;
         -ms-hyphens: auto;
         hyphens: auto;
     }
@@ -254,18 +255,13 @@ code, kbd, samp
 body
 {
     font-family: system-ui, sans-serif;
-    font-weight: 450;
+    font-weight: 400;
 }
 
 main p, main li
 {
     /* optimizing for around 70–90 characters per line for legibility */
     max-width: 72ch;
-}
-
-b, strong, h1, h2, h3, h4, h5, h6
-{
-    font-weight: 750;
 }
 
 table, th, td
@@ -287,11 +283,7 @@ th, td
 {
     body
     {
-        font-weight: 400;
-    }
-    b, strong, h1, h2, h3, h4, h5, h6
-    {
-        font-weight: 700;
+        font-weight: 350;
     }
 }
 
