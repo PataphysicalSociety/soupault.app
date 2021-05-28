@@ -257,12 +257,6 @@ body
     font-weight: 400;
 }
 
-main p, main li
-{
-    /* optimizing for around 70–90 characters per line for legibility */
-    max-width: 72ch;
-}
-
 table, th, td
 {
     border: 1px solid var(--Accent1-color);
