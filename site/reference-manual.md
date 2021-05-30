@@ -396,24 +396,22 @@ in the spirit of [microformats](http://microformats.org/).
 This is the configuration for this very site:
 
 ```toml
+# Metadata extracted from pages, using CSS selectors to find elements to extract data from
 [index.fields]
-  title = {
-    selector = ["h1#post-title", "h1"]
-  }
 
-  date = {
-    selector = ["time#post-date", "time"],
-    extract_attribute = "datetime",
-    fallback_to_content = true
-  }
+[index.fields.title]
+  selector = ["h1#post-title", "h1"]
 
-  excerpt = {
-    selector = ["p#post-excerpt", "p"]
-  }
+[index.fields.date]
+  selector = ["time#post-date", "time"]
+  extract_attribute = "datetime"
+  fallback_to_content = true
 
-  reading_time = {
-    selector = "span#reading-time"
-  }
+[index.fields.excerpt]
+  selector = ["p#post-excerpt", "p"]
+
+[index.fields.reading_time]
+  selector = "span#reading-time"
 ```
 
 The `selector` field is either a single CSS selector or a list of selectors that define what to extract
