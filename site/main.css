@@ -310,11 +310,12 @@ pre.hl	{ color: #000000; background-color:#e0eaee; font-size: 10pt; font-family:
 pre
 {
     box-sizing: border-box;
-    background: var(--Pre-bg);
+    overflow: auto;
     padding: 2rem;
     margin-left: -2rem;
     margin-right: -2rem;
     border: 1px solid var(--Pre-border);
+    background: var(--Pre-bg);
     color: var(--Pre-color);
 }
 
@@ -356,3 +357,14 @@ div#refman-sidebar a { text-decoration: none; }
     }
 }
 
+@media screen and (max-width: 28em)
+{
+    .banner-title
+    {
+        font-size: 3.2rem;
+    }
+    .banner-subtitle
+    {
+        font-size: 1.6rem;
+    }
+}
