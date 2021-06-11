@@ -232,6 +232,7 @@ a.footnote
 ul.toc { list-style: none; }
 
 h5 { font-size: 1.6rem; }
+h6 { font-size: 1.4rem; }
 
 code, kbd, samp
 {
