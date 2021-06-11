@@ -9,8 +9,10 @@
     --Pre-border: #aaa;
     --Main-color: #333;
     --Code-color: #1a8a66; /* teal */
-    --Accent1-color: #e31e23; /* red */
+    --Accent1-color: #e31e24; /* red */
     --Accent2-color: #d65906; /* orange */
+    --Selection-bg: #e31e24;
+    --Selection-color: #fff;
     /* from KWrite */
     --Highlight-num: #b07e00;
     --Highlight-esc: #ff00ff;
@@ -39,9 +41,8 @@
         --Pre-border: #222;
         --Main-color: #f2f2f2;
         --Code-color: #2adba4; /* teal */
-        --Accent1-color: #c90309; /* red */
+        --Accent1-color: #e31e24; /* red */
         --Accent2-color: #ef7f1a; /* orange */
-        --Accent2-hover: #ef7f1a;
         /* via @toastal */
         --Highlight-num: #43a60d;
         --Highlight-esc: #dfad06;
@@ -114,6 +115,12 @@ html
 header
 {
     text-align: center;
+}
+
+::selection 
+{
+    background: var(--Selection-bg);
+    color: var(--Selection-color);
 }
 
 /* shared gradient border */
@@ -304,11 +311,12 @@ pre.hl	{ color: #000000; background-color:#e0eaee; font-size: 10pt; font-family:
 pre
 {
     box-sizing: border-box;
-    background: var(--Pre-bg);
+    overflow: auto;
     padding: 2rem;
     margin-left: -2rem;
     margin-right: -2rem;
     border: 1px solid var(--Pre-border);
+    background: var(--Pre-bg);
     color: var(--Pre-color);
 }
 
@@ -350,3 +358,14 @@ div#refman-sidebar a { text-decoration: none; }
     }
 }
 
+@media screen and (max-width: 28em)
+{
+    .banner-title
+    {
+        font-size: 3.2rem;
+    }
+    .banner-subtitle
+    {
+        font-size: 1.6rem;
+    }
+}
