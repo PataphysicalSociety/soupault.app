@@ -103,7 +103,7 @@ Very few soupault settings are fixed, and most can be changed in the configurati
   page_file_extensions = ["htm", "html", "md", "rst", "adoc"]
 
   # Files with these extensions are ignored.
-  ignore_extensions = ["draft"]
+  ignore_extensions = []
 
   # Soupault can work as a website generator or an HTML processor.
   #
@@ -1902,7 +1902,7 @@ Converts a Lua value to JSON. The value doesn't have to be a table, any value wi
 
 It produces minified JSON.
 
-##### <function>JSON.pretty_pring(value)</function>
+##### <function>JSON.pretty_print(value)</function>
 
 Same as `JSON.to_string` but produces human-readable, indented JSON.
 
