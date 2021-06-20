@@ -5,7 +5,8 @@
 <p id="post-excerpt">
 Soupault 2.8.0, is available for download from <a href="https://files.baturin.org/software/soupault/2.8.0">my own server</a>
 and from <a href="https://github.com/dmbaturin/soupault/releases/tag/2.8.0">GitHub releases</a>.
-It adds a new <code>wrap</code> widget, ability to disable any widget in the config, and support for multiple build profiles.
+It adds new options for displaying the default and the effective (i.e. user-defined values plus defaults) configurations
+and a few bug fixes.
 </p>
 
 ## New features
@@ -58,6 +59,6 @@ Stay tuned for updates!
 
 ## Website refresh
 
-Last but not least, you might have noticed that the updated website look. The idea and most of the new CSS belong code to [toastal](github.com/toastal/).
+Last but not least, you might have noticed the updated website look. The idea and most of the new CSS belong code to [toastal](github.com/toastal/).
 The most important improvement is that together we figured how to get rid of the image header and replace it with properly scalable SVG plus styled text,
 so that it works on screens of literally any size. Additionally, the website now supports dark mode, for those who prefer it.
