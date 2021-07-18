@@ -98,7 +98,6 @@ function make_wikipedia_link(element)
 
     wp_page = String.trim(wp_page)
     wp_page = Regex.replace_all(wp_page, "\\s+", "_")
-    Log.warning("WPP: " .. wp_page)
 
     href = format("https://%s.wikipedia.org/wiki/%s", lang, wp_page)
     real_link = make_link(element, href)
