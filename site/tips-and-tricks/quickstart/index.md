@@ -77,7 +77,7 @@ Create a directory for your blog project (say `my-blog/`) and save the following
 
 ## Directory structure
 
-With the config above, we will store out content in the `site/` directory.
+With the config above, we will store our content in the `site/` directory.
 
 We'll also need a directory named `templates/` to store the default template.
 We'll also create `plugins/` directory to store plugins right away—we'll get to it later.
