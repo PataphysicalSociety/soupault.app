@@ -1813,6 +1813,8 @@ These levels are always on and cannot be silenced.
 
 <module name="JSON">
 
+Provides JSON parsing and printing functions.
+
 ##### <function>JSON.from_string(string)</function>
 
 Parses a JSON string and returns a table. Fails plugin execution if `string` isn't syntactically correct JSON data.
@@ -1832,6 +1834,37 @@ It produces minified JSON.
 ##### <function>JSON.pretty_print(value)</function>
 
 Same as `JSON.to_string` but produces human-readable, indented JSON.
+
+</module>
+
+<module name="TOML">
+
+Provides TOML parsing functions. This module doesn't provide TOML <em>printing</em>
+because TOML has a richer type system than Lua, and thus parsing it into a Lua table
+erases a lot of type information. For debugging purposes, you can use `JSON.pretty_print` instead.
+
+##### <function>TOML.from_string(string)</function>
+
+Parses a TOML string and returns a table. Fails plugin execution if `string` isn't a syntactically correct TOML document.
+
+##### <function>TOML.unsafe_from_string(string)</function>
+
+Same as `TOML.from_string`, but returns `nil` on parse errors. Parse error message is logged (warning level).
+
+</module>
+
+<module name="YAML">
+
+Provides YAML parsing functions. Doesn't provide any printing functions as of now.
+For debugging purposes, you can use `JSON.pretty_print` instead.
+
+##### <function>YAML.from_string(string)</function>
+
+Parses a YAML string and returns a table. Fails plugin execution if `string` isn't a syntactically correct TOML document.
+
+##### <function>YAML.unsafe_from_string(string)</function>
+
+Same as `YAML.from_string`, but returns `nil` on parse errors. Parse error message is logged (warning level).
 
 </module>
 
