@@ -948,6 +948,9 @@ Here is the ToC configuration from this website:
   # Required: where to insert the ToC
   selector = "#generated-toc"
 
+  # Optional: exclude headings that match certain CSS selectors from the ToC
+  # ignore_heading_selectors = []
+
   # Optional: minimum and maximum levels, defaults are 1 and 6 respectively
   min_level = 2
   max_level = 6
@@ -1915,7 +1918,7 @@ Returns `table[key]` if the table has that key, otherwise returns the `default_v
 
 ##### <function>Table.iter(func, table)</function>
 
-Executes a function `func(key, value)` for every item in a table.
+Executes a function `func(key, value)` for every item in a table, in an arbitrary order.
 
 Example:
 
@@ -1934,13 +1937,35 @@ Table.iter(show_pair, my_table)
 
 ##### <function>Table.iter_values(func, table)</function>
 
-Executes a function `func(key)` for every _key_ in a table.
+Executes a function `func(value)` for every `(key, value)` pair in a table.
+Handy for iterating over tables where keys don't have any real meaning.
+
+##### <function>Table.iter_ordered(func, table)</function>
+
+##### <function>Table.iter_values_ordered(func, table)</function>
+
+Like `Table.iter` and `Table.iter_values`, but respect the ordering of keys.
+
+These functions first get a list of all keys in a table, then sort it (in ascending order), and then
+loop through that list. See the following pseudo-code for the basic idea:
+
+```
+def iter_ordered(func, tbl):
+  keys = get_table_keys(tbl)
+  keys = sort(keys)
+  for k in keys:
+    f(tbl[k])
+```
+
+Comparing keys of different type is undefined behavior. As of now, it will not cause an error, but will result
+in arbitrary ordering.
 
 ##### <function>Table.fold(func, table, initial_value)</function>
 
 [Folds](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) a table using a `func(key, value, accumulator)` function.
 
-Since tables are not ordered collections, the question whether it's a left or right fold is meaningless.
+Since tables are not ordered collections, the question whether it's a left or right fold is meaningless:
+you should make sure that your operation is commutative.
 
 ##### <function>Table.fold_values(func, table, initial_value)</function>
 
