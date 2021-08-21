@@ -136,9 +136,7 @@ CSS selectors, similar to how <a href="https://microformats.org/">microformats</
 <p>For example, this is how you can say <q>use <code>&lt;h1 id="post-title"&gt;</code> for the post title if a page has one, else just use <code>&lt;h1&gt;</code></q>:</p>
 <pre class="language-toml">
 [index.fields]
-  title = {
-    selector = ["h1#post-title", "h1"]
-  }
+  title = { selector = ["h1#post-title", "h1"] }
 </pre>
 <p>
 Extracted metadata can be rendered on pages using a built-in <a href="http://tategakibunko.github.io/jingoo/">template processor</a> or an external script.
