@@ -99,7 +99,7 @@
   numbered_list = false
 
   heading_links = true
-  heading_link_text = "→ "
+  heading_link_text = "🖛 "
   heading_link_class = "here"
 
   use_heading_slug = true
@@ -178,7 +178,7 @@
   numbered_list = false
 
   heading_links = true
-  heading_link_text = "→ "
+  heading_link_text = "🖛 "
   heading_link_class = "here"
 
   use_heading_slug = true
