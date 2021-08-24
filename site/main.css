@@ -236,6 +236,9 @@ a.footnote
     margin-right: 0.4rem;
 }
 
+ul { list-style-type: "🖙 "; }
+ul:dir(rtl) { list-style-type: "🖘 "; }
+
 ul.toc { list-style: none; }
 
 h5 { font-size: 1.6rem; }
