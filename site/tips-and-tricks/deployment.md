@@ -16,7 +16,7 @@ and unpack the archive.
 
 ## Getting soupault
 
-Since none of the hosting and CI services offer build hosts with preinstalled soupault yet,
+Since most of the hosting and CI services offer build hosts with preinstalled soupault yet,
 you'll need to download it as a part of your website build process.
 
 Since the Linux version of soupault is a statically linked executable, you can run it on any Linux-based build host without any trouble.
@@ -113,4 +113,31 @@ jobs:
         soupault
 
     # Your deployment steps here
+```
+
+## Sourcehut + NixOS 
+
+Sourcehut’s [builds.sr.ht](https://man.sr.ht/builds.sr.ht/) can offer a quick Soupault environment via [NixOS](https://nixos.org/). 
+
+In your project directory, create a build configuration
+
+```
+$ touch .build.yml
+```
+
+The simplest configuration 
+
+```yaml
+image: nixos/unstable # at the time of writing, soupault only available in unstable 
+packages:
+  - nixos.soupault
+  # … any additional dependencies (e.g. preprocessors)
+  # - nixos.asciidoctor
+environment:
+  repo_name: "$YOUR_SOURCEHUT_REPOSITORY_NAME"
+tasks:
+  - build: |
+    cd "$repo_name"
+    soupault
+  # add other tasks such as deployment via `curl`
 ```
