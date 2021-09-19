@@ -144,10 +144,11 @@ You can also export it to a JSON file for further processing.
 </p>
 
 <h2>Ready to start?</h2>
-<p>Read a step by step tutorial to see what it&apos;s like.</p>
+<p>First, <a href="/install">install soupault</a> from a release archive or using a package manager.</p>
+<p>Then read a step by step tutorial for a quick start.</p>
 <ul>
   <li>If you already have a website: how to use soupault as an <a href="/tips-and-tricks/getting-started-html-processor">HTML processor</a>.</li>
-  <li>If you are starting a new site: run <code>soupault --init</code> in an empty directory and read the generated <code>soupault.conf</code> file,
+  <li>If you are starting a new site: run <code>soupault --init</code> in an empty directory and read the generated <code>soupault.toml</code> file,
       it&apos;s pretty detailed and well-commented.</li>
 </ul>
 <p>
@@ -158,50 +159,6 @@ or check out websites of other <a href="/users">soupault users</a>.
 Then read the <a href="/reference-manual">reference manual</a> for details.
 There&apos;s also a <a href="/blog">blog</a> and a section with <a href="/tips-and-tricks">tips and tricks</a>.
 </p>
-
-<h2 id="downloads">Download and install</h2>
-<p>The simplest way to start using soupault is to download a prebuilt executable. Just unpack the archive and you are ready to go.</p>
-<h3>Downloads:</h3>
-<dl>
-  <dt>Linux (x86-64)<fn id="linux-musl">Before you have a chance to interject for a moment,
-      I&apos;ll say that it&apos;s linked statically with <a href="https://www.musl-libc.org/">musl</a>, so it will work on any Linux-based OS,
-      not just GNU/Linux.</span></dt>
-  <dd><soupault-release platform="linux-x86_64" />
-  <dt>Microsoft Windows (64-bit)</dt>
-  <dd><soupault-release platform="win64" /></dd>
-  <dt>macOS</dt>
-  <dd><soupault-release platform="macos-x86_64" /></dd>
-</dl>
-<h3 id="official-builds">Official builds:</h3>
-<dl>
-  <dt>Nix</dt>
-  <dd><a href="https://search.nixos.org/packages?channel=unstable&show=soupault&type=packages&query=soupault">nixpkgs</a> (currently only in <code>unstable</code>)</dd>
-</dl>
-<dl>
-</dl>
-<p>You can verify digital signatures using this public key:</p>
-<pre>RWRfW+gkhk/+iA7dOUtTio6G6KeJCiAEp4Zfozw7eqv2shN90+5z20Cy</pre>
-<p>
-Soupault uses <a href="https://jedisct1.github.io/minisign/">minisign</a> for release signing. To learn about its advantages
-over GPG, read <a href="https://www.openbsd.org/papers/bsdcan-signify.html">signify: Securing OpenBSD From Us To You</a>.
-One obvious advantage is that you don&apos;t need to import the key anywhere, you can pass it as a command line argument:
-</p>
-<pre>
-minisign -Vm soupault-2.3.0-win32.zip -P RWRfW+gkhk/+iA7dOUtTio6G6KeJCiAEp4Zfozw7eqv2shN90+5z20Cy
-</pre>
-<p>
-Soupault is free software published under the <a href="https://mit-license.org/">MIT license</a>. You can build it from source for any
-platform supported by the <a href="https://ocaml.org">OCaml</a> programming language and contribute to it.
-The source code is available from <a href="https://github.com/dmbaturin/soupault">github.com/dmbaturin/soupault</a>.
-</p>
-<p>
-If you already have OCaml and <a href="https://opam.ocaml.org">opam</a> installed, you can also install from the opam repository:
-<code>opam install soupault</code>.
-</p>
-<p>
-If you want CDNed links for your <a href="/tips-and-tricks/deployment/">CI scripts</a>, you can use [GitHub releases](https://github.com/dmbaturin/soupault/releases).
-</p>
-
 <h2>Why it&apos;s named soupault?</h2>
 <p>
 Soupault is named after the French dadaist and surrealist writer <wikipedia>Philippe Soupault</wikipedia>
