@@ -11,7 +11,7 @@ to the first heading, and insert tables of contents.
 
 It assumes that you already have a static website, either handwritten or generated with another tool.
 
-If you don't have soupault on your machine yet, you should <a href="/#downloads">download</a> it.
+If you don't have soupault on your machine yet, you should <a href="/install">instakk</a> it.
 The `soupault` (`soupault.exe` on Windows) executable is standalone and has no dependencies,
 so you only need to copy it somewhere to &ldquo;install&rdquo; it.
 

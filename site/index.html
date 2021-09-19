@@ -18,10 +18,9 @@ is a static page.
   <li><a href="#unix-way">UNIX-way</a></li>
 </ul>
 <p>
-To get started, <a href="#downloads">download</a> and unpack a release archive. Then run <code>soupault --init</code> in an empty directory
+To get started, <a href="/install">install</a> soupault from a release archive or with a package manager. Then run <code>soupault --init</code> in an empty directory
 to initialize a basic project, and then run <code>soupault</code> in that directory to build it. Generated pages will be in <code>build/</code>.
 </p>
-
 <p>
 Then read the <a href="/tips-and-tricks/quickstart">quick start guide</a> to learn how to set up a simple blog.
 If you want to automatically deploy your site with Netlify, GitHub Actions or similar, also read the
@@ -53,15 +52,15 @@ You can also use soupault as a post-processor for an <em>existing</em> website, 
 It also helps you avoid unnecessary client-side JavaScript and create pages <a href="https://jeffhuang.com/designed_to_last/">designed to last</a>.
 </p>
 
-<h2 id="dependency-free">Dependency-free</h2>
+<h2 id="dependency-free">Dependency-free and future-proof</h2>
 <p>
 Soupault is available as a single, statically linked executable (~16&nbsp;MB) for Linux, macOS (x86_64 only, so far), and Microsoft Windows (64-bit).
+It means you can keep using soupault indefinitely even if it becomes unmaintained, and you are never forced to upgrade just to keep using it.
 </p>
 <p>
 It&apos;s easy to install on your own computer or incorporate in a <a href="/tips-and-tricks/deployment/">CI script</a>. Just download and unpack a release
 archive and it&apos;s ready to use.
 </p>
-<p>This means you can keep using soupault indefinitely even if it becomes unmaintained.</p>
 <p>
 Even though you are never forced to upgrade to a new version, soupault tries to make upgrading as easy as possible too.
 The maintainer uses <a href="https://semver.org/">semantic versioning</a>, properly marks backwards-incompatible releases
