@@ -1494,6 +1494,22 @@ Example: `HTML.append_child(page, HTML.create_element("br"))`
 ###### <function>HTML.insert_after(old, new)</function>
 
 Insert the `new` element right before or after the `old` element.
+The `old` value must be an element reference obtained with `HTML.select`/`HTML.select_one`.
+
+Example:
+
+```lua
+-- Insert HTML5 <header> and <footer> elements
+-- before and after <main>
+
+main = HTML.select_one(page, "main")
+
+header = HTML.create_element("header", "This is a header")
+footer = HTML.create_element("footer", "This is a footer")
+
+HTML.insert_before(main, header)
+HTML.insert_after(main, footer)
+```
 
 ###### <function>HTML.replace_content(parent, child)</function>
 
