@@ -311,7 +311,7 @@ We have a post now, but not a way to generate a blog index yet. Before we can ge
 we need to define a content model first.
 
 Remember that the post doesn't have front matter? It's because soupault extracts metadata directly from HTML.
-Back when the Internet was still actually decentralized, that idea was known as [microformats](microformats.org).
+Back when the Internet was still actually decentralized, that idea was known as [microformats](https://microformats.org).
 In a sense, soupault allows you to create your own microformats as you go.
 
 Soupault also doesn't have any built-in contenxt model. You need to define a mapping of metadata fields
