@@ -28,7 +28,7 @@ If you are familiar with the [OCaml](https://ocaml.org) programming language, yo
 Since version 1.6, soupault is available from the [opam](https://opam.ocaml.org) repository. If you already have opam installed, you can install it with opam install soupault.
 
 If you want the latest development version, the git repository is at [github.com/dmbaturin/soupault](https://github.com/dmbaturin/soupault).
-There's also a SourceHut mirror at [git.sr.ht/~dmbaturin/soupault](https://git.sr.ht/~dmbaturin/soupault).
+There's also a Codeberg mirror at [codeberg.org/dmbaturin/soupault](https://codeberg.org/dmbaturin/soupault).
 
 To build a statically linked executable for Linux, identical to the official one, first install a `+musl+static+flambda` compiler flavor, then uncomment the `(flags (-ccopt -static))` line in `src/dune`.
 
@@ -939,7 +939,7 @@ The toc widget generates a table of contents for your page.
 
 Table of contents is generated from heading tags from `<h1>` to `<h6>`.
 
-Here is the ToC configuration from this website:
+Here is a sample ToC configuration:
 
 ```toml
 [widgets.table-of-contents]
@@ -1005,15 +1005,18 @@ Here is the ToC configuration from this website:
 
   # Place nested lists inside a <li> rather than next to it
   valid_html = false
+
+  # Exclude headings that match certain selectors from the ToC
+  ignore_heading_selectors = [".notoc"]
 ```
 
 ##### Heading anchor options
 
-For the table of contents to work, every heading needs a unique id attribute that can be used as an anchor.
+For the table of contents to work, every heading needs a unique `id` attribute that can be used as an anchor.
 
-If a heading has an id attribute, it will be used for the anchor. If it doesn't, soupault has to generate one.
+If a heading has an `id` attribute, it will be used for the anchor. If it doesn't, soupault has to generate one.
 
-By default, if a heading has no id, soupault will generate a unique numeric identifier for it.
+By default, if a heading has no `id`, soupault will generate a unique numeric identifier for it.
 This is safe, but not very good for readers (links are non-indicative) and for people who want to share direct links to sections (they will change if you add more sections).
 
 If you want to find a balance between readability, permanence, and ease of maintenance, there are a few ways you can do it and the choice is yours.
@@ -1032,7 +1035,7 @@ All in all, for best link permanence you should give every heading a unique id b
 
 The breadcrumbs widget generates breadcrumbs for the page.
 
-The only required parameter is selector, the rest is optional.
+The only required parameter is `selector`, the rest is optional.
 
 Example:
 
@@ -1309,10 +1312,20 @@ Plugins have access to the following global variables:
   <dt>soupault_config</dt>
   <dd>The global soupault config (deserialized contents of <code>soupault.conf</code>).</dd>
   <dt>site_index</dt>
-  <dd>Site index data structure</dd>
+  <dd>Site index data structure.</dd>
   <dt>site_dir, build_dir</dt>
   <dd>Convenience variables for the corresponding config options.</dd>
-</dl>  
+  <dt>persistent_data</dt>
+  <dd>A table for values supposed to be persistent between different plugin runs.</dd>
+</dl>
+
+All of these variables _except for `persistent_data`_ are injected into the interpreter environment every time a plugin is executed.
+If you modify their values, it will only affect the instance of the plugin that is currently running. When soupault finishes processing the current page
+and moves on to a new page, the plugin will start in a clean environment.
+
+The `persistent_data` variable is an exception. On soupault startup, its value is set to an empty table.
+When a plugin finishes running, soupault will retrieve it from the Lua interpreter state and pass it to the next plugin run.
+This can be used to avoid running some expensive calculations more than once, or for gathering data from all pages.
 
 ### Plugin API
 
@@ -1375,6 +1388,23 @@ Returns the first element matching any of specified selectors.
 Example: `links_and_pics = HTML.select_all_of(page, {"a", "img"})`
 
 Returns all elements matching any of specified selectors.
+
+##### Checking if elements would match selectors
+
+###### <function>HTML.matches_selector(document, elem, selector)</function>
+
+Example: `HTML.matches_selector(page, (HTML.select_one(page, "body")), "body")`
+
+Checks if an element node matches given selector.
+The `elem` value must be an element node retrieved from `document` with a function from the `HTML.select_*` family.
+
+The reason you need to give that function both parent document and child element values is that
+otherwise composite selectors like `div > p` wouldn't work.
+
+###### <function>HTML.matches_any_of_selectors(document, elem, selectors)</function>
+
+Like `HTML.matches_selector`, but allows checking against a list of selectors
+and returns true if any of them would match.
 
 ##### Access to surrounding elements
 
