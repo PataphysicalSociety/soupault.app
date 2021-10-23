@@ -20,7 +20,7 @@ all variables it created or modified would be destroyed.
 Most of the time, that's a good thing since it prevents _unintended_ action at a distance. However, it also makes certain
 use cases impossible.
 
-For example, conside the [reading time](/plugins/#reading-time) plugin. It can calculate the estimated reading time for a page
+For example, consider the [reading time](/plugins/#reading-time) plugin. It can calculate the estimated reading time for a page
 based on its word count and insert it into the page. What if you want to calculate the total reading time of all pages on your site though?
 
 You could exploit the fact that soupault processes all "content" pages before it starts processing index pages,
