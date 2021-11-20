@@ -46,7 +46,7 @@ This is the ToC config for this website:
   numbered_list = false
 
   heading_links = true
-  heading_link_text = "🖛 "
+  heading_link_text = "→ "
   heading_link_class = "here"
 
   use_heading_slug = true
@@ -128,7 +128,7 @@ Soupault will create a link for every heading if you add `heading_links = true` 
 
 The default link text is `#`. I chose it because it's safe for any character encoding, relatively popular,
 and invokes an association with the HTML anchor syntax. I don't like it though, so I use
-`heading_link_text = "🖛 "` instead. Note that in the current version you cannot put HTML inside
+`heading_link_text = "→ "` instead. Note that in the current version you cannot put HTML inside
 that text (it can be made to work, so if you want that ability, let me know).
 
 You can style those links though. I give them `here` class with `heading_link_class = "here"`.
