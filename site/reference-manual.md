@@ -1348,17 +1348,27 @@ Example: `h = HTML.parse("<p>hello world<p>")`
 
 Parses a string into an HTML element tree.
 
+Note that this function never signals any parse errors. Just like web browsers,
+it will try to make some sense even out of the most patently invalid HTML
+and correct errors as much as it can.
+
+For best results, make sure that your HTML is valid, since invalid HTML
+may silently produce unexpected behavior.
+
 ###### <function>HTML.create_element(tag, text)</function>
 
 Example: `h = HTML.create_element("p", "hello world")`
 
-Creates an HTML element node.
+Creates an HTML element node. The text argument can be `nil`,
+so you can safely omit it and write something like
+`h = HTML.create_element("hr")`.
 
 ###### <function>HTML.create_text(string)</function>
 
 Example: `h = HTML.create_text("hello world")`
 
-Creates a text node that can be inserted into the page just like element nodes. This function automatically escapes all HTML special characters inside the string. 
+Creates a text node that can be inserted into the page just like element nodes.
+This function automatically escapes all HTML special characters inside the string. 
 
 ###### <function>HTML.inner_html(html)</function>
 
@@ -1378,25 +1388,26 @@ Returns element content as a string, with all HTML tags removed.
 
 Example: `links = HTML.select(page, "a")`
 
-Returns a list of elements matching specified selector. 
+Returns a list of elements that match `selector`.
+The `html` argument can be either a document or an element node.
 
 ###### <function>HTML.select_one(html, selector)</function>
 
 Example: `content_div = HTML.select(page, "div#content")`
 
-Returns the first element matching specified selector, or `nil` if none are found.
+Returns the first element that matches `selector`, or `nil` if none are found.
 
 ###### <function>HTML.select_any_of(html, selectors)</function>
 
 Example: `link_or_pic = HTML.select_any_of(page, {"a", "img"})`
 
-Returns the first element matching any of specified selectors.
+Returns the first element that matches any of specified selectors.
 
 ###### <function>HTML.select_all_of(html, selectors)</function>
 
 Example: `links_and_pics = HTML.select_all_of(page, {"a", "img"})`
 
-Returns all elements matching any of specified selectors.
+Returns all elements that match any of specified selectors.
 
 ##### Checking if elements would match selectors
 
@@ -1405,7 +1416,8 @@ Returns all elements matching any of specified selectors.
 Example: `HTML.matches_selector(page, (HTML.select_one(page, "body")), "body")`
 
 Checks if an element node matches given selector.
-The `elem` value must be an element node retrieved from `document` with a function from the `HTML.select_*` family.
+
+The `elem` value must be an element node retrieved from an `document` with a function from the `HTML.select_*` family.
 
 The reason you need to give that function both parent document and child element values is that
 otherwise composite selectors like `div > p` wouldn't work.
@@ -1443,29 +1455,29 @@ Example: add `class="silly-class"` to every element inside the page `<body>`.
 body = HTML.select_one(page, "body")
 children = HTML.children(body)
 
-local i = 1
-while children[i] do
+function add_silly_class(e)
   if HTML.is_element(children[i]) then
     HTML.add_class(children[i], "silly-class")
   end
-  i = i + 1
 end
+
+Table.iter_values(add_silly_class, children)
 ```
 
 ##### Tag and attribute manipulation
 
 ###### <function>HTML.is_element</function>
 
-Web browsers provide a narrower API than general purpose HTML parsers. In the JavaScript DOM API, element.children provides access to all child elements of an element.
+Web browsers provide a narrower API than general purpose HTML parsers. In the JavaScript DOM API, `element.children` provides access to all _child elements_ of an element.
 
 However, in the HTML parse tree, the picture is more complex. Text nodes are also child nodes—browsers just filter those out because JavaScript code rarely has a need to do anything with text nodes.
 
 Consider this HTML: `<p>This is a <em>great</em> paragraph</p>`. How many children does the `<p>` element have? In fact, three: `text("This is a ")`, `element("em", "great")`, `text(" paragraph")`.
 
 The goal of soupault is to allow modifying HTML pages in any imagineable ways, so it cannot ignore this complexity.
-Many operations like HTML.add_class still make no sense for text nodes, so there has to be a way to check if something is an element or not.
+Many operations like `HTML.add_class` still make no sense for text nodes, so there has to be a way to check if something is an element or not.
 
-That's where HTML.is_element comes in handy. 
+That's where `HTML.is_element` comes in handy. 
 
 ###### <function>HTML.get_tag_name(html_element)</function>
 
@@ -1552,7 +1564,7 @@ HTML.insert_after(main, footer)
 
 ###### <function>HTML.replace_content(parent, child)</function>
 
-Delete all children of the `parent` and insert the `child` element in their place.
+Deletes all children of the `parent` and insert the `child` element in their place.
 
 ###### <function>HTML.delete(element)</function>
 
