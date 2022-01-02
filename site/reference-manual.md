@@ -1564,7 +1564,7 @@ HTML.insert_after(main, footer)
 
 ###### <function>HTML.replace_content(parent, child)</function>
 
-Deletes all children of the `parent` and insert the `child` element in their place.
+Deletes all existing children of the `parent` element and inserts the `child` element in their place.
 
 ###### <function>HTML.delete(element)</function>
 
@@ -1578,9 +1578,12 @@ Deletes all children of an element (but leaves the element itself in place).
 
 ###### <function>HTML.clone_content(html_element)</function>
 
-Creates a new element tree from the content of an element.
+Creates a new HTML element tree object from the content of an element.
 
 Useful for duplicating an element elsewhere in the page.
+Since `HTML.select` and friends return _references_ to elements within the `page` tree.
+To create a new element _value_ that can be independently modified, you need to clone an element
+using this function.
 
 ##### Convenience functions
 
@@ -1606,19 +1609,19 @@ Returns a table that represents the tree of HTML document headings in a format l
 ]
 ```
 
-Values of the heading fields are HTML element references. Perfect for those who want to implement their own ToC generator.
+Values of `heading` fields are HTML element references. Perfect for those who want to implement their own ToC generator.
 
 ##### Behaviour
 
 If an element tree access function cannot find any elements (e.g. there are no elements that match a selector), it returns `nil`.
 
 If a function that expects an HTML element receives `nil`, it immediately returns `nil`,
-so you don't need to check for `nil` at every step and can safely chain calls to those functions<fn>If it sounds like a Maybe monad to you, internally it is.</fn>.
+so you don't need to check for `nil` at every step and can safely chain calls to those functions<fn id="maybe-monad">If it sounds like a Maybe monad to you, internally it is.</fn>.
 
 </module>
 
 <module name="Regex">
-Regular expressions used by this module are mostly Perl-compatible. Capturing groups and back references are not supported.
+Regular expressions used by this module are mostly Perl-compatible. However, capturing groups and back references are not supported.
 
 ##### <function>Regex.match(string, regex)</function>
 
@@ -1637,7 +1640,7 @@ Returns a list of substrings matching a regex.
 
 Example: `s = Regex.replace("/foo/bar", "^/", "")`
 
-Replaces the first occurence of a matching substring. It returns a new string and doesn't modify the original.
+Replaces the first matching substring. It returns a new string and doesn't modify the original.
 
 ##### <function>Regex.replace_all(string, regex, string)</function>
 
