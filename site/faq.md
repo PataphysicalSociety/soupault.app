@@ -34,7 +34,7 @@ No. It has an HTML (post-)processor mode and some projects use it as such becaus
 tool that can do that.
 
 However, it can also do what all other SSGs do: assemble pages, extract metadata from them,
-and render that metadata on index pages. That's not counting its abilit to also manipulate pages
+and render that metadata on index pages. That's not counting its ability to also manipulate pages
 in completely arbitrary ways that other SSGs do not support.
 
 ### Is soupault "blog-aware"?
@@ -57,7 +57,7 @@ If you add an external Markdown preprocessor (I tested with `cmark --smart --uns
 or ~3.2s with logging disabled.
 
 All in all, the UNIX-way approach with delegating some processing steps to external programs does have its cost,
-but for all but the largest websites it's not going to 
+but for all but the largest websites it's not going to be a problem.
 
 ### Are there themes?
 
@@ -70,7 +70,7 @@ is not trivial. The reason for that is heavy use of templates that are by defini
 Working at the HTML element tree level allows soupault to decouple the logic from presentation to a much greater extent,
 so it needs themes less.
 
-However, there are some ready to use applications, such as [blog](/apps/blog).
+However, there are some ready to use blueprints, such as blog..
 
 ### Does soupault use a template processor?
 
