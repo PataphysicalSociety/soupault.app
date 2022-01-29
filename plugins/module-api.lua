@@ -1,7 +1,7 @@
 -- Half-baked plugin for making Lua module API reference nicer
 
 module_toc_tmpl = [[
-<h5>List of module functions</h5>
+<h5 id="{{module}}-function-list">List of module functions</h5>
 <ul>
   {% for f in fns %}
   <li><a href="{{f.id}}">{{f.name}}</a></li>
@@ -51,6 +51,7 @@ while (n <= count) do
   end
   local env = {}
   env["fns"] = module_funcs
+  env["module"] = module_name
   local module_toc = HTML.parse(String.render_template(module_toc_tmpl, env))
   local module_heading = HTML.select_one(module, "h4")
   HTML.insert_after(module_heading, module_toc)
