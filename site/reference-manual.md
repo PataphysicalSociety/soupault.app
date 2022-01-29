@@ -1652,7 +1652,8 @@ Replaces every matching substring. It returns a new string and doesn't modify th
 
 Example: `substrings = Regex.split("foo/bar", "/")`
 
-Splits a string at a separator. 
+Splits a string at a separator.
+
 </module>
 
 <module name="String">
@@ -1836,6 +1837,7 @@ Returns true on UNIX-like systems (Linux, Mac OS, BSDs), false otherwise.
 ##### <function>Sys.is_windows()</function>
 
 Returns true on Microsoft Windows, false otherwise.
+
 </module>
 
 <module name="Plugin">
