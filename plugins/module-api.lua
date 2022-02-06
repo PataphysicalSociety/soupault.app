@@ -4,7 +4,7 @@ module_toc_tmpl = [[
 <h5 id="{{module}}-function-list">List of module functions</h5>
 <ul>
   {% for f in fns %}
-  <li><a href="{{f.id}}">{{f.name}}</a></li>
+  <li><a href="#{{f.id}}">{{f.name}}</a></li>
   {% endfor %}
 </ul>
 ]]
