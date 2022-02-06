@@ -85,21 +85,13 @@ You can replicate the old defaults with this:
 
 ```toml
 [index.fields]
-  author = {
-    selector = "#author"
-  }
+  author = { selector = "#author" }
 
-  date = {
-    selector = "time"
-  }
+  date = { selector = "time" }
 
-  excerpt = {
-    selector = "p"
-  }
+  excerpt = { selector = "p" }
 
-  title = {
-    selector = "h1"
-  }
+  title = { selector = "h1" }
 ```
 
 #### Index views

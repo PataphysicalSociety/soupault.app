@@ -49,11 +49,7 @@ You can easily re-create the old content model with this configuration:
     sort_descending = true
 
 [index.fields]
-  date = {
-    selector = "time",
-    extract_attribute = "datetime",
-    fallback_to_content = true
-  }
+  date = { selector = "time", extract_attribute = "datetime", fallback_to_content = true }
 
   author = { selector = "#author" }
 
