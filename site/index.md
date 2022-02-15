@@ -43,6 +43,10 @@ Or you can write HTML pages by hand if you prefer.
 
 ## Bring any external tools to your workflow and remove unnecessary client-side JavaScript
 
+A lot of time people add non-interactive client-side JavaScript to compensate for missing features
+in their SSGs. Soupault helps you keep your pages lighter by pre-rendering HTML with external
+tools at build time instead.
+
 In the simplest case, you can include the output of an external program in your page,
 in any location identifiable with a CSS selector.
 
@@ -66,6 +70,8 @@ with Andre Simon's [highlight](http://www.andre-simon.de/doku/highlight/en/highl
   selector = '*[class^="language-"]'
   command = 'highlight -O html -f --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
 ```
+
+With additional scripts you can do much more, for example, [render math with KaTeX at build time](/tips-and-tricks/static-rendering/#mathematics).
 
 ## Extract page metadata from HTML, no front matter needed
 
