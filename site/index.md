@@ -118,7 +118,7 @@ Soupault is available as a statically-linked executable with no dependencies. Yo
 for years if it works for you. Or you can download every new version, try it out, and easily revert back
 if something doesn't work.
 
-# Why it's named soupault?
+## Why it's named soupault?
 
 Soupault is named after the French dadaist and surrealist writer <wikipedia>Philippe Soupault</wikipedia>
 because it's based on the <github project="aantron/lambdasoup">lambdasoup</github> library.
@@ -134,7 +134,7 @@ at a random word and landed on <q>dada (n.), a colloquial for a stick horse</q>,
 
 If you are using soupault for your site or want to raise awareness of it, feel free to put a button there.
 
-# Who's behind it?
+## Who's behind it?
 
 So far just me, [Daniil Baturin](https://baturin.org), but everyone is welcome to send a patch/pull request or a suggestion.
 It has grown out of the bunch of ad hoc scripts that used to power my own website, and then I thought I can as well make it usable

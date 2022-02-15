@@ -29,7 +29,7 @@ over GPG, read [signify: Securing OpenBSD From Us To You](https://www.openbsd.or
 One obvious advantage is that you don't need to import the key anywhere, you can pass it as a command line argument:
 
 ```
-minisign -Vm soupault-2.3.0-win32.zip -P RWRfW+gkhk/+iA7dOUtTio6G6KeJCiAEp4Zfozw7eqv2shN90+5z20Cy
+minisign -Vm soupault-$SOUPAULT_RELEASE$-win32.zip -P RWRfW+gkhk/+iA7dOUtTio6G6KeJCiAEp4Zfozw7eqv2shN90+5z20Cy
 ```
 
 ## Package repositories
