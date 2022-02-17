@@ -9,6 +9,9 @@ for existing websites—a use case other tools don't support.
 Soupault is highly-configurable, extensible, and designed to give you complete control
 over your website generation process.
 
+If you are already familiar with other static site generators, check out the
+[comparison with Hugo, Zola, and Jekyll](/tips-and-tricks/comparison/).
+
 ## Quick start
 
 Soupault is very simple to [install](/install/): if you are on Linux (x86-64), macOS, or Microsoft Windows,
@@ -16,7 +19,7 @@ you can just download an executable.
 
 Read a quick start guide to get a feel of soupault's workflow:
 
-* [Create a blog setup from scratch](/tips-and-tricks/quickstart/)
+* [Create a blog setup from scratch](/tips-and-tricks/quickstart/).
 * [Use soupault as a post-processor for an existing website](/tips-and-tricks/getting-started-html-processor/).
 
 Or read on to learn about the advantages.

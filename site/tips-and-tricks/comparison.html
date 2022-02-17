@@ -1,7 +1,7 @@
 <h1>Comparison with other static site generators</h1>
 
 <p>
-This table was compiled in late October 2020 (Soupault 2.1.0, Jekyll 4.1.1, Hugo 0.76, Zola 0.12.2).
+This table was compiled in February 2022 (Soupault 4.0.0, Jekyll 4.2.1, Hugo 0.91.2, Zola 0.15.3).
 If you spot outdated or incorrect information, let me know!
 </p>
 
@@ -14,7 +14,7 @@ If you spot outdated or incorrect information, let me know!
     <th>Soupault</th>
   </tr>
   <tr>
-    <th>Dependency-free</th>
+    <th>Static executable</th>
     <td>Yes</td>
     <td>Yes</td>
     <td>No</td>
@@ -22,23 +22,31 @@ If you spot outdated or incorrect information, let me know!
   </tr>
   <tr>
     <th>Extensibility</th>
-    <td colspan="2">Turing-complete template processor, shortcodes.</td>
-    <td>Ruby plugins.</td>
-    <td>Lua plugins.</td>
+    <td colspan="2">
+      None<fn id="extensibility">Hugo and Zola include a Turing-complete template processor,
+      so it's possible to add custom logic to control its built-in functions.
+      However, it's impossible to add any new functionality with loadable plugins or external helpers.</fn>
+    </td>
+    <td>Ruby plugins</td>
+    <td>Lua plugins, external tools</td>
   </tr>
   <tr>
     <th>Page formats</th>
-    <td>Markdown, Org Mode (built-in); AsciiDoc, RST, Pandoc (external helper, hardcoded).</td>
+    <td>
+      Markdown, Org Mode (built-in); AsciiDoc, RST, Pandoc (external helpers, hardcoded<fn id="hugo-helpers">For some of the helpers, Hugo offers a limited range
+      of built-in options, e.g. for AsciiDoc (see <a href="https://github.com/gohugoio/hugo/blob/master/markup/asciidocext/convert.go">markup/asciidocext/convert.go</a>).
+      It's impossible to add new helpers or pass new options to existing helpers without modifying the Hugo source code though.</fn>)
+    </td>
     <td>Markdown</td>
-    <td>Markdown (built-in), any (via <a href="https://jekyllrb.com/docs/plugins/converters/">convertor plugins</a>).</td>
-    <td> HTML (built-in), any (via <a href="/reference-manual/#page-preprocessors">page preprocessors</a>).</td>
+    <td>Markdown (built-in), any (via <a href="https://jekyllrb.com/docs/plugins/converters/">convertor plugins</a>)</td>
+    <td> HTML (built-in), any (via <a href="/reference-manual/#page-preprocessors">page preprocessors</a>)</td>
   </tr>
   <tr>
     <th>Markdown processor</th>
     <td> <a href="https://github.com/yuin/goldmark/">GoldMark</a>, <a href="https://github.com/russross/blackfriday">BlackFriday</a> </td>
     <td> <a href="https://crates.io/crates/pulldown-cmark">pulldown-cmark</a> </td>
     <td> <a href="https://kramdown.gettalong.org/">kramdown</a> (built-in), any (via plugins)</td>
-    <td>Any (via page preprocessors)</td>
+    <td>No built-in, any (via page preprocessors)</td>
   </tr>
   <tr>
     <th>Config format</th>
@@ -49,41 +57,50 @@ If you spot outdated or incorrect information, let me know!
   </tr>
   <tr>
     <th>Syntax highlighting</th>
-    <td> Built-in (<a href="https://github.com/alecthomas/chroma">Chroma</a>), hardcoded syntax rules.</td>
-    <td><a href="https://www.getzola.org/documentation/content/syntax-highlighting/">Built-in</a>, supports external syntax files.</td>
+    <td> Built-in (<a href="https://github.com/alecthomas/chroma">Chroma</a>), hardcoded syntax rules</td>
+    <td><a href="https://www.getzola.org/documentation/content/syntax-highlighting/">Built-in</a>, supports external syntax files</td>
     <td>Built-in (<a href="http://rouge.jneen.net/">Rouge</a>), any (via plugins).</td>
-    <td>No built-in, any (via <a href="/tips-and-tricks/static-rendering/#syntax-highlighting">element preprocessors</a>).</td>
+    <td>No built-in, any (via <a href="/tips-and-tricks/static-rendering/#syntax-highlighting">element preprocessors</a>)</td>
   </tr>
   <tr>
     <th>Pagination</th>
-    <td>Yes</td>
-    <td>Yes</td>
-    <td>Yes</td>
-    <td>No</td>
+    <td colspan="2">Built-in</td>
+    <td>Built-in or plugins</td>
+    <td>No built-in, done by Lua plugins</td>
   </tr>
   <tr>
     <th>Multilingual sites</th>
-    <td>Yes</td>
-    <td>Yes</td>
+    <td>Yes (built-in)</td>
+    <td>Yes (built-in)</td>
     <td>Plugins exist</td>
-    <td>No</td>
+    <td>Can be implemented with Lua</td>
   </tr>
   <tr>
-    <th>Taxonomies</th>
+    <th>Content model</th>
     <td colspan="3" class="centered">Blog (built-in), extensible</td>
-    <td>No built-in, extensible</td>
+    <td>
+      No built-in, extensible.<fn id="content-model">You configure a <a href="/reference-manual/#index-fields">mapping
+      of CSS selectors of elements</a> to extract metadata from to index fields, then give a template
+      or a script that defines <a href="/reference-manual/#index-views">how to render it</a>
+    </td>
   </tr>
   <tr>
     <th>Front matter</th>
     <td>YAML, JSON, TOML, Org</td>
     <td>TOML</td>
     <td>YAML</td>
-    <td>None. Metadata is extracted from HTML using CSS selectors, similar to <a href="https://microformats.org">microformats</a>.</td>
+    <td>None. Metadata is extracted from HTML using CSS selectors, similar to <a href="https://microformats.org">microformats</a></td>
   </tr>
   <tr>
     <th>Theming</th>
-    <td colspan="3" class="centered">Requires a compatible theme.</td>
-    <td>Any HTML page can be a &ldquo;theme&rdquo;.</td>
+    <td colspan="3" class="centered">Requires a compatible theme</td>
+    <td>
+      Any HTML page can be used as a &ldquo;theme&rdquo;<fn id="themes">This is a complicated question, of course. A typical CMS/SSG &ldquo;theme&rdquo;
+      isn't a theme in the same sense as a desktop theme—it's a mix of presentation (HTML/CSS) and logic (templates).
+      Soupault separates presentation and logic, so it's possible to
+      <a href="/reference-manual/#page-templates">grab any empty HTML page and set up soupault to insert generated content into it</a>.
+      Of course, it <em>does</em> need to be configured to match the structure of that page to insert right things in the right places.</fn>
+    </td>
   </tr>
   <tr>
     <th>Can work with existing websites</th>
@@ -92,15 +109,22 @@ If you spot outdated or incorrect information, let me know!
   </tr>
   <tr>
     <th>Table of contents</th>
-    <td>Markdown and AsciiDoc only, black box.</td>
-    <td>Markdown only, ToC datastructure available to templates.</td>
-    <td>No built-in, various plugins available.</td>
-    <td>Any format (generated from <em>HTML</em> headings after preprocessing), configurable. ToC datastructure is also available to Lua plugins.</td>
+    <td>Markdown and AsciiDoc only, black box</td>
+    <td>Markdown only, ToC datastructure available to templates</td>
+    <td>No built-in, various plugins available</td>
+    <td>
+      Any format (generated from <em>HTML</em> headings after preprocessing), picks up the <code>id</code> from <code>&lt;h*&gt;</code> tags
+      for fully-persistent anchors,
+      <a href="/reference-manual/#toc-widget">highly configurable</a>,
+      ToC datastructure is <a href="/reference-manual/#HTML.get_headings_tree">available to Lua plugins</a>
+    </td>
   </tr>
   <tr>
     <th>Footnotes</th>
-    <td colspan="2">Markdown only, <a href="https://www.markdownguide.org/extended-syntax/#footnotes">manual</a>.</td>
-    <td>Markdown built-in, various plugins.</td>
-    <td>LaTeX-like, automatic back links, configurable.</td>
+    <td colspan="2">Markdown only, <a href="https://www.markdownguide.org/extended-syntax/#footnotes">manual</a></td>
+    <td>Markdown built-in, various plugins</td>
+    <td>LaTeX-like, automatic back links, <a href="/reference-manual/#footnotes-widget">configurable</a></td>
   </tr>
 </table> 
+
+<div id="footnotes"> </div>
