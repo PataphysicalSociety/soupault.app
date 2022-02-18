@@ -249,12 +249,11 @@ code, kbd, samp
 
 /** Typography */
 
-@supports (hyphens: auto) or (-ms-hyphens: auto)
+@supports (hyphens: auto)
 {
     main
     {
         text-align: justify;
-        -ms-hyphens: auto;
         hyphens: auto;
     }
 }
