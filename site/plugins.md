@@ -286,7 +286,7 @@ Download: [quick-links.lua](/files/plugins/quick-links.lua)
 
 ### Hyperlinked glossary
 
-Requires soupault 2.0.0 or newer.
+Requires soupault 3.0.0 or newer.
 
 Provides a way to make a hyperlinked glossary.
 
@@ -310,7 +310,7 @@ To make a glossary, first, define a `<glossary>` element with terms:
 </glossary>
 ```
 
-Then you can refer to them like this: `<term>sepulka</term>`.
+Then you can refer to them like this: `<term>sepulka</term>` anywhere in the page.
 Any `<term>` elements that have glossary definitions will be automatically converted to hyperlinks.
 All other terms will be ignored. The glossary itself will be made into a `<dl>`.
 
