@@ -7,13 +7,19 @@
 
 # Reference manual
 
+This manual applies to soupault $SOUPAULT_RELEASE$.
+Earlier versions may not support some of the feautures described here.<fn id="minimum-version">Ideally, everything should be marked with minimum version,
+like &ldquo;since 2.0.0&rdquo;. Unfortunately, it's not the case because when a project has a very small community, versioned documentation isn't 
+a big concern... and when it grows, it's harder to add after the fact. If you want to add minimum version marks, your patches are welcome</fn>
+If you are running an older version, consider updating to the latest release.
+
 ## Installation
 
 ### Binary release packages
 
 Soupault is distributed as a single, self-contained executable, so installing it from a binary release package it trivial.
 
-You can download it from [files.baturin.org/software/soupault](https://files.baturin.org/software/soupault) or from [GitHub releases](https://github.com/dmbaturin/soupault/releases).
+You can download it from [files.baturin.org/software/soupault](https://files.baturin.org/software/soupault) or from [GitHub releases](https://github.com/PataphysicalSociety/soupault/releases).
 Prebuilt executables are available for Linux (x86-64, statically linked), macOS (x86-64), and Microsoft Windows (64-bit).
 
 Just unpack the archive and copy the executable wherever you want.
@@ -27,8 +33,8 @@ If you are familiar with the [OCaml](https://ocaml.org) programming language, yo
 
 Since version 1.6, soupault is available from the [opam](https://opam.ocaml.org) repository. If you already have opam installed, you can install it with opam install soupault.
 
-If you want the latest development version, the git repository is at [github.com/dmbaturin/soupault](https://github.com/dmbaturin/soupault).
-There's also a Codeberg mirror at [codeberg.org/dmbaturin/soupault](https://codeberg.org/dmbaturin/soupault).
+If you want the latest development version, the git repository is at [github.com/PataphysicalSociety/soupault](https://github.com/PataphysicalSociety/soupault).
+There's also a Codeberg mirror at [codeberg.org/PataphysicalSociety/soupault](https://codeberg.org/PataphysicalSociety/soupault).
 
 To build a statically linked executable for Linux, identical to the official one, first install a `+musl+static+flambda` compiler flavor, then uncomment the `(flags (-ccopt -static))` line in `src/dune`.
 
@@ -254,6 +260,20 @@ Recommended settings for the preprocessor mode:
   clean_urls = false
 ```
 
+### Page processing order
+
+By default, soupault may process content pages in any order. However, you can tell it to process certain pages before everything else
+using the `process_pages_first` option (available since 4.0.0).
+
+```toml
+[settings]
+  process_pages_first = ["foo.html", "bar.md"]
+```
+
+This is useful when processing a page produces some important [persistent data](#plugin-persistent-data), or you are experimenting
+with some setup and want to have the build fail as early as possible, or be able to terminate it after processing
+just the pages you are interested in.
+
 ## Metadata extraction and rendering
 
 Soupault can extract metadata from pages using CSS selectors, similar to what web scrapers are doing. This is more flexible than "front matter",
@@ -379,13 +399,18 @@ The way index data is rendered is defined by "index views". You can have any num
 Which view is used is determined by the `index_selector` option. It's possible to use multiple views on the same page,
 e.g. if you want to display lists of posts grouped by date and by author.
 
+#### Ways to control index rendering
+
 There are three options that can define view rendering:
 
 * `index_item_template` — a <term>jingoo</term> template for an individual item, applied to each index data entry.
-* `index_template` — a Jingoo template for the entire index.
+* `index_template` — a jingoo template for the entire index.
 * `index_processor` — external script that receives index data (in JSON) to stdin and write HTML to stdout.
+* `file` or `lua_source` — path to a Lua index processor, or inline Lua code, respectively.
 
-Example:
+#### Index item template
+
+The simplest way to render an index is to configure `index_item_template`:
 
 ```toml
 [index.views.blog]
@@ -399,6 +424,93 @@ Example:
   """
 ```
 
+#### Index template
+
+If you want more control, you can supply a complete template instead. The list of entries will be in the `entries` variable.
+This is the equivalent of `index_item_template`:
+
+```toml
+[index.views.blog]
+  index_selector = "#blog-index"
+  index_template = """
+    {% for e in entries %}
+    <h2><a href="{{url}}">{{title}}</a></h2>
+    <p><strong>Last update:</strong> {{date}}.</p>
+    <p><strong>Reading time:</strong> {{reading_time}}.</p>
+    <p>{{excerpt}}</p>
+    <a href="{{url}}">Read more</a>
+    {% endfor %}
+  """
+```
+
+#### External index processor
+
+If you have a favorite programming language or a favorite template processor and want to handle site index rendering with it,
+you can call an external program with `index_processor = /path/to/script`. The value is actually a shell command,
+so you can also specify arguments.
+
+Soupault will send a JSON representation of the site index data to the script's stdin and expects HTML source in the stdout.
+
+The index data format is the same as what you get when [exporting site index to JSON](#exporting-metadata-to-json).
+Use the `index.dump_json` option and inspect the output to get familiar with that format.
+
+#### Lua index processor
+
+Finally, if you want total control over the process, you can write an index processor in Lua. The most important advantage
+of Lua index processors is that they can generate new pages and inject them in the processing queue.
+
+For example, here's a reimplementation of the built-in `index_template` behavior in Lua, but with a twist:
+it also creates a clone of the index page.
+
+```toml
+[index.views.blog]
+  index_selector = "#blog-index"
+  index_template = """
+    {% for e in entries %}
+    <h2><a href="{{url}}">{{title}}</a></h2>
+    <p><strong>Last update:</strong> {{date}}.</p>
+    <p><strong>Reading time:</strong> {{reading_time}}.</p>
+    <p>{{excerpt}}</p>
+    <a href="{{url}}">Read more</a>
+    {% endfor %}
+  """
+
+  lua_source = '''
+    -- Render entries on the page
+    env = {}
+    env["entries"] = site_index
+    rendered_entries = HTML.parse(String.render_template(config["index_template"], env))
+    container = HTML.select_one(page, config["index_selector"])
+    HTML.append_child(container, rendered_entries)
+
+    -- Make a clone of the blog index page and add it to the generated page list.
+    -- Soupault will extract the `pages` variable from the Lua environment
+    -- when this script finishes.
+    pages = {}
+    pages[1] = {}
+    pages[1]["page_file"] = Sys.join_path(Sys.dirname(page_file), "index_clone.html")
+    pages[1]["page_content"] = HTML.pretty_print(page)
+  '''
+```
+
+As you can see, generated pages are stored in the `pages` environment. When an index processor finishes, soupault
+extracts that variable from its environment and adds generated pages to the page processing queue.
+
+The `pages` variable must be a table, and its items must be tables with `page_file` and `page_content` fields.
+
+The `page_file` field is the file path where the page _would have been at if it was hand-written_.
+Most of the time you will want to generate it with `Sys.join_path(Sys.dirname(page_file), "page_name.html")`
+to make it appear in the same directory as the index page being processed, but there are no restrictions:
+you can use any path and place the generated page in any section.
+
+The `page_content` must be a _string representation_ of the page, that you can make with `HTML.to_string` or `HTML.pretty_print` functions.
+This is because generated pages are treated the same as pages that actually exist on disk, and need to be parsed.
+
+Soupault will automatically prevent autogenerated pages from generating more pages so there shouldn't be any infinite loops
+or fork bombs coming from this functionality.
+
+### Index view options
+
 By default, soupault will render an index of the current section, e.g. `site/blog/index.html` page will display an index of all pages in the
 `site/blog/` directory.
 
@@ -409,6 +521,16 @@ to the view, like this:
 [index.views.blog-summary]
   section = "blog/"
   index_processor = "scripts/blog-summary.py"
+```
+
+Since soupault 4.0.0, you can also specify index sorting options on a per-view basis:
+
+```toml
+[index.views.list-of-all-pages]
+  sort_by = "title"
+  sort_type = "lexicographic"
+  sort_descending = false
+  strict_sort = false
 ```
 
 ### Interaction with widgets
@@ -460,7 +582,30 @@ This can be helpful if you only have a few such pages, or they all are within a 
 If you want to be able to mark any directory as a "leaf" (hand-made clean URL), there's another way: a `leaf_file` option to the `[index]` table.
 Suppose you set `leaf_file = ".leaf"`. In that case, when soupault finds a directory that has files named `index.html` and `.leaf`, it treats `index.html` as a normal page and extracts metadata from it.
 
-There's no default value for the `leaf_file option`, you need to set it explicitly if you want it. 
+There's no default value for the `leaf_file option`, you need to set it explicitly if you want it.
+
+### Making index data available to every page
+
+By default, soupault first extracts metadata from content pages, then uses it for processing index pages.
+That is fine most of the time, but what if you want to write a plugin to display a global site-wide navigation sidebar
+on every page?
+
+One option would be to [export the site index to JSON](#exporting-metadata-to-json), generate the sidebar from it,
+then run soupault again and have your plugin load that generated file. That's workable, but not very convenient.
+
+Since soupault 4.0.0, a two-pass workflow is a built-in feature that you can enable with the new `index.index_first` option.
+
+```toml
+[index]
+  index_first = true
+```
+
+When it's true, soupault will make a first pass to do the bare minimum of work to extract the site metadata: read pages,
+run widgets set to run before index extraction, and extract the data. It will not run every widget, render anything,
+or write pages to disk during that first pass.
+
+Then it will make a second pass to generate actual pages as usual, except the `index_entry` variable will contain the complete
+site index even for plugins running on content pages.
 
 ### Exporting metadata to JSON
 
@@ -484,6 +629,10 @@ To save time and avoid useless operations, you can run `soupault --index-only`.
 With that option, soupault will stop after extracting the metadata and exporting it to JSON.
 It will run widgets that index extraction depends on (that is, those specified in `extract_after_widgets`),
 but will not run the rest of the widgets, nor will it copy assets or generate pages.
+
+After soupault 4.0.0 introduced the `index_first` option and ability to generate new pages
+from Lua index processors, this approach is much less necessary than it used to be,
+but still remains an option.
 
 ## Widgets
 
@@ -581,10 +730,18 @@ The page option limits a widget to an exact page file, while the section option 
   # only on site/cats/*
   section = "cats"
 
+  # Implicit default
+  include_subsections = false
+
   widget = "insert_html"
   html = "<img src=\"/images/lolcat_cookie.gif\" />"
   selector = "#catpic"
 ```
+
+Note that by default the `section` option applies _only_ to the directory itself. That is, if you have `section = "poems"` in a widget,
+it will apply to `poems/georgia.html`, but not to `poems/soupault/georgia.html`.
+
+If you want a widget to apply to a directory and its subdirectories, add `include_subsections = true`.
 
 #### Excluding sections or pages
 
@@ -1257,6 +1414,13 @@ Then you can use it like any other widget. Plugin subtable name becomes the name
   site_url = "https://www.example.com"
 ```
 
+Alternatively, you can add inline Lua plugins to your config using the `lua_source` option:
+
+```toml
+[plugins.trivial-plugin]
+  lua_source = 'Plugin.exit("this plugin cannot do much")'
+```
+
 If you want to write your own plugins, read on.
 
 ### Plugin example
@@ -1325,8 +1489,10 @@ Plugins have access to the following global variables:
   <dt>site_dir, build_dir</dt>
   <dd>Convenience variables for the corresponding config options.</dd>
   <dt>persistent_data</dt>
-  <dd>A table for values supposed to be persistent between different plugin runs.</dd>
+  <dd>A table for values supposed to be persistent between different plugin runs (since 3.2.0).</dd>
 </dl>
+
+<h4 id="plugin-persistent-data">Persistent data</h4>
 
 All of these variables _except for `persistent_data`_ are injected into the interpreter environment every time a plugin is executed.
 If you modify their values, it will only affect the instance of the plugin that is currently running. When soupault finishes processing the current page
@@ -1340,7 +1506,7 @@ This can be used to avoid running some expensive calculations more than once, or
 
 <module name="HTML">
 
-##### Element creation and destructuring
+##### Document parsing, creation, and formatting
 
 ###### <function>HTML.parse(string)</function>
 
@@ -1355,13 +1521,25 @@ and correct errors as much as it can.
 For best results, make sure that your HTML is valid, since invalid HTML
 may silently produce unexpected behavior.
 
-###### <function>HTML.create_element(tag, text)</function>
+###### <function>HTML.create_document()</function>
 
-Example: `h = HTML.create_element("p", "hello world")`
+Creates an empty HTML element tree root.
 
-Creates an HTML element node. The text argument can be `nil`,
-so you can safely omit it and write something like
-`h = HTML.create_element("hr")`.
+Exaple: `doc = HTML.create_document()`
+
+###### <function>HTML.clone_document(html)</function>
+
+Creates a full copy of an HTML document element tree.
+
+###### <function>HTML.to_string(html)</function>
+
+Converts an HTML element tree to HTML source, without adding any whitespace.
+
+###### <function>HTML.pretty_print(html)</function>
+
+Converts an HTML element tree to HTML source and adds whitespace for readability.
+
+##### Element creation and destructuring
 
 ###### <function>HTML.create_text(string)</function>
 
@@ -1369,6 +1547,14 @@ Example: `h = HTML.create_text("hello world")`
 
 Creates a text node that can be inserted into the page just like element nodes.
 This function automatically escapes all HTML special characters inside the string. 
+
+###### <function>HTML.create_element(tag, text)</function>
+
+Example: `h = HTML.create_element("p", "hello world")`
+
+Creates an HTML element node. The text argument can be `nil`,
+so you can safely omit it and write something like
+`h = HTML.create_element("hr")`.
 
 ###### <function>HTML.inner_html(html)</function>
 
@@ -1464,6 +1650,10 @@ end
 Table.iter_values(add_silly_class, children)
 ```
 
+###### <function>HTML.child_count(elem)</function>
+
+Returns the number of element's children (handy for checking if it has any).
+
 ##### Tag and attribute manipulation
 
 ###### <function>HTML.is_element</function>
@@ -1524,15 +1714,43 @@ Example: `HTML.set_attribute(content_div, "id", "content")`
 
 Sets an attribute value.
 
+###### <function>HTML.delete_attribute(html_element, attribute)</function>
+
+Example: `HTML.delete_attribute(content_div, "id")`
+
+Removes an attribute.
+
+###### <function>HTML.classes(html_element)</function>
+
+If an element has `class` attribute, returns a list (i.e. a number-indexed table) of its classes.
+
 ###### <function>HTML.add_class(html_element, class_name)</function>
 
 Example: `HTML.add_class(p, "centered")`
+
+Adds a new class. If an element has no classes, adds a `class` attribute in the process.
+
+###### <function>HTML.has_class(html_element, class_name)</function>
+
+Returns true is an element has given class.
 
 ###### <function>HTML.remove_class(html_element, class_name)</function>
 
 Example: `HTML.remove_class(p, "centered")`
 
+###### <function>HTML.list_attributes(html_element)</function>
+
+Returns a list (i.e. a number-indexed table) with names of all attributes of an element.
+
+###### <function>HTML.clear_attributes(html_element)</function>
+
+Removes all attributes from an element.
+
 ##### Element tree modification
+
+###### <function>HTML.append_root(parent, child)</function>
+
+Adds a child node at the end of an HTML document element tree.
 
 ###### <function>HTML.append_child(parent, child)</function>
 ###### <function>HTML.prepend_child(parent, child)</function>
@@ -1586,6 +1804,10 @@ To create a new element _value_ that can be independently modified, you need to 
 using this function.
 
 ##### Convenience functions
+
+###### <function>HTML.unwrap(element)</function>
+
+Removes the element and inserts its former children in its place.
 
 ###### <function>HTML.get_heading_level(element)</function>
 
@@ -1658,11 +1880,40 @@ Splits a string at a separator.
 
 <module name="String">
 
+##### <function>String.length(string)</function>
+
+Returns string length, in UTF-8 characters.
+
+That is, `String.length("строка")` is 6; and `String.length("日本語")` is 3.
+
+For strings that contain invalid Unicode characters, it behaves like `String.length_ascii()`
+and measures their length in bytes instead.
+
+##### <function>String.length_ascii(string)</function>
+
+Returns the count of bytes in the string. That is, `String.length("строка")` is 12
+and `String.length("日本語")` is 9.
+
 ##### <function>String.trim(string)</function>
 
 Example: `String.trim(" my string ")` produces `"my string"`
 
-Removes leading and trailing whitespace from a string.
+Removes leading and trailing whitespace from the string.
+
+##### <function>String.truncate(string, length)</function>
+
+Returns the first `length` characters of the string, counting in UTF-8 characters.
+
+For strings that contain invalid Unicode characters, it behaves like `String.truncate_ascii`
+and returns the first `length` _bytes_ instead.
+
+##### <function>String.truncate_ascii(string, length)</function>
+
+Returns the first `length` bytes of the string.
+
+##### <function>String.slugify_soft(string)</function>
+
+Replaces all whitespace in the string with hyphens to make it a valid HTML id.
 
 ##### <function>String.slugify_ascii(string)</function>
 
@@ -1758,6 +2009,13 @@ Checks if a path is a directory. Returns `nil` if the file path does not exist a
 Creates a directory. If a path is several directories deep,
 and some are missing, creates them as needed (like `mkdir -p`).
 
+##### <function>Sys.list_dir(path)</function>
+
+Lists all files (normal files and directories), if `path` is a directory.
+
+If `path` points to a file rather than a directory, fails with an error.
+Always check the path with `Sys.is_dir` beforehand!
+
 ##### <function>Sys.get_extension(file_path)</function>
 
 Returns the file extension, if it has one. For files without an extension it returns an empty string.
@@ -1768,6 +2026,21 @@ Examples:
 * `"cat.jpg" → "jpg"`
 * `"/bin/bash" → ""`
 * `"soupault.tar.gz" → "gz"`
+
+##### <function>Sys.get_extensions(file_path)</function>
+
+Returns a list with all extensions of the file, or an empty list if the file has no extensions.
+
+* `"/bin/bash" → {}`
+* `"cat.jpg → {"jpg"}`
+* `"soupault.tar.gz" → {"tar", "gz"}`
+
+##### <function>Sys.has_extension(file_path, extension)</function>
+
+Check if the file at `file_path` has `extension`.
+
+For example, `Sys.has_extension("file.tar.gz", "tar")` is true,
+and `Sys.has_extension("file.tar.gz", "gz")` is also true.
 
 ##### <function>Sys.basename(file_path)</function>
 
@@ -1788,6 +2061,7 @@ E.g. `Sys.join_path("directory", "file")` will produce `directory/file` on UNIX,
 You also **should not** use this function for concatenating _URLs_, at least not when using soupault on Windows.
 
 ##### <function>Sys.run_program(command)</function>
+##### <function>Sys.run_program_get_exit_code(command)</function>
 
 Executes given command in the <term>system shell</term>.
 Returns 1 (sic!) on success, `nil` on failure, so that `if Sys.run_program(...)` statements work as expected.
@@ -1988,6 +2262,14 @@ This functions tells you for certain.
 
 Returns `table[key]` if the table has that key, otherwise returns the `default_value`.
 
+##### <function>Table.keys(table)</function>
+
+Returns a list of all keys found in `table`.
+
+##### <function>Table.has_value(table, value)</function>
+
+Returns true if any of the keys in the table is associated with `value`.
+
 ##### <function>Table.iter(func, table)</function>
 
 Executes a function `func(key, value)` for every item in a table, in an arbitrary order.
@@ -2051,6 +2333,24 @@ Can be seen as an imperative equivalent of [map](https://en.wikipedia.org/wiki/M
 
 Since assigning `nil` to a field is equivalent to deleting that field from a table, this function can be used as an in-place filter too.
 
+##### <function>Table.apply_to_values(func, table)</function>
+
+Much like `Table.apply`, but takes a unary function `func(value)` and applies it to every value in the table.
+
+##### <function>Table.find_values(func, table)</function>
+
+Takes a table and a function `func(v)`, and returns a list of values for which `func(v)` is not `nil`.
+
+Does not modify the table.
+
+##### <function>Table.take(table, count)</function>
+
+Remove the first `count` items from the table and return them as a list.
+
+##### <function>Table.chunks(table, size)</function>
+
+Splits the table into a list of chunks of up to `size` items.
+
 </module>
 
 <module name="Value">
@@ -2084,6 +2384,202 @@ Returns true if `value` is a table whose every key is an integer number.
 
 </module>
 
+## Page processing hooks
+
+Page processing hooks allow Lua code to run between processing steps of replace them.
+
+They have access to the same API functions as plugins, but their execution environments
+are somewhat different and depend on specific hook.
+
+Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.0.0:
+`pre-parse`, `pre-process`, `post-index`, `render`, `save`.
+
+Like widget subtables, hook subtables can contain arbitrary options.
+
+There can be only one hook of each type.
+
+Hook source code can be given inline using `lua_source` option or loaded from a file
+using the `file` option, just like with plugins.
+There is no automatic discovery for hooks, they must always be configured explicitly.
+
+Like widgets, hooks can be limited to a subset of pages using any <term>limiting option</term>.
+
+<h3 id="hooks-pre-parse">Pre-parse</h3>
+
+The `pre-parse` hook runs on the page source before it's parsed into an HTML element tree.
+
+It has the following variables in its environment:
+
+* `page_source` — the page text.
+* `page_file` — path to the page source file.
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+
+For example, this website uses a pre-parse hook to globally replace the `$SOUPAULT_RELEASE$` string
+with the latest soupault release version from custom options.
+
+```toml
+[hooks.pre-parse]
+  lua_source = '''
+    soupault_release = soupault_config["custom_options"]["latest_soupault_version"]
+    Log.debug("running pre-parse hook")
+    page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_release)
+  '''
+```
+
+<h3 id="hooks-pre-process">Pre-process</h3>
+
+The `pre-process` hook runs after the page is parsed, but before any widgets or index extraction have run.
+
+It has the following variables in its environment:
+
+* `page` — the element tree of the page.
+* `page_file` — path to the page source file.
+* `target_file` — full path to the output file for the generated page.
+* `target_dir` — path to the generated page output directory.
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+* `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
+
+Soupault takes back the following variables:
+
+* `page`
+* `target_file`
+* `target_dir`
+
+This means you can adjust not only the element tree of the page, but also change the output path for it.
+
+For example, here's a rudimentary implementation of a "multilingual site" with a single non-default
+language:
+
+```toml
+[hooks.pre-process]
+  lang_extension = "fr"
+
+  lua_source = '''
+    lang_extension = config["lang_extension"]
+    if Sys.has_extension(page_file, lang_extension) then
+      -- Remove the language extension from the path, wherever it is,
+      -- e.g. "build/test.fr/index.html" → "build/test/index.html"
+      target_file = Regex.replace(target_file, "\\." .. lang_extension, "")
+
+      -- Extract the directory part for further mangling
+      target_dir = Sys.dirname(target_file)  
+
+      -- Get the part without the build dir,
+      -- e.g. "build/test/index.html" → "test/index.html"
+      target_dir_end = Sys.basename(target_dir)
+
+      -- Add the language prefix to the dir,
+      -- e.g. "build/" → "build/fr/"
+      target_dir_start = Sys.join_path(build_dir, lang_extension)
+
+      -- Join it all together into "build/fr/test/index.html"
+      target_dir = Sys.join_path(target_dir_start, target_dir_end)
+      target_file = Sys.join_path(target_dir, Sys.basename(target_file))
+    end
+  '''
+```
+
+<h3 id="hooks-post-index">Post-index</h3>
+
+The `post-index` hook runs after index extraction and can modify index fields.
+
+It has the following variables in its environment:
+
+* `index_fields` — a table with page's index entry.
+* `page` — the element tree of the page.
+* `page_url` — page URL relative to the site root.
+* `page_file` — path to the page source file.
+* `target_file` — full path to the output file for the generated page.
+* `target_dir` — path to the generated page output directory.
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+* `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
+
+The following variables are taken back by soupault:
+
+* `index_fields`
+* `page`
+
+For example, if you store post tags like `<tags>foo, bar, baz</tags>`, you can convert tag strings to lists
+using this hook:
+
+```toml
+[hooks.post-index]
+  lua_source = '''
+     -- Split tags strings like "foo, bar" into lists
+     -- to make life easier for the Atom plugin and the indexer
+     if Value.is_string(index_fields["tags"]) then
+       tags = Regex.split(index_fields["tags"], ",")
+       Table.apply_to_values(String.trim, tags)
+     index_fields["tags"] = tags
+    end
+  '''
+```
+
+<h3 id="hooks-render">Render</h3>
+
+The `render` hook, if present, runs _instead of_ the built-in page rendering functionality.
+
+It has the following variables in its environment:
+
+* `index_fields` — a table with page's index entry.
+* `page` — the element tree of the page.
+* `page_url` — page URL relative to the site root.
+* `page_file` — path to the page source file.
+* `target_file` — full path to the output file for the generated page.
+* `target_dir` — path to the generated page output directory.
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+* `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
+
+Soupault takes back the following variables:
+
+* `page_source` — string representation of the page element tree.
+
+For example, this is how to simpl pretty-print the page:
+
+```toml
+[hooks.render]
+  page_source = HTML.pretty_print(page)
+```
+
+<h3 id="hooks-save">Save</h3>
+
+The `save` hook runs _instead of_ the build-in generated page file output functionality.
+
+It has the following variables in its environment:
+
+* `page_source` — rendered HTML.
+* `page_url` — page URL relative to the site root.
+* `page_file` — path to the page source file.
+* `target_file` — full path to the output file for the generated page.
+* `target_dir` — path to the generated page output directory.
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+* `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
+
+For a trivial example, here's how to just write the HTML to the default output file:
+
+```toml
+[hooks.save]
+  lua_source = '''
+    Sys.write_file(page_source, target_file)
+  '''
+```
+
+
 ## Glossary
 
 <hr>
@@ -2105,6 +2601,11 @@ Returns true if `value` is a table whose every key is an integer number.
     you can enable something only for some pages. Using <code>exclude_page, exclude_section, exclude_path_regex</code> options, you can enable
     something for all pages except some. You can also combine those options. All those options take a single string or a list of strings.
     Examples: <code>page = ["foo.html", "bar.html"]</code>, <code>section = "blog/"</code>, <code>exclude_path_regex = '^(.*)/index\.html$'</code>.
+    <br>
+    Please note that by default the <code>section</code> option applies <em>only</em> to the directory itself. That is, if you have <code>section = "poems"</code> in a widget,
+    it will apply to <code>poems/georgia.html</code>, but not to <code>poems/soupault/georgia.html</code>.
+    <br>
+    If you want a widget to apply to a directory and its subdirectories, add <code>include_subsections = true</code>.
   </definition>
   <definition name="action">
     Action defines what to do with the content. In inclusion widgets (<code>include</code>, <code>insert_html</code>, <code>exec</code>, <code>preprocess_element</code>)
