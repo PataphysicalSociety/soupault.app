@@ -31,6 +31,14 @@ If you spot outdated or incorrect information, let me know!
     <td>Lua plugins, external tools</td>
   </tr>
   <tr>
+    <th>Built-in web server</th>
+    <td colspan="3">Yes</td>
+    <td>
+      No (an intentional choice)<fn id="web-server">On most systems these days, you can serve a directory with <code>python3 -m http.server</code>,
+      or one of the many small web server projects. As of page watching and live rebuild, I'm not convinced that
+      it's useful enough to justity the complexity.</fn>
+  </tr>
+  <tr>
     <th>Page formats</th>
     <td>
       Markdown, Org Mode (built-in); AsciiDoc, RST, Pandoc (external helpers, hardcoded<fn id="hugo-helpers">For some of the helpers, Hugo offers a limited range
