@@ -8,7 +8,7 @@
 # Reference manual
 
 This manual applies to soupault $SOUPAULT_RELEASE$.
-Earlier versions may not support some of the feautures described here.<fn id="minimum-version">Ideally, everything should be marked with minimum version,
+Earlier versions may not support some of the features described here.<fn id="minimum-version">Ideally, everything should be marked with minimum version,
 like &ldquo;since 2.0.0&rdquo;. Unfortunately, it's not the case because when a project has a very small community, versioned documentation isn't 
 a big concern... and when it grows, it's harder to add after the fact. If you want to add minimum version marks, your patches are welcome</fn>
 If you are running an older version, consider updating to the latest release.
@@ -68,7 +68,7 @@ or any other valid CSS selector.
 Then it traverses your site directory where page source files are stored, takes a page file, and parses it into an HTML element tree too.
 If the file is not a complete HTML document (doesn't have an `<html>` element in it), soupault inserts it into the content container element of the template. If it is a complete page, then it goes straight to the next step.
 
-The new HTML tree is then passed to widgets—HTML rewriting modules that manipulate it in different ways: incude other files or outputs of external programs into specific elements,
+The new HTML tree is then passed to widgets—HTML rewriting modules that manipulate it in different ways: include other files or outputs of external programs into specific elements,
 create breadcrumbs for your page, they may delete unwanted elements too.
 
 Processed pages are then written to disk, into a directory structure that mirrors your source directory structure.
@@ -126,7 +126,7 @@ and inserts the result in the `<body>` element of the template, after the last e
 
 The `default_content_selector` option can be any valid CSS3 selector. The `default_content_action` can be an valid content insertion <term>action</term>.
 
-This is the miminal template good for `default_content_selector = "body"`:
+This is the minimal template good for `default_content_selector = "body"`:
 
 ```html
 <html>
@@ -140,7 +140,7 @@ This is the miminal template good for `default_content_selector = "body"`:
 
 It's possible to use multiple templates. However, note that additional templates *must* be limited to specific pages with using a <term>limiting option</term>!
 
-You also cannot omit the default template. This is because there is no reliable way to sort templates and content selector by "specificity" that would satisty every
+You also cannot omit the default template. This is because there is no reliable way to sort templates and content selector by "specificity" that would satisfy every
 user's needs. Without an explicit default template to use for pages that didn't match any of the custom templates, soupault would have to guess,
 but software should never guess, so it requires an explicit default template.
 
@@ -1352,8 +1352,8 @@ Since version 1.2, soupault can be extended with Lua plugins.
 The supported language is Lua 2.5, not modern Lua 5.x. That means no closures and no for loops in particular.
 Here's a copy of the [Lua 2.5 reference manual](https://github.com/lindig/lua-ml/blob/master/doc/lua-2.5-refman.pdf).
 
-On ther other hand, soupault supports some things still impossible in the "real" PUC-Rio Lua implementation,
-like [ordered iteration](#Table.iter_ordered) and iterating over table with non-consequtive numeric keys.
+On the other hand, soupault supports some things still impossible in the "real" PUC-Rio Lua implementation,
+like [ordered iteration](#Table.iter_ordered) and iterating over table with non-consecutive numeric keys.
 
 Plugins are treated like widgets and configured the same way.
 
@@ -1477,7 +1477,7 @@ Plugins have access to the following global variables:
   <dt>target_dir</dt>
   <dd>The directory where the page file will be saved, e.g. build/about/.</dd> 
   <dt>nav_path</dt>
-  <dd>A list of strings representing the logical <term>nativation path</term>. For example, for site/foo/bar/quux.html it's <code>["foo", "bar"]</code>.</dd>
+  <dd>A list of strings representing the logical <term>navigation path</term>. For example, for site/foo/bar/quux.html it's <code>["foo", "bar"]</code>.</dd>
   <dt>page_url</dt>
   <dd>Relative page URL, e.g. /articles or /articles/index.html, depending on the <code>clean_urls</code> setting.</dd>
   <dt>config</dt>
@@ -1525,7 +1525,7 @@ may silently produce unexpected behavior.
 
 Creates an empty HTML element tree root.
 
-Exaple: `doc = HTML.create_document()`
+Example: `doc = HTML.create_document()`
 
 ###### <function>HTML.clone_document(html)</function>
 
@@ -1664,10 +1664,10 @@ However, in the HTML parse tree, the picture is more complex. Text nodes are als
 
 Consider this HTML: `<p>This is a <em>great</em> paragraph</p>`. How many children does the `<p>` element have? In fact, three: `text("This is a ")`, `element("em", "great")`, `text(" paragraph")`.
 
-The goal of soupault is to allow modifying HTML pages in any imagineable ways, so it cannot ignore this complexity.
+The goal of soupault is to allow modifying HTML pages in any imaginable way, so it cannot ignore this complexity.
 Many operations like `HTML.add_class` still make no sense for text nodes, so there has to be a way to check if something is an element or not.
 
-That's where `HTML.is_element` comes in handy. 
+That's where `HTML.is_element` comes in handy.
 
 ###### <function>HTML.get_tag_name(html_element)</function>
 
@@ -2546,7 +2546,7 @@ Soupault takes back the following variables:
 
 * `page_source` — string representation of the page element tree.
 
-For example, this is how to simpl pretty-print the page:
+For example, this is how you simply pretty-print the page:
 
 ```toml
 [hooks.render]

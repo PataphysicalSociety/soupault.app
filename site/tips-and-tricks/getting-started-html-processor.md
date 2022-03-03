@@ -11,7 +11,7 @@ to the first heading, and insert tables of contents.
 
 It assumes that you already have a static website, either handwritten or generated with another tool.
 
-If you don't have soupault on your machine yet, you should <a href="/install">instakk</a> it.
+If you don't have soupault on your machine yet, you should <a href="/install">install</a> it.
 The `soupault` (`soupault.exe` on Windows) executable is standalone and has no dependencies,
 so you only need to copy it somewhere to &ldquo;install&rdquo; it.
 
@@ -56,7 +56,7 @@ If you want to automatically convert your site to use clean URLs along the way, 
 Then `site/about.html` will become `build/about/index.html` and so on.
 
 The `page_file_extensions = ["htm", "html"]` option from our config tells soupault
-to treat files with extendions `.htm` and `.html` as pages (parse, process, and output).
+to treat files with extensions `.htm` and `.html` as pages (parse, process, and output).
 All other files will be simply copied unchanged.
 
 

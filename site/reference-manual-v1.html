@@ -32,7 +32,7 @@ or &ldquo;use the first <code>&lt;h1&gt;</code> element in the page for the page
       and how much is the content.</dd>
   <dt><strong>Built for text-heavy, nested websites</strong></dt>
   <dd>Tables of contents, footnotes, and breadcrumbs are supported out of the box.
-      Existing element id's are respected, so you can make table of contents and footenote links
+      Existing element id's are respected, so you can make table of contents and footnote links
       permanent and immune to link rot, even if you change the heading text or page structure.</dd>
   <dt><strong>Preserves your content structure</strong></dt>
   <dd>Soupault can mirror your directory structure exactly, down to file extensions.
@@ -129,7 +129,7 @@ soupault inserts it into the <em>content container</em> element of the template.
 </p>
 <p>
 The new HTML tree is then passed to <em>widgets</em>&mdash;HTML rewriting modules that manipulate it in different ways:
-incude other files or outputs of external programs into specific elements, create breadcrumbs for your page,
+include other files or outputs of external programs into specific elements, create breadcrumbs for your page,
 they may delete unwanted elements too.
 </p>
 <p>
@@ -180,12 +180,12 @@ but other pages will only be processed by widgets.
 <p>
 If you have an existing directory structure that you don't want to change because it will break links,
 soupault can mirror it exactly, with the <code>clean_urls = false</code> config option.
-It also preseves original file names and extensions in that mode.
+It also preserves original file names and extensions in that mode.
 </p>
 
 <h3>What can it do?</h3>
 <p>
-Soupalt comes with a bunch of built-in widgets that can:
+Soupault comes with a bunch of built-in widgets that can:
 </p>
 <ul>
   <li>Include external files, HTML snippets, or output of external programs into an element.</li>
@@ -382,7 +382,7 @@ For example, to add <code>.txt</code> to the page extension list, use this optio
   page_file_extensions = ["htm", "html", "md", "rst", "txt"]
 </pre>
 <p>
-Remember that for files in formats other than HTML, you also need to specify a <a href="#Page preprocessors">convertor</a>,
+Remember that for files in formats other than HTML, you also need to specify a <a href="#Page preprocessors">converter</a>,
 simply adding an extension to the list is not enough.
 </p>
 
@@ -674,7 +674,7 @@ a carefully written and annotated section index, but it's not always practical.
 </p>
 <p>
 Soupault can automatically generate a section index for you. While it's not a blog
-generator and doesn't have built-in features for generateing indices of pages by date, category etc.,
+generator and doesn't have built-in features for generating indices of pages by date, category etc.,
 it can save you time writing a section index pages by hand.
 </p>
 <p>
@@ -688,7 +688,7 @@ To use automatic indexing, you still need an index page in your section.
 It can be empty, but it must be there. Default index page name is <code>index</code>,
 so you should make a page like <code>site/articles/index.html</code> first.
 </p>
-<p>Then enable indexing in the config. All indexing options are in tne <code>[index]</code> table.</p>
+<p>Then enable indexing in the config. All indexing options are in the <code>[index]</code> table.</p>
 <pre class="language-toml">
 [index]
   index = true
@@ -1122,7 +1122,7 @@ By default, soupault assumes that widgets are independent and can be processed i
 In future versions they may even be processed in parallel, who knows.
 </p>
 <p>
-This can be an issue if one widget relies on putput from another. In that case,
+This can be an issue if one widget relies on output from another. In that case,
 you can order widgets explicitly with the <code>after</code> parameter.
 It can be a single widget (<code>after = "mywidget"</code) or a list of widgets
 (<code>after = ["some-widget", "another-widget"]</code>).
@@ -1712,11 +1712,11 @@ end
   <dt><code>page</code></dt>
   <dd>The page element tree that can be manipulated with functions from the <code>HTML</code> module.</dd>
   <dt><code>page_file</code></dt>
-  <dd>Ppage file path, e.g. <code>site/index.html</code></dd>
+  <dd>Page file path, e.g. <code>site/index.html</code></dd>
   <dt><code>target_dir</code>
   <dd>The directory where the page file will be saved, e.g. <code>build/about/</code>.</dd>
   <dt><code>nav_path</code></dt>
-  <dd>List of strings representing the logical nativation path. For example, for <code>site/foo/bar/quux.html</code>
+  <dd>List of strings representing the logical navigation path. For example, for <code>site/foo/bar/quux.html</code>
       it's <code>["foo", "bar"]</code>.
   <dt><code>page_url</code></dt>
   <dd>Relative page URL, e.g. <code>/articles</code> or <code>/articles/index.html</code>, depending on the <code>clean_urls</code> setting.</dd>
@@ -1823,7 +1823,7 @@ Consider this HTML: <code>&lt;p&gt;This is a &lt;em&gt;great&lt;/em&gt; paragrap
 the <code>&lt;p&gt;</code> element have? In fact, <em>three</em>: <code>text("This is a "), element("em", "great"), text(" paragraph")</code>.
 </p>
 <p>
-The goal of soupault is to allow modifying HTML pages in any imagineable ways, so it cannot ignore this complexity. Many operations like
+The goal of soupault is to allow modifying HTML pages in any imaginable way, so it cannot ignore this complexity. Many operations like
 <code>HTML.add_class</code> still make no sense for text nodes, so there has to be a way to check if something is an element or not.
 </p>
 <p>
@@ -1952,7 +1952,7 @@ Regular expressions used by this module are mostly Perl-compatible. Capturing gr
 
 <h5><code>Regex.replace(string, regex, string)</code></h5>
 <p>Example: <code>s = Regex.replace("/foo/bar", "^/", "")</code></p>
-<p>Replaces the first occurence of a matching substring. It returns a new string and doesn't modify the argument.</p>
+<p>Replaces the first occurrence of a matching substring. It returns a new string and doesn't modify the argument.</p>
 
 <h5><code>Regex.replace_all(string, regex, string)</code></h5>
 <p>Example: <code>Regex.replace_all("/foo/bar", "/", "")</code></p>
@@ -1966,7 +1966,7 @@ Regular expressions used by this module are mostly Perl-compatible. Capturing gr
 <p>Provides functions for communicating with the plugin runner code.</p>
 
 <h5><code>Plugin.fail</code></h5>
-<p>Example: <code>Plugin.fail("Error occured")</code></p>
+<p>Example: <code>Plugin.fail("Error occurred")</code></p>
 <p>Stops plugin execution immediately and signals an error. Errors raised this way are treated as widget processing errors by soupault, for the purpose of the <code>strict</code> option.</p>
 
 <h5><code>Plugin.exit</code></h5>
@@ -2006,7 +2006,7 @@ The intended use case for it is creating and processing assets, e.g. converting 
 If the command fails, it returns <code>nil</code>. The stderr is shown in the execution log,
 but there's no way a plugin can access its stderr or the exit code.
 </p>
-<p>Example: getting the last mofidication date of a page from git.</p>
+<p>Example: getting the last modification date of a page from git.</p>
 <pre class="language-lua">
 git_command = "git log -n 1 --pretty=format:%ad --date=format:%Y-%m-%d -- " .. page_file
 timestamp = Sys.get_program_output(git_command)
@@ -2017,7 +2017,7 @@ end
 </pre>
 
 <h5><code>Sys.random(max)</code></h5>
-<p>Example: <code>Sys.ranrom(1000)</code></p>
+<p>Example: <code>Sys.random(1000)</code></p>
 <p>Generates a random number from 0 to max.</p>
 
 <h5><code>Sys.is_unix ()</code></h5>

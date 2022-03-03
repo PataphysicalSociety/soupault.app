@@ -67,7 +67,7 @@ We also need to tell it the language so that it knows which keywords to highligh
 The simplest way to encode it is a custom class.
 
 What makes it a bit complicated is that you may not want to highlight every `<code>` or `<pre>` element.
-Also, some tools, like Markdown convertors, may add a prefix like `language-html`.
+Also, some tools, like Markdown converters, may add a prefix like `language-html`.
 
 CSS3 selectors allow matching elements by prefix class. This is how we can match any element
 with a class that start with `language-`: `'*[class^="language-"]'`.
