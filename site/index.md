@@ -111,8 +111,8 @@ but the result is a static page.
 
 With built-in features, you can automatically create [two-way footnotes](/reference-manual/#footnotes-widget),
 use a [highly-configurable ToC](/reference-manual/#toc-widget), or [add a URL prefix to every link](/reference-manual/#absolute-links).
-Most importantly, those features are available regardless fo the original page format: whether the HTML was hand-written
-or produced by a convertor, they will work the same.
+Most importantly, those features are available regardless of the original page format: whether the HTML was hand-written
+or produced by a converter, they will work the same.
 
 With [Lua plugins](/plugins/) you can do much more than that. You can transform existing HTML,
 or create a <abbr title="Domain-Specific Language">DSL</abbr> from "fake" elements and convert them to real HTML,

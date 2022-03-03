@@ -314,7 +314,7 @@ Remember that the post doesn't have front matter? It's because soupault extracts
 Back when the Internet was still actually decentralized, that idea was known as [microformats](https://microformats.org).
 In a sense, soupault allows you to create your own microformats as you go.
 
-Soupault also doesn't have any built-in contenxt model. You need to define a mapping of metadata fields
+Soupault also doesn't have any built-in content model. You need to define a mapping of metadata fields
 to CSS3 selectors of elements they should be extracted from.
 
 For our blog we'll use the following fields:
@@ -369,7 +369,7 @@ Now we also need to enable index extraction and setup sorting settings:
 The `"date"` part in the `sort_by = "date"` option is not a magical hardcoded value: it refers to the
 field we defined in the `[index.fields.date]` subtable.
 
-The "caledar" part in the `sort_type` option, however, _is_ magical, it's one of the three allowed
+The "calendar" part in the `sort_type` option, however, _is_ magical, it's one of the three allowed
 sort types: "calendar", "lexicographic", and "numeric". The `date_formats = ["%F"]` refers to the
 ever-popular `YYYY-MM-DD` format.
 
