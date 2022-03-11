@@ -6,27 +6,27 @@ One feature that sets soupault apart from other website generators is that the
 &ldquo;generator&rdquo; part is optional.
 You can use it as an HTML processor for existing websites, without modifying any single page.
 
-In this guide we'll set up soupault to add some meta tags to every page, set the `<title>`
+In this guide we’ll set up soupault to add some meta tags to every page, set the `<title>`
 to the first heading, and insert tables of contents.
 
 It assumes that you already have a static website, either handwritten or generated with another tool.
 
-If you don't have soupault on your machine yet, you should <a href="/install">install</a> it.
+If you don’t have soupault on your machine yet, you should <a href="/install">install</a> it.
 The `soupault` (`soupault.exe` on Windows) executable is standalone and has no dependencies,
-so you only need to copy it somewhere to &ldquo;install&rdquo; it.
+so you only need to copy it somewhere to ‘install’ it.
 
 ## Create a basic config
 
 First you should create a directory for your project. For example:
 
-```
-mkdir mysite
+```shell-session
+$ mkdir mysite
 ```
 
-Soupault's workflow is defined in a single configuration file, `soupault.conf`.
-It's a file in the <a href="https://toml.io">TOML</a> format.
+Soupault’s workflow is defined in a single configuration file, `soupault.conf`.
+It’s a file in the <a href="https://toml.io">TOML</a> format.
 
-For the start, we'll write a basic config for running soupault as an HTML processor:
+For the start, we’ll write a basic config for running soupault as an HTML processor:
 
 ```toml
 [settings]
@@ -81,22 +81,22 @@ Or, on Windows:
   site_dir = 'C:\Users\jrandomhacker\homepage'
 ```
 
-Note that soupault never modifies anything in the `site_dir`, so it's a safe thing to do.
+Note that soupault never modifies anything in the `site_dir`, so it’s a safe thing to do.
 
 ### Run	soupault
 
 Now you can run soupault:
 
-```
-cd mysite
-soupault
+```shell-session
+$ cd mysite
+$ soupault
 ```
 
-We've set `build_dir = "build"` in the config, so it will create a `mysite/build` directory
+We’ve set `build_dir = "build"` in the config, so it will create a `mysite/build` directory
 and output processed pages to it. Just like with `site_dir`, you can set `build_dir` to an arbitrary
 directory, even outside the project directory.
 
-There's no built-in web server in soupault, but you can use any web server you like for preview,
+There’s no built-in web server in soupault, but you can use any web server you like for preview,
 for example the `http.server` module that comes with Python:
 
 ```
@@ -120,7 +120,7 @@ Instead of template variables and filters, soupault provides a set of HTML trans
 like `insert_html` and `include`. Other modules have more logic in them, like `toc` and `footnotes`.
 To identify the source and target elements for transformation, they use CSS selectors.
 
-If you are familiar with DOM manipulation in JavaScript, it's the same concept as `document.querySelector(".myclass")`.
+If you are familiar with DOM manipulation in JavaScript, it’s the same concept as `document.querySelector(".myclass")`.
 You can use any CSS selectors, like `h1` (first `<h1>` element), `div#content` (`<div id="content">`),
 `.footnote` (any element with `class="footnote"`), or `div#content p` (first paragraph inside `<div id="content">`).
 
@@ -128,7 +128,7 @@ HTML transformation modules are called &ldquo;widgets&rdquo;, for lack of a bett
 They are configured in the `[widgets]` table of the config file. TOML uses a dot as a table
 name separator, so options for a widget named `set-title` will be in `[widgets.set-title]`.
 
-Here's an example of a config with two widgets:
+Here’s an example of a config with two widgets:
 
 ```toml
 [settings]
@@ -156,7 +156,7 @@ Here's an example of a config with two widgets:
   html = '<meta name="generator" content="soupault">'
 ```
 
-Now let's see how to automatically enhance a website with some widgets:
+Now let’s see how to automatically enhance a website with some widgets:
 
 ### Setting the page title
 
@@ -290,7 +290,7 @@ Soupault can generate tables of contents from your page headings, as you can see
 That widget has a large number of <a href="/reference-manual/#toc-widget">configurable options</a>
 with (hopefully) sensible defaults.
 
-It's a good idea to add a container with a unique id to every page where you want a ToC,
+It’s a good idea to add a container with a unique id to every page where you want a ToC,
 and point the widget to it. For example, add a `<div id="generated-toc">` to those pages,
 and set up the widget like:
 

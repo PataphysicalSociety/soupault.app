@@ -17,7 +17,7 @@ Historically, plugins would run from a clean state on every page. All [built-in 
 would be injected into the Lua interpreter environment every time a plugin ran. When plugin code finished running,
 all variables it created or modified would be destroyed.
 
-Most of the time, that's a good thing since it prevents _unintended_ action at a distance. However, it also makes certain
+Most of the time, that’s a good thing since it prevents _unintended_ action at a distance. However, it also makes certain
 use cases impossible.
 
 For example, consider the [reading time](/plugins/#reading-time) plugin. It can calculate the estimated reading time for a page
@@ -33,7 +33,7 @@ how much is there to read.
 That is, if you had a way to keep the accumulator variable value. Well, now you do have a way to do that: the new
 `persistent_data` built-in variable.
 
-When soupault loads a plugin, it creates an empty Lua table. When a plugin runs, it injects that table into plugin's environment
+When soupault loads a plugin, it creates an empty Lua table. When a plugin runs, it injects that table into plugin’s environment
 as a global variable named `persistent_data`.
 When that plugin finishes running, soupault extracts the value of that global and stores it until the next plugin run.
 
@@ -59,7 +59,7 @@ However, sometimes you may want to select elements and then decide what exactly 
 depending on its attributes.
 
 For example, soupault 3.1.0 added `ignore_heading_selectors` option for the [ToC widget](/reference-manual/#toc-widget)
-that allows excluding some headings from the ToC. If you want to add a heading to the page but don't want it in its ToC,
+that allows excluding some headings from the ToC. If you want to add a heading to the page but don’t want it in its ToC,
 you can add `ignore_headings_selectors = [".notoc"]` in your `soupault.toml` and then add something like
 `<h1 class="notoc">This heading will not be in the ToC</h1>` to your page.
 

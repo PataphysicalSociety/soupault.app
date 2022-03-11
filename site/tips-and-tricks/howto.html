@@ -1,4 +1,4 @@
-<h1 id="title">How to...</h1>
+<h1 id="title">How to&hellip;</h1>
 
 <div id="generated-toc"></div>
 
@@ -19,18 +19,18 @@ consult the <a href="/reference-manual">reference manual</a>.
 <p>
 No. With many other website generators, you need to create a theme/template in their
 own format to start using them. Soupault can work as an HTML processor for existing
-websites, so it's much easier to give it a try.
+websites, so it&apos;s much easier to give it a try.
 </p>
 <p>
 Note that soupault never modifies any files in place, it always reads pages from one directory
-and outputs processed pages to another. It's thus safe to point at handwritten pages.
+and outputs processed pages to another. It&apos;s thus safe to point at handwritten pages.
 </p>
 <p>
 The simplest way to try it is to <a href="#project-setup">initialize a project</a>,
 copy your pages to the <code>site</code> directory and edit the config (<code>soupault.conf</code>).
 Then just run <code>soupault</code> in that directory.
 </p>
-Soupault knows if a file is a complete page or a page body, and doesn't use a template for
+Soupault knows if a file is a complete page or a page body, and doesn&apos;t use a template for
 complete pages, so the pages will not be messed up. This can be used for <a href="#unique-layout">mixing unique and templated
 pages</a> too.
 </p>
@@ -59,7 +59,7 @@ the <code>build/</code> directory. You can then deploy your website with any too
 
 <h3 id="no-project-dir">Do I need to keep everything in one directory?</h3>
 <p>
-No. It makes things easier, but it's not required. By default, soupault will look for <code>soupault.conf</code>
+No. It makes things easier, but it&apos;s not required. By default, soupault will look for <code>soupault.conf</code>
 in the current working directory and read it. From there it will take the <code>site_dir</code> and <code>build_dir</code>
 options. You can use absolute paths for those options.
 <p>
@@ -70,15 +70,15 @@ and the source/output directories from the command line. A UNIX example of overr
 SOUPAULT_CONFIG="something.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
 </pre>
 <p>
-On Windows, there's no easy way to set an environment variable for a command like that,
+On Windows, there&apos;s no easy way to set an environment variable for a command like that,
 but you can make a batch script or just keep the config file in a parent directory and call soupault from there.
 The <code>--site-dir</code> and <code>--build-dir</code> options work the same on all platforms.
 </p>
 
-<h3 id="assets">How to add assets (pictures, CSS...)</h3>
+<h3 id="assets">How to add assets (pictures, CSS, etc.)</h3>
 <p>
 You can just drop files in the <code>site/</code> directory together with pages. Files with extensions
-matching the <code>page_file_extensions</code> are considered pages and processed, by default that's
+matching the <code>page_file_extensions</code> are considered pages and processed, by default that&apos;s
 <code>["html", "htm", "md", "rst", "adoc"]</code>. All other files are just copied to the <code>build/</code>
 directory unchanged.
 </p>
@@ -142,7 +142,7 @@ with a unique layout different from the template?
 </p>
 <p>
 Soupault decides whether to use a template or not by checking if a page file has an <code>&lt;html&gt;</code> element in it.
-It it does not have it, then the file is considered a page body and inserted in the template. If it does, then it's considered
+It it does not have it, then the file is considered a page body and inserted in the template. If it does, then it&apos;s considered
 a complete page and only processed by widgets/plugins.
 </p>
 <p>
@@ -159,7 +159,7 @@ e.g. <code>templates/header.html</code> and <code>templates/footer.html</code>. 
 <code>&lt;div id="header"&gt;</code> and the footer should be in the <code>&lt;div id="footer"&gt;</code>.
 </p>
 <p>
-First, add <code>div</code>'s with those ids to your <code>templates/main.html</code>.
+First, add <code>div</code>&apos;s with those ids to your <code>templates/main.html</code>.
 Then add this to your <code>soupault.conf</code>:
 </p>
 <pre>
@@ -195,7 +195,7 @@ in the head. You can do it like this:
 A website where every page has the same <code>&lt;title&gt;</code> is a sad sight.
 Soupault can set the page title from an element of your choice. This is the config
 for this page, that takes the title from an element with <code>id="title"</code>.
-In this page it's a <code>h1</code>, but it could be anything.
+In this page it&apos;s a <code>h1</code>, but it could be anything.
 </p>
 <pre>
 [widgets.page-title]
@@ -248,24 +248,24 @@ If you like footnotes, you can add them to your pages easily. This is the config
   back_link_id_append = "-ref"
 </pre>
 <p>
-It assumes that there's a <code>&lt;div id="footnotes"&gt;</code> in the page.
+It assumes that there&apos;s a <code>&lt;div id="footnotes"&gt;</code> in the page.
 If you forget to include it in the page, footnotes will not appear.
 </p>
 <p>
 It considers elements with <code>class="footnote"</code> footnotes and moves them
 to that div. The <code>back_links</code> option creates links back from footnotes
-to their original location, you can set it to <code>false</code> if you don't like
+to their original location, you can set it to <code>false</code> if you don&apos;t like
 those links back.
 </p>
 
-<h2 id="extending">Extending soupault's capabilities</h2>
+<h2 id="extending">Extending soupault&apos;s capabilities</h2>
 
 <h3 id="preprocessors">How to use Markdown and other formats</h3>
 <p>
 Unlike many other static website generators, soupault treats HTML as a first-class citizen.
-In fact, it's the only format it treats that way, there's no built-in support for any other
+In fact, it&apos;s the only format it treats that way, there&apos;s no built-in support for any other
 format. If you are switching from another generator like Jekyll, or simply want to use Markdown
-for some pages that don't need advanced markup, it can be quite limiting though.
+for some pages that don&apos;t need advanced markup, it can be quite limiting though.
 </p>
 <p>
 The good news is that you can write pages in any format as long as you have a program that converts
@@ -275,7 +275,7 @@ will call it automatically.
 <p>
 For Markdown, I suggest the <a href="https://github.com/commonmark/cmark">cmark</a> program.
 On GNU/Linux you can install it from repositories and on macOS you can get it from
-<a href="https://formulae.brew.sh/formula/cmark">homebrew</a>. I couldn't find a prebuilt version
+<a href="https://formulae.brew.sh/formula/cmark">homebrew</a>. I couldn&apos;t find a prebuilt version
 for Windows though, so I made one (v.0.29.0): <a href="/files/cmark.exe">cmark.exe</a>.
 To use it, just add this to your <code>soupault.conf</code> file:
 </p>
@@ -284,7 +284,7 @@ To use it, just add this to your <code>soupault.conf</code> file:
   md = "cmark"
 </pre>
 <p>
-Make sure the program is in your <code>PATH</code>. If it's not, you can specify an absolute path there,
+Make sure the program is in your <code>PATH</code>. If it&apos;s not, you can specify an absolute path there,
 like <code>md = '/opt/cmark/bin/cmark'</code> or <code>md = 'C:\cmark\cmark.exe'</code>.
 </p>
 <p>
@@ -296,10 +296,10 @@ at once.
 
 <h3 id="page-section-collision">What happens if you have a directory and a page with the same name</h3>
 <p>
-Don't do it. It's undefined behaviour and anything may happen.
+Don&apos;t do it. It&apos;s undefined behaviour and anything may happen.
 </p>
 <p>
 In the current versions, if you have clean URLs enabled and there are both <code>site/test.html</code>
 and <code>site/test/index.html</code>, then the latter will be used. But it just happens to be this way
-and may change any time, so don't count on it.
+and may change any time, so don&apos;t count on it.
 </p>

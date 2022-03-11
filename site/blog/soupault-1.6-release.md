@@ -18,10 +18,10 @@ My assumption was that everyone will use an external script anyway, but for many
 especially on Windows or those without programming experience, an external script is a much bigger headache than
 for a programmer on a UNIX-like system.
 
-There's no sensible default for the index. One person will want a simple list of pages, someone else will want
+There’s no sensible default for the index. One person will want a simple list of pages, someone else will want
 a blog feed, or something else entirely.
 
-So I went for adding support for <a href="https://mustache.github.io/">mustache</a> templates. It's a simple
+So I went for adding support for <a href="https://mustache.github.io/">mustache</a> templates. It’s a simple
 and lightweight, logicless template language that should cover the basic needs without bloating the executable
 too much (the library I used only adds about 200 kbytes to the executable).
 
@@ -72,10 +72,10 @@ Examples:
   strip_tags = true
 ```
 
-That's an easy way to prevent tags inserted by other widgets, like footnotes, from polluting the blog feed etc.
+That’s an easy way to prevent tags inserted by other widgets, like footnotes, from polluting the blog feed etc.
 
 Sometimes, however, the situation is more nuanced. You may want to keep HTML that originally was there,
-but prevent widgets from inserting new tags before index data extraction is complete. Now it's possible too.
+but prevent widgets from inserting new tags before index data extraction is complete. Now it’s possible too.
 
 ## Metadata extraction scheduling
 
@@ -88,10 +88,10 @@ However, that would make certain workflows impossible. For example, if you want 
 data into pages from VCS revision history using an `exec` widget, and then use it as a post date in your blog feed, you need to schedule
 metadata extraction _after_ the widget that inserts it.
 
-It's clear that running them after all widgets is a bad idea, so since 1.6, by default it's done before any widgets.
+It’s clear that running them after all widgets is a bad idea, so since 1.6, by default it’s done before any widgets.
 
 However, you also have some control over it. Using the `extract_after_widgets` option, you can specify a list of widgets that must run before
-index data is extracted. Here's an example for the page date in git situation:
+index data is extracted. Here’s an example for the page date in git situation:
 
 ```toml
 [widgets.last-modified]
@@ -109,13 +109,13 @@ If you have `debug = true` in the settings section, it will display the lists of
 Note that it has no effect on the widget processing order. It only means that when all widgets specified in `extract_after_widgets`
 have run, soupault stops to extract the metadata and continues running widgets as usual.
 
-This means you can still run into adverse interactions if you aren't careful. When widgets don't have any dependencies specified,
+This means you can still run into adverse interactions if you aren’t careful. When widgets don’t have any dependencies specified,
 their processing order is arbitrary. To make sure a widget only runs after metadata is extracted, you should add all widgets
 that from the `extract_after_widgets` option to its dependencies.
 
 ## New plugin APIs
 
-First, it's not possible to exit early. The `Plugin.exit` function exists normally, while `Plugin.fail` causes an error.
+First, it’s not possible to exit early. The `Plugin.exit` function exists normally, while `Plugin.fail` causes an error.
 
 ```toml
 if not config["selector"] then
@@ -130,7 +130,7 @@ end
 Plugin.exit()
 ```
 
-There's also a `Regex.split` option for splitting strings. Example:
+There’s also a `Regex.split` option for splitting strings. Example:
 
 The `HTML` module has two additions: `HTML.create_text` and `HTML.strip_tags`. The `HTML.create_text` function
 creates a text node that can be used with `HTML.append_child` and similar functions. This is handy if you want
@@ -140,10 +140,10 @@ The `HTML.strip_tags` is similar to `HTML.inner_html`, but it returns a string r
 with all tags removed.
 
 With `Sys.read_file` function, you can read a file into a string in one step, without having to keep track of any
-file handles. There's also `Sys.join_path` for easily concatenating file paths without having to deal with separators
+file handles. There’s also `Sys.join_path` for easily concatenating file paths without having to deal with separators
 by hand (it takes two strings, not a list).
 
-There's also `page_url` variable now that holds the relative URL like `/about` or `/about.html`, depending on whether
+There’s also `page_url` variable now that holds the relative URL like `/about` or `/about.html`, depending on whether
 clean URLs are used or not.
 
 Last but not least, you can now pass integer options to plugins through the config. You can also pass booleans,
@@ -154,4 +154,4 @@ but they are converted to strings `"true"` and `"false"`.
 * Widget options `section` and `exclude_section` now behave as expected.
 * The default page template now includes a charset meta tag, set to UTF-8.
 * Debug messages for pages excluded by exclude_section/page/regex options now say which widget they are talking about.
-* There's now a debug message telling whether page template was used or not (in generator mode only).
+* There’s now a debug message telling whether page template was used or not (in generator mode only).

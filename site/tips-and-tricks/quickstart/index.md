@@ -4,8 +4,8 @@
 
 In this tutorial we will create a simple blog with soupault.
 
-Note that there's a `soupault --init` option that creates a very basic project,
-but we'll do everything by hand for the sake of learning.
+Note that there’s a `soupault --init` option that creates a very basic project,
+but we’ll do everything by hand for the sake of learning.
 
 ## Initial configuration
 
@@ -79,8 +79,8 @@ Create a directory for your blog project (say `my-blog/`) and save the following
 
 With the config above, we will store our content in the `site/` directory.
 
-We'll also need a directory named `templates/` to store the default template.
-We'll also create `plugins/` directory to store plugins right away—we'll get to it later.
+We’ll also need a directory named `templates/` to store the default template.
+We’ll also create `plugins/` directory to store plugins right away—we’ll get to it later.
 
 ```
 cd my-blog
@@ -95,18 +95,18 @@ In the soupault parlance, a "page template" is simply a page without content. It
 manipulating the HTML element tree rather than by replacing a template tag like `{{content}}`.
 
 If you have experience with other SSGs like Jekyll or Hugo, you might have expected to see
-how to set up a theme. Soupault doesn't have themes in the same sense.
+how to set up a theme. Soupault doesn’t have themes in the same sense.
 
 The problem is that "theme" for a CMS or a "classic" SSG is something of a misnomer:
-the word sounds as if it's just about the looks, but in reality it's a mix of presentation and logic,
+the word sounds as if it’s just about the looks, but in reality it’s a mix of presentation and logic,
 and different themes are rarely interchangeable. They abstract away a lot of complexity,
-but also give you less control, and when you want something a theme doesn't have built-in,
+but also give you less control, and when you want something a theme doesn’t have built-in,
 you have to learn how it works before modifying it.<fn>And you will lock yourself out of easy updates
 to new versions of that theme if you modify it, not to mention the that themes may also break
 from upgrading to a new SSG version.</fn>
 
 Soupault gives you total control over your page assembly process, at cost of a bigger initial setup effort.
-For this tutorial, we'll start with a very simple page.
+For this tutorial, we’ll start with a very simple page.
 
 ```html
 <html>
@@ -126,13 +126,13 @@ Save it to `templates/main.html`.
 
 ## Create a content file in HTML
 
-The only format soupault supports _natively_ is HTML. For the start we'll create the index page of our site.
+The only format soupault supports _natively_ is HTML. For the start we’ll create the index page of our site.
 
 Create a file named `site/index.html` and write some HTML in it, for example:
 
 ```html
 <h1>Welcome to my blog!</h1>
-<p>It's still under construction, remember to check again later.</p>
+<p>It’s still under construction, remember to check again later.</p>
 ```
 
 ## Build the website
@@ -140,14 +140,14 @@ Create a file named `site/index.html` and write some HTML in it, for example:
 Simply run `soupault` without any options in your project directory. Since we set `verbose = true` in the config,
 it will display the build progress.
 
-```
+```shell-session
 $ soupault
 [INFO] Build directory "build" does not exist, creating
 [INFO] Processing page site/index.html
 [INFO] Using the default template for page site/index.html
 ```
 
-Now let's look at the generated `build/index.html` page:
+Now let’s look at the generated `build/index.html` page:
 
 ```html
 $ cat build/index.html 
@@ -163,7 +163,7 @@ $ cat build/index.html
     Welcome to my blog!
    </h1>
    <p>
-    It's still under construction, remember to check again later.
+    It’s still under construction, remember to check again later.
    </p>
   </main>
  </body>
@@ -174,28 +174,28 @@ As you can see, the content of `site/index.html` was injected into the `<main>` 
 
 ## View the site
 
-Soupault doesn't include a built-in web server. You need to bring your own, and there's a wide choice of them.
+Soupault doesn’t include a built-in web server. You need to bring your own, and there’s a wide choice of them.
 
 Nearly every UNIX-like system ships with Python today,
 and you can make the `build/` directory available over HTTP with `python -m http.server --directory build/`
 <fn>That also works on Windows, but need to install Python first of course</fn>.
 
-If you don't like Python's web server, there are many small web server projects around.
+If you don’t like Python’s web server, there are many small web server projects around.
 
-I'll use Python:
+I’ll use Python:
 
-```
+```shell-session
 $ python3 -m http.server --directory build
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 ```
 
-For viewing the site, I'll use [Midori](https://github.com/midori-browser) just to be obnoxiously vendor-neutral.
+For viewing the site, I’ll use [Midori](https://github.com/midori-browser) just to be obnoxiously vendor-neutral.
 
 <img src="00_blog_unstyled.png">
 
 ## Add some CSS
 
-Of course, it's a completely unstyled page. Let's make it look better.
+Of course, it’s a completely unstyled page. Let’s make it look better.
 
 [Sakura](https://oxal.org/projects/sakura/) is a classless CSS framework that provides a much nicer default style than browsers do.
 
@@ -207,10 +207,10 @@ wget https://raw.githubusercontent.com/oxalorg/sakura/master/css/sakura.css -O s
 ```
 
 Now we need to link the stylesheet to our pages. We could just edit `templates/main.html` and add it by hand,
-but instead we'll make soupault insert it for us.
+but instead we’ll make soupault insert it for us.
 
 We will use the `insert_html` widget for that. A soupault _widget_, for lack of a better word, is an HTML processing function.
-There's a bunch of [built-in widgets](/reference-manual/#widgets) and you can add new widgets by installing plugins.
+There’s a bunch of [built-in widgets](/reference-manual/#widgets) and you can add new widgets by installing plugins.
 
 Add the following at the end of your `soupault.toml`:
 
@@ -223,9 +223,9 @@ Add the following at the end of your `soupault.toml`:
 
 This means "insert this HTML snippet into the element that matches CSS3 selector `head`, which is `<head>`".
 
-Now let's build and view the site. You will see a new message in the log: `Processing widget insert-sakura-css on page site/index.html`.
+Now let’s build and view the site. You will see a new message in the log: `Processing widget insert-sakura-css on page site/index.html`.
 
-```
+```shell-session
 $ soupault
 [INFO] Processing page site/index.html
 [INFO] Using the default template for page site/index.html
@@ -238,12 +238,12 @@ And the site will have some basic style now:
 
 ## Add Markdown support
 
-Most static site generators have built-in support for Markdown. Soupault doesn't—it allows you to bring your own
+Most static site generators have built-in support for Markdown. Soupault doesn’t—it allows you to bring your own
 Markdown tools. Or any other tools for that matter: if you are a fan of reStructuredText, AsciiDoc, or any other
 format that can be converted to HTML, you can use it with soupault.
 
-The main reason not to have Markdown built-in is that there's no single Markdown standard really.
-And even among implementations of CommonMark, the HTML output isn't exactly the same.
+The main reason not to have Markdown built-in is that there’s no single Markdown standard really.
+And even among implementations of CommonMark, the HTML output isn’t exactly the same.
 
 Soupault solves that problem using [page preprocessors](/reference-manual/#page-preprocessors). Any program that
 reads data from stdin and writes HTML to stdout can be used as a preprocessor.
@@ -260,7 +260,7 @@ Add this to your `soupault.toml`:
 
 ## Add a post
 
-We are making a blog, remember? Now that we have the basic set up, let's add our first post.
+We are making a blog, remember? Now that we have the basic set up, let’s add our first post.
 
 Save the following to `site/my-first-post.md`.
 
@@ -269,27 +269,27 @@ Save the following to `site/my-first-post.md`.
 
 <time id="post-date">1970-01-01</time>
 
-This is an introductory paragraph. It's long and only interesting for the really dedicated readers.
+This is an introductory paragraph. It’s long and only interesting for the really dedicated readers.
 Everyone else will just skip it.
 
 <p id="post-excerpt">
-This is my first post in the brand new soupault blog. It's really interesting, except for its
+This is my first post in the brand new soupault blog. It’s really interesting, except for its
 introductory paragraph of course. That one is boring and should never be displayed on the front page.
 </p>
 
-Well, I mean it would be interesting if there was any content in this post. Sadly, there isn't,
-so it's no better than its introductory paragraph.
+Well, I mean it would be interesting if there was any content in this post. Sadly, there isn’t,
+so it’s no better than its introductory paragraph.
 ```
 
-Later you'll see why we included that boring introductory paragraph. For now let's build the
+Later you’ll see why we included that boring introductory paragraph. For now let’s build the
 site and look at the post.
 
 If you are familiar with another SSG like Hugo or Jekyll, you might also have noticed that the post
-doesn't have "front matter". This is intentional, we'll get to it in the next section.
+doesn’t have “front matter”. This is intentional, we’ll get to it in the next section.
 
 When you build the site, you will see a new log message: `Calling preprocessor pandoc -f commonmark+smart -t html on page site/my-first-post.md`.
 
-```
+```shell-session
 $ soupault
 [INFO] Processing page site/my-first-post.md
 [INFO] Calling preprocessor pandoc -f commonmark+smart -t html on page site/my-first-post.md
@@ -310,14 +310,14 @@ You will not see the post on the front page yet. To view it, you need to navigat
 We have a post now, but not a way to generate a blog index yet. Before we can generate a blog index,
 we need to define a content model first.
 
-Remember that the post doesn't have front matter? It's because soupault extracts metadata directly from HTML.
+Remember that the post doesn’t have front matter? It’s because soupault extracts metadata directly from HTML.
 Back when the Internet was still actually decentralized, that idea was known as [microformats](https://microformats.org).
 In a sense, soupault allows you to create your own microformats as you go.
 
-Soupault also doesn't have any built-in content model. You need to define a mapping of metadata fields
+Soupault also doesn’t have any built-in content model. You need to define a mapping of metadata fields
 to CSS3 selectors of elements they should be extracted from.
 
-For our blog we'll use the following fields:
+For our blog we’ll use the following fields:
 
 * Title
 * Date
@@ -339,18 +339,18 @@ Add the following to your `soupault.toml`:
 
 ```
 
-Now I'll explain what it all means.
+Now I’ll explain what it all means.
 
 The HTML element naturally suited for the post title is `<h1>`, so we just use `h1` selector.
 
 Date is more interesting: the HTML element
 `<datetime>` is supposed to store the actual date in its `datetime=""` attribute rather than in the content,
 but soupault has an option to do that: `extract_attribute`. The `fallback_to_content` option defines
-whether it will extract the content of the element if it can't fine the attribute,
+whether it will extract the content of the element if it can’t fine the attribute,
 or just leave the field empty.
 
-Finally, it's possible to specify _multiple_ selectors for each field. Remember the boring introductory
-paragraph in the post? It's followed by a paragraph starting with `<p id="post-excerpt">`.
+Finally, it’s possible to specify _multiple_ selectors for each field. Remember the boring introductory
+paragraph in the post? It’s followed by a paragraph starting with `<p id="post-excerpt">`.
 By adding `selector = ["p#post-excerpt", "p"]` to the field config
 
 Now we also need to enable index extraction and setup sorting settings:
@@ -369,7 +369,8 @@ Now we also need to enable index extraction and setup sorting settings:
 The `"date"` part in the `sort_by = "date"` option is not a magical hardcoded value: it refers to the
 field we defined in the `[index.fields.date]` subtable.
 
-The "calendar" part in the `sort_type` option, however, _is_ magical, it's one of the three allowed
+The `"calendar"` part in the `sort_type` option, however, _is_ magical, it’s one of the three allowed
+
 sort types: "calendar", "lexicographic", and "numeric". The `date_formats = ["%F"]` refers to the
 ever-popular `YYYY-MM-DD` format.
 
@@ -377,8 +378,8 @@ ever-popular `YYYY-MM-DD` format.
 
 The `[index.fields]` settings define what to extract, but not how to render the extracted data.
 
-To render the data we'll need to add an [_index view_](/reference-manual/#index-views). You can define multiple index views
-to present the metadata in different ways. We'll define only one simple view.
+To render the data we’ll need to add an [_index view_](/reference-manual/#index-views). You can define multiple index views
+to present the metadata in different ways. We’ll define only one simple view.
 
 Add the following to your `soupault.toml`:
 
@@ -393,9 +394,9 @@ Add the following to your `soupault.toml`:
   """
 ```
 
-The `index_item_template` is the simplest way to do index rendering: it's a [Jingoo](http://tategakibunko.github.io/jingoo/)
+The `index_item_template` is the simplest way to do index rendering: it’s a [Jingoo](http://tategakibunko.github.io/jingoo/)
 template applied to every item. We could also supply a complete template for rendering the entire list of entries,
-of write an external rendering script, but let's stick with the basics for now.
+of write an external rendering script, but let’s stick with the basics for now.
 
 Thus we need to update the `site/index.html` page:
 
@@ -404,16 +405,16 @@ The `index_selector = "#blog-index"` option means soupault will check if a page 
 
 ```html
 <h1>Welcome to my blog!</h1>
-<p>It's still under construction, remember to check again later.</p>
+<p>It’s still under construction, remember to check again later.</p>
 
 <div id="blog-index">
   <!-- blog index will be inserted here -->
 </div>
 ```
 
-Now it's time to build our site. We'll use `soupault --debug`, since debug output includes the index metadata:
+Now it’s time to build our site. We’ll use `soupault --debug`, since debug output includes the index metadata:
 
-```
+```shell-session
 $ soupault --debug
 [DEBUG] Widget processing order: insert-sakura-css
 [INFO] Processing page site/my-first-post.md
@@ -430,14 +431,14 @@ $ soupault --debug
     "url": "/my-first-post",
     "page_file": "site/my-first-post.md",
     "nav_path": [],
-    "excerpt": "This is my first post in the brand new soupault blog. It's really interesting, except for its\nintroductory paragraph of course. That one is boring and should never be displayed on the front page.",
+    "excerpt": "This is my first post in the brand new soupault blog. It’s really interesting, except for its\nintroductory paragraph of course. That one is boring and should never be displayed on the front page.",
     "date": "1970-01-01",
     "title": "My first post"
   }
 ]
 ```
 
-And let's look at the front page.
+And let’s look at the front page.
 
 <img src="03_blog_index.png">
 
@@ -445,16 +446,16 @@ And let's look at the front page.
 
 Soupault is extensible with Lua plugins. You can find a selection in the [/plugins](/plugins/) section.
 
-For demonstration we'll install the [Quick Links](/plugins/#quick-links) plugin. If you used another SSG before,
-you may be familiar with "shortcodes"—template tags that allow you to easily insert snippets of HTML code, e.g.
+For demonstration we’ll install the [Quick Links](/plugins/#quick-links) plugin. If you used another SSG before,
+you may be familiar with “shortcodes”—template tags that allow you to easily insert snippets of HTML code, e.g.
 `{{wikipedia|page=Blog}}`.
 
-That plugin is conceptually similar, but it uses "fake" HTML elements instead of template tags and translates
+That plugin is conceptually similar, but it uses ‘fake’ HTML elements instead of template tags and translates
 them to real valid HTML.
 
-First, create a `plugins/` directory (if you haven't created it already) and download the plugin:
+First, create a `plugins/` directory (if you haven’t created it already) and download the plugin:
 
-```
+```shell-session
 $ mkdir plugins/
 $ wget https://soupault.app/files/plugins/quick-links.lua -O plugins/quick-links.lua
 ```
@@ -471,18 +472,18 @@ Add this to your `soupault.toml`:
   wikipedia_default_language = "en"
 ```
 
-Now let's update out `site/index.html` page to use the `<wikipedia>` tag:
+Now let’s update out `site/index.html` page to use the `<wikipedia>` tag:
 
 ```html
 <h1>Welcome to my <wikipedia>blog</wikipedia>!</h1>
-<p>It's still under construction, remember to check again later.</p>
+<p>It’s still under construction, remember to check again later.</p>
 
 <div id="blog-index"> </div>
 ```
 
 When you build the site, you will see messages about the new widget in the logs.
 
-```
+```shell-session
 $ soupault
 [INFO] Processing page site/my-first-post.md
 [INFO] Calling preprocessor pandoc -f commonmark+smart -t html on page site/my-first-post.md
@@ -500,12 +501,12 @@ $ soupault
 
 <img src="04_wikipedia_link.png">
 
-## What's next?
+## What’s next?
 
 There are many more things you can do with soupault:
-dump the metadata to JSON; specify dependencies between widgets and use one widget's
-output as another's input; you can generate tables of contents and footnotes
-in a highly flexible way... And you can write your own Lua plugins to manipulate
+dump the metadata to JSON; specify dependencies between widgets and use one widget’s
+output as another’s input; you can generate tables of contents and footnotes
+in a highly flexible way… And you can write your own Lua plugins to manipulate
 pages in completely arbitrary ways.
 
 Consult the [reference manual](/reference-manual/) for details.

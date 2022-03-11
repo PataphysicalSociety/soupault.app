@@ -3,20 +3,20 @@
 <span>Date: <time id="post-date">2019-10-27</time> </span>
 
 <p>
-I've released soupault 1.4. It's not a big release, but it offers some convenience features
+I&apos;ve released soupault 1.4. It&apos;s not a big release, but it offers some convenience features
 that hopefully make it easier to work with.
 </p>
 <p>
 You can download the executables from <a href="https://files.baturin.org/software/soupault/1.4/">files.baturin.org/software/soupault/1.4/</a>
-or build them from source. I've moved them to my own server to decrease reliance on third-party services and expose
+or build them from source. I&apos;ve moved them to my own server to decrease reliance on third-party services and expose
 people to less third-party tracking, but still be able to see how often each version is downloaded.
-Here's what has changed.
+Here&apos;s what has changed.
 </p>
 <h3>Separate verbose and debug options</h3>
 <p>
 The original <code>--verbose</code> option was not very well thought out. Its output was an overkill
 for people who just want a build progress log, but it was not detailed enough for debugging some likely
-problems like &ldquo;why my widget doesn't run on a page&rdquo;.
+problems like &ldquo;why my widget doesn&apos;t run on a page&rdquo;.
 </p>
 <p>
 Now there are separate <code>--verbose</code> and <code>--debug</code> options, that you can also make
@@ -30,13 +30,13 @@ permanent by adding them to the <code>[settings]</code> section of your <code>so
 <p>
 The <code>debug</code> option implies <code>verbose</code>. I went for two distinct options instead of a single
 log level option so that they are easier to just comment out in the config if they are not needed and re-enable any time.
-Internally, it's just a log level of course, by default it's set to warning, the <code>verbose</code> option raises
+Internally, it&apos;s just a log level of course, by default it&apos;s set to warning, the <code>verbose</code> option raises
 it to info, and the <code>debug</code> option sets it to debug.
 </p>
 <p>
-What's more important is that <code>verbose</code> option now shows <em>what is done</em>, while <code>debug</code>
-also shows <em>why</em> it's done. It also shows what could be done but isn't and why it isn't. For example, if a widget
-doesn't run, it shows why (target element not in the page, page excluded by options etc.).
+What&apos;s more important is that <code>verbose</code> option now shows <em>what is done</em>, while <code>debug</code>
+also shows <em>why</em> it&apos;s done. It also shows what could be done but isn&apos;t and why it isn&apos;t. For example, if a widget
+doesn&apos;t run, it shows why (target element not in the page, page excluded by options etc.).
 </p>
 <p>
 On the subject of debugging, the <code>after</code> option for setting widget processing order should be less annoying to use now.
@@ -48,17 +48,17 @@ are now distinct errors with clear error messages.
 Many static site generators include a &ldquo;draft mode&rdquo;. If you add something like <code>published: false</code>
 to the page metadata, they ignore the page. Ability to exclude some files is a useful feature, but since soupault extracts
 metadata from the HTML itself, using presence of an element matching some selector as a draft flag is probably a wrong thing to do.
-In that case it would need to parse a page just to decide if it's to be ignored.
+In that case it would need to parse a page just to decide if it&apos;s to be ignored.
 </p>
 <p>
-Instead, I've added a more general option <code>ignore_file_extensions</code>. You can use it for hiding drafts, e.g. by setting it to
+Instead, I&apos;ve added a more general option <code>ignore_file_extensions</code>. You can use it for hiding drafts, e.g. by setting it to
 <code>ignore_file_extensions = ["draft"]</code> and renaming draft pages to <code>mypage.html.draft</code>.
 You can also exclude any file extensions for any reason.
 </p>
 <h3>Sorting order for the index data</h3>
 <p>
-Originally the index data would be sorted by date in the ascending order, i.e. oldest entries first. It's trivial to correct
-in a script, but it's an extra operation and everyone who wants a blog will want them in the opposite order. Now you can
+Originally the index data would be sorted by date in the ascending order, i.e. oldest entries first. It&apos;s trivial to correct
+in a script, but it&apos;s an extra operation and everyone who wants a blog will want them in the opposite order. Now you can
 add <code>newest_entries_first = true</code> to the <code>[index]</code> section and get the entries in the natural order
 for a blog.
 </p>
@@ -124,5 +124,5 @@ I hope it will give newcomers a better feel of what kind of things they can do w
   selector = "head"
 </pre>
 <p>
-There's also a friendlier post-init message.
+There&apos;s also a friendlier post-init message.
 </p>

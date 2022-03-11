@@ -3,14 +3,14 @@
 <span>Date: <time id="post-date">2019-11-04</time> </span>
 
 <p>
-I don't use Windows myself. There are, however, many people who do, and I want to make my programs
+I don&apos;t use Windows myself. There are, however, many people who do, and I want to make my programs
 available to them. I tried to make soupault work on Windows exactly like it works on UNIX,
 and all functionality is available there, with only a few minor differences you should be aware of.
 If you are not using any preprocessors or external scripts, same configs should work on all systems
 without adjustments.
 </p>
 <p>
-First, a video demonstration that it indeed does work. It's a Windows 7 test VM, with
+First, a video demonstration that it indeed does work. It&apos;s a Windows 7 test VM, with
 Python installed, for the blog index generator script, and for the web server module that I use for testing.
 </p>
 <video width="800" height="600" controls="controls">
@@ -18,14 +18,14 @@ Python installed, for the blog index generator script, and for the web server mo
   Your browser does not support the video tag.
 </video>
 <p>
-Of course, it's a rather basic support and soupault hardly feels like a native Windows program.
+Of course, it&apos;s a rather basic support and soupault hardly feels like a native Windows program.
 If you have ideas for improving its usability, please share (Shell integrations? Editor integrations? An actual installer?
 Something else?).
 </p>
 <p>
 Now to the point. One notable difference is that Windows uses the back slash as a filesystem path
 separator. The good thing is that <em>most of the time</em> you can use the UNIX convention.
-The only places where you can't are the <a href="/reference-manual/#using-external-index-generators">index_processor</a> option,
+The only places where you can&apos;t are the <a href="/reference-manual/#using-external-index-generators">index_processor</a> option,
 <a href="/reference-manual/#page-preprocessors">preprocessor options</a>, and the <code>command</code>
 of the <a href="/reference-manual/#widgets-exec">exec</a> widget.
 </p>

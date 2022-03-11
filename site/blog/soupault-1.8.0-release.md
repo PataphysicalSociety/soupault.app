@@ -5,15 +5,15 @@
 <p id="post-excerpt">
 Soupault 1.8.0 is available for <a href="/#downloads">download</a>. This release is focused on improving
 plugin support. First big improvement is that Lua plugin execution errors are treated exactly like all
-other errors: in strict mode, they fail the build. There's also a bunch of new plugin functions.
+other errors: in strict mode, they fail the build. There’s also a bunch of new plugin functions.
 </p>
 
-Now to the improvements...
+Now to the improvements…
 
 ## Plugin execution error handling
 
 In older versions, Lua syntax errors and runtime errors were logged, but they could not
-stop the build even in strict mode. That was a limitation of <a href="https://github.com/lindig/lua-ml/">Lua-ML</a>,
+stop the build even in strict mode. That was a limitation of [Lua-ML](https://github.com/lindig/lua-ml/),
 so I had to fix it there.
 
 Now plugin errors correctly fail the build.
@@ -23,12 +23,12 @@ Now plugin errors correctly fail the build.
 One possible use of plugins and executable called with the `preprocess_element` widget is processing existing assets
 or creating new ones.
 
-For example, it's quite easy to resize images to their `width` and `height` attributes, create PNG versions of
+For example, it’s quite easy to resize images to their `width` and `height` attributes, create PNG versions of
 Graphviz graphs, or run chunks of the page through a text to speech program.
 
 However, one thing was overlooked in 1.7.0: there was no easy way to see where the page file will be stored
 and create correct relative links. Directory structure varies depending on the `clean_urls` option,
-so you'd have to put all generated files in a single directory and use absolute paths.
+so you’d have to put all generated files in a single directory and use absolute paths.
 
 Now there is: programs called from `preprocess_element` and `exec` widgets can access it via `TARGET_DIR`
 environment variable, and Lua plugins got a `target_dir` global.
@@ -52,7 +52,7 @@ it will save the PNG version to `build/articles/dijkstra/graph_sample.png` if cl
 Sometimes you may want to enable certain widgets only for some builds. For example, include analytics
 scripts only in production builds.
 
-Now it's easy to do. Add a `profile` option to your widget:
+Now it’s easy to do. Add a `profile` option to your widget:
 
 ```
 [widgets.analytics]
@@ -69,7 +69,7 @@ Then soupault will only process that widget if you run `soupault --profile live`
 
 It can be frustrating to see a plugin fail mysteriously and then find out it simply wants a newer version.
 
-Now it's easy to specify minimum supported version:
+Now it’s easy to specify minimum supported version:
 
 ```
 Plugin.require_version("42.0.0")
@@ -81,13 +81,13 @@ If soupault version is less than `42.0.0`, the build will fail like this:
 [ERROR] Could not process page site/index.html: Plugin requires soupault 42.0.0 or newer, current version is 1.8.0
 ```
 
-You can specify either a full version like `1.8.0`, but you can also write `1.8` and it's assumed to mean `1.8.0`.
+You can specify either a full version like `1.8.0`, but you can also write `1.8` and it’s assumed to mean `1.8.0`.
 
 There is no way to specify _maximum_ supported version, but if I make any incompatible change to soupault,
 I will add a function for that.
 
 Plugins that use `Plugin.require_version` will obviously fail to work with versions older than 1.8.8 because
-they didn't have that function. For this reason you should only use it in new plugins that rely on functions
+they didn’t have that function. For this reason you should only use it in new plugins that rely on functions
 introduced in 1.8.0 or later.
 
 ## New plugin functions

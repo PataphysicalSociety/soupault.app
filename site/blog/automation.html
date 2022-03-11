@@ -1,10 +1,10 @@
 <h1 id="post-title">Workflow automation</h1>
 <span>Last update: <time id="post-date">2019-10-16</time> </span>
 <p>
-Soupault intentionally doesn't have a built-in web server, deployment automation, or a snake game
-(though a snake game may be added in future versions, stay tuned). That's the UNIX philosophy:
+Soupault intentionally doesn&apos;t have a built-in web server, deployment automation, or a snake game
+(though a snake game may be added in future versions, stay tuned). That&apos;s the UNIX philosophy:
 do one thing and do it well. The big idea is to provide configurable workflows rather than force
-a workflow on you. Here's my workflow that you can use as an example if you like it, or disagree with
+a workflow on you. Here&apos;s my workflow that you can use as an example if you like it, or disagree with
 and make your own—the choice is yours.
 </p>
 <p>
@@ -13,11 +13,11 @@ and then copy generated pages by hand to the server. This will quickly get annoy
 site frequently.
 </p>
 <p>
-There's a huge selection of tools to help you, and they can help you with many other tasks, not just
-with automating a soupault workflow, so you should learn about them if you haven't already.
+There&apos;s a huge selection of tools to help you, and they can help you with many other tasks, not just
+with automating a soupault workflow, so you should learn about them if you haven&apos;t already.
 </p>
 <p>
-Myself I'm using a pretty classic UNIX workflow with GNU Make. All the tools I use are cross-platform and will work
+Myself I&apos;m using a pretty classic UNIX workflow with GNU Make. All the tools I use are cross-platform and will work
 on any OS, though you may want to go for OS-specific tools as well, like PowerShell on Windows or JCL batch
 jobs on IBM mainframes.
 </p>
@@ -25,7 +25,7 @@ jobs on IBM mainframes.
 <pre class="language-make">
 BUILD_DIR := build
 
-# In practice it's in my ~/.local/bin
+# In practice it&apos;s in my ~/.local/bin
 SOUPAULT := soupault
 
 .PHONY: site
@@ -53,25 +53,25 @@ deploy:
 </pre>
 <p>
 Remember that build directory path is configurable (the <code>build_dir</code> option in <code>[settings]</code>),
-so it's a good idea to make it a variable, that's why I have <code>BUILD_DIR := build</code> there.
+so it&apos;s a good idea to make it a variable, that&apos;s why I have <code>BUILD_DIR := build</code> there.
 </p>
 <p>
 I keep the soupault binary in my <code>~/.local/bin</code>, which is in my <code>$PATH</code> so I can just call it by name.
-The main reason I made it a variable is that it's easy to try a dev build by editing just one line.
+The main reason I made it a variable is that it&apos;s easy to try a dev build by editing just one line.
 </p>
 <p>
 While you can keep assets (images, CSS stylesheets etc.) together with pages in <code>site/</code> and soupault will copy them
-unchanges, I like to keep them separately. That's why I made an <code>assets</code> target and specified it as a dependency for
+unchanges, I like to keep them separately. That&apos;s why I made an <code>assets</code> target and specified it as a dependency for
 <code>all</code>.
 </p>
 <p>
-For live testing the site, I use the web server that comes with Python. It's more than sufficient for testing and you can make
+For live testing the site, I use the web server that comes with Python. It&apos;s more than sufficient for testing and you can make
 it serve files from a directory in just one command.
 </p>
 <p>
 Finally, the <code>deploy</code> target for this site is just <code>neocities push</code>—it uses
-the <a href="https://neocities.org/cli">Neocities CLI tool</a>. For <a href="https://baturin.org">baturin.org</a>, it's
-<code>rsync -a -e "ssh" $(BUILD_DIR)/ www.baturin.org:/var/www/vhosts/baturin.org</code> since it's hosted on my own server.
+the <a href="https://neocities.org/cli">Neocities CLI tool</a>. For <a href="https://baturin.org">baturin.org</a>, it&apos;s
+<code>rsync -a -e "ssh" $(BUILD_DIR)/ www.baturin.org:/var/www/vhosts/baturin.org</code> since it&apos;s hosted on my own server.
 </p>
 <p>
 There are no right or wrong ways to do it though. Use the tools that you like and that work well for you.

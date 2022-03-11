@@ -14,10 +14,10 @@ and a few bug fixes.
 ### Options to show default and effective configuration
 
 There are now two options that make configuration defaults easy to observe. The first one is `soupault --show-default-config`—it prints
-the config file that `soupault --init` would generate. There's nothing fancy about it, it outputs the same hardcoded string
+the config file that `soupault --init` would generate. There’s nothing fancy about it, it outputs the same hardcoded string
 that the init function would.
 
-The second option is `soupault --show-effective-config` and it's much more interesting. Its goal is to show the configuration data
+The second option is `soupault --show-effective-config` and it’s much more interesting. Its goal is to show the configuration data
 actually used by soupault. That is, if an option is set in `soupault.conf`, then the user-defined value is displayed,
 if an option is undefined, then its default value is displayed (if it has a default value).
 
@@ -25,25 +25,25 @@ Right now `--show-effective-config` only shows default option values in the `[se
 The plan for future releases is to make it work for the `[index]` settings (including index views) and for built-in widgets.
 
 Since Lua plugins can have their own hidden defaults, that functionality will never be totally complete, but if it makes
-configuration more observable, that's already something.
+configuration more observable, that’s already something.
 
 Additionally, this website build will soon use `--show-default-config` for generating default config data for the reference manual,
 so that [section](/reference-manual/#basic-configuration) will be automatically up to date with the current soupault version.
 
 ### Configuration defaults available to plugins
 
-The main reason `--show-effective-config` wasn't implemented earlier is that originally the TOML data loaded from `soupault.conf`
+The main reason `--show-effective-config` wasn’t implemented earlier is that originally the TOML data loaded from `soupault.conf`
 was only converted to an internal representation. Soupault would take the internal representation of the default config
 and override its options with values from `soupault.conf` if they were defined. Then it would leave the TOML hash available to plugins,
 but without any defaults in it.
 
 The most annoying manifestation of that problem was that the `config` table as seen from the Lua code
-didn't have deafult values, it only had what was explicitly set `soupault.conf`. Thus it would be unsafe to try retrieving
-`config["settings"]["site_dir"]` for example: if the user didn't set it in the config by hand, that operation would return `nil`,
+didn’t have deafult values, it only had what was explicitly set `soupault.conf`. Thus it would be unsafe to try retrieving
+`config["settings"]["site_dir"]` for example: if the user didn’t set it in the config by hand, that operation would return `nil`,
 not `"site"`.
 
 Well, not anymore. Now every option valid for the `[settings]` table is guaranteed to exist in `config["settings"]`,
-so plugins don't need to do their own default substitution anymore.
+so plugins don’t need to do their own default substitution anymore.
 
 ## Bug fixes
 
@@ -54,7 +54,7 @@ so plugins don't need to do their own default substitution anymore.
 
 On the surface, this looks like a small release. However, the change is much bigger on the inside. The long-promised new TOML library is half-finished.
 So far it lives inside the soupault repository, as if it was a vendored library. Right now it has complete data types, value lookup/update procedures,
-and a very flexible formatter. When the second part—as parser with human-friendly error reporting—is ready, I'll take the library outside.
+and a very flexible formatter. When the second part—as parser with human-friendly error reporting—is ready, I’ll take the library outside.
 Stay tuned for updates!
 
 ## Website refresh

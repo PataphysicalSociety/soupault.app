@@ -3,7 +3,7 @@ and can automatically manipulate them. It can be described as a robotic webmaste
 that can edit HTML pages according to your rules, but doesn't get tired of editing them.
 
 You can use soupault for making blogs and other types of websites, pretty much like any other SSGs
-(Jekyll, Hugo, Eleventy...). However, you can also use it as a post-processor
+(Jekyll, Hugo, Eleventy, etc.). However, you can also use it as a post-processor
 for existing websites—a use case other tools don't support.
 
 Soupault is highly-configurable, extensible, and designed to give you complete control

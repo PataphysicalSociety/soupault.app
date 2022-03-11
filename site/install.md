@@ -63,7 +63,7 @@ The source code is available from these git repositories:
 
 To build the latest source, you will need the OCaml compiler (4.08 or later) and the OPAM package manager.
 
-```
+```shell-session
 $ git clone <url>
 $ cd soupault
 $ opam pin add .
