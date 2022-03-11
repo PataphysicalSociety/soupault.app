@@ -12,14 +12,14 @@ Soupault source code is available in two equally official locations:
 I keep those repositories in sync, and you can open a pull request in either of them.
 
 Note that if you want to add a new built-in widget or make a big user-visible change,
-it's better to discuss the idea with the maintainer first rather than make a patch right away.
+it’s better to discuss the idea with the maintainer first rather than make a patch right away.
 
 ## Contributing to the website
 
 The website source code, so far, is only on GitHub at <github>PataphysicalSociety/soupault</github>, mainly due to its CI/CD setup
 that relies on GitHub Actions right now.
 
-That should and will change, but it will take time. If you'd like an alternative way to contribute to it, let me know!
+That should and will change, but it will take time. If you’d like an alternative way to contribute to it, let me know!
 
 In any case, the website source is open for contributions and suggestions.
 

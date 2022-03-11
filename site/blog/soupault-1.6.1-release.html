@@ -16,14 +16,14 @@ or install from opam.
 </pre>
 
 <p>
-Soupault's HTML parser <a href="https://github.com/aantron/markup.ml/issues/48">incorrectly assumed</a> that noscript tags are only allowed in the page head and made a misguided attempt
+Soupault&apos;s HTML parser <a href="https://github.com/aantron/markup.ml/issues/48">incorrectly assumed</a> that noscript tags are only allowed in the page head and made a misguided attempt
 to correct the snippet by inserting a body element in it. That would result in a page with one body element nested in another. The maintainer resolved the issue quickly,
 and now snippets for analytics services etc. should just work.
 </p>
 <p>
 An interesting fact for geeks is that Windows binaries are now built on a GNU/Linux host, using MinGW binutils and the OCaml cross-toolchain.
 While OCaml tools make cross-compilation dead simple, you still need cross-versions of every library your project uses, and
-the <a href="https://github.com/ocaml-cross/opam-cross-windows">opam-cross-windows</a> repository has been lacking, so I'd have
+the <a href="https://github.com/ocaml-cross/opam-cross-windows">opam-cross-windows</a> repository has been lacking, so I&apos;d have
 to cross-compile everything locally. Instead, I took time to package the missing libs for opam-cross-windows, so when the pull requests
 are verified and merged, everyone will be able to build a Windows version with just <code>dune build -x windows</code> on an all free software system.
 </p>

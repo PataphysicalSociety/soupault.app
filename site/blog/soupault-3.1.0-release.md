@@ -5,7 +5,7 @@
 <p id="post-excerpt">
 Soupault 3.1.0, is available for download from <a href="https://files.baturin.org/software/soupault/3.1.0">my own server</a>
 and from <a href="https://github.com/dmbaturin/soupault/releases/tag/3.1.0">GitHub releases</a>.
-It's a small quality of life and bugfix release. It adds plugin functions for platform-independent UNIX/URL path manipulation,
+It’s a small quality of life and bugfix release. It adds plugin functions for platform-independent UNIX/URL path manipulation,
 and new functions for ordered iteration through tables.
 The ToC widget now has an option to ignore headings that match certain selectors.
 Finally, specifying a widget twice by accident in the <code>after</code> option no longer causes a false positive dependency cycle
@@ -21,21 +21,21 @@ For Windows users, the situation is obviously different. The `Sys.join_path` fun
 and `Sys.join_path("foo", "bar")` returns `foo\bar` there, which is good for filesystem paths, but not URLs.
 
 In a plugin a I made for my personal website lately I had to automatically generate URLs from directory and file parts,
-and I realized that the current API won't work for Windows users who will want to do that same.
+and I realized that the current API won’t work for Windows users who will want to do that same.
 
 So I went and added `Sys.join_path_unix`, `Sys.basename_unix`, and `Sys.dirname_unix`. These functions use the forward slash convention
 regardless of the host OS so they are safe to use with URLs.
 
 ## Ordered iteration
 
-Lua uses an "everything is an unordered hash table" approach. It's a royal headache when order is required, to the point that I'm thinking
+Lua uses an "everything is an unordered hash table" approach. It’s a royal headache when order is required, to the point that I’m thinking
 of writing a Scheme interpreter on the same principles as [Lua-ML](https://github.com/lindig/lua-ml).<fn>If you missed that story,
 soupault uses an alternative Lua implementation that offers modular and type-safe integration with the host program
 (unlike the PUC-Rio Lua, which offers neither), but implements an outdated Lua 2.5.</fn>
 
-However, as long as soupault doesn't support anything but Lua, we have to keep finding workarounds for those issues.
+However, as long as soupault doesn’t support anything but Lua, we have to keep finding workarounds for those issues.
 
-In Lua, "arrays" are hash tables indexed by numeric keys. Lua 2.5 doesn't have `for`-loops so the "intended" way to iterate through an array
+In Lua, "arrays" are hash tables indexed by numeric keys. Lua 2.5 doesn’t have `for`-loops so the "intended" way to iterate through an array
 in a loop with a counter.
 
 ```lua
@@ -46,7 +46,7 @@ while tbl[n] do
 end
 ```
 
-The catch is that if there's a hole in the keys, it will stop the iteration early. Funnily enough, it's not a solved problem in the
+The catch is that if there’s a hole in the keys, it will stop the iteration early. Funnily enough, it’s not a solved problem in the
 modern Lua versions either!
 
 ```lua
@@ -74,12 +74,12 @@ will exclude every heading with `class="notoc`.
 
 This way you can more easily include purely technical headings without polluting your ToC with them.
 
-## What's next?
+## What’s next?
 
-I hoped to implement the long-planned system of hooks this summer, but that plan clearly didn't work out.
+I hoped to implement the long-planned system of hooks this summer, but that plan clearly didn’t work out.
 Implementing a fully 1.0.0-compliant TOML library took much more effort than I hoped,
 and there have been too many other things to take care of. However, that idea is not abandoned
-and I'll get back to it as time allows. If you have any ideas for a hook system that would allow
+and I’ll get back to it as time allows. If you have any ideas for a hook system that would allow
 plugins to take over any step, feel free to share them.
 
 <hr>

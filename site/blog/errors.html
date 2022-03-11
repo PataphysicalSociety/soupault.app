@@ -3,27 +3,27 @@
 <p>
 Like every static website generator, soupault is a non-interactive program that cannot ask the user what to do if something goes wrong.
 Most errors are caused by configuration mistakes, so the user would want to fix the configuration anyway, rather than make a one-time correction.
-With non-interactice programs, it's especially important to have a clear mental model of what the program is doing and where it may fail.
+With non-interactice programs, it&apos;s especially important to have a clear mental model of what the program is doing and where it may fail.
 </p>
-<p>For the record, here's a simplified flowchart of what soupault is doing:</p>
+<p>For the record, here&apos;s a simplified flowchart of what soupault is doing:</p>
 <img src="/images/soupault_flowchart.png" alt="soupault flowchart" />
 <p>
-Now let's discuss things that are considered errors, and also things that you may think are going to be errors but in reality they aren't.
+Now let&apos;s discuss things that are considered errors, and also things that you may think are going to be errors but in reality they aren&apos;t.
 </p>
 <p>
 Many widgets have a <code>selector</code> option that defines either the source element to extract something from,
-or the target element to insert something into, depending on context. For example, for the <code>title</code> widget it's
+or the target element to insert something into, depending on context. For example, for the <code>title</code> widget it&apos;s
 the element it will take text from and put into the <code>&lt;title&gt;</code> tag inside the page head. For the <code>include</code>
-widget, it's the element where file content is inserted. Usually it's obvious whether it's source or destination (or so I hope),
+widget, it&apos;s the element where file content is inserted. Usually it&apos;s obvious whether it&apos;s source or destination (or so I hope),
 but when in doubt, you can always consult the <a href="/reference-manual">reference manual</a>.
 </p>
 <p>
-Anyway, why I'm talking about it: it's important to remember that absense of an element matching the <code>selector</code> option
-is <strong>never</strong> considered an error. If soupault cannot find a suitable element for a widget to work with, it assumes you just don't want that widget
+Anyway, why I&apos;m talking about it: it&apos;s important to remember that absense of an element matching the <code>selector</code> option
+is <strong>never</strong> considered an error. If soupault cannot find a suitable element for a widget to work with, it assumes you just don&apos;t want that widget
 to run on that page and does nothing.
 </p>
 <p>
-That's a compromise made to give you more freedom. For example, suppose you have this config for the ToC:
+That&apos;s a compromise made to give you more freedom. For example, suppose you have this config for the ToC:
 </p>
 <pre class="language-toml">
 [widgets.table-of-contents]
@@ -33,8 +33,8 @@ That's a compromise made to give you more freedom. For example, suppose you have
 </pre>
 <p>
 If you want a table of contents only in some pages rather than in every page, you can omit the <code>&lt;div id="generated-toc"&gt;</code>
-from <code>templates/main.html</code> and include it in select page files instead. The widget will run on pages where it's present and
-skip the pages where it's absent.
+from <code>templates/main.html</code> and include it in select page files instead. The widget will run on pages where it&apos;s present and
+skip the pages where it&apos;s absent.
 </p>
 <p>
 This behaviour can sometimes be counterintuitive and can actually hide errors. For example, the <code>exec</code> widget will not even try
@@ -42,16 +42,16 @@ running a script if it has nowhere to insert its output anyway, so if you mistyp
 it until you have page where that widget does run.
 </p>
 <p>
-If you expect something to happen but it doesn't happen, it's a good idea to inspect the output of <code>soupault --verbose</code>.
-Some widgets explicitly tell you why they didn't run, though some don't and it's something to improve in future versions.
+If you expect something to happen but it doesn&apos;t happen, it&apos;s a good idea to inspect the output of <code>soupault --verbose</code>.
+Some widgets explicitly tell you why they didn&apos;t run, though some don&apos;t and it&apos;s something to improve in future versions.
 </p>
 <p>
-On the other hand, most widgets will fail if they can't do what they are supposed to do. For example, the <code>include</code> widget
-will fail is the file it's supposed to include doesn't exist or isn't readable. The <code>exec</code> widget will fail if the script
-you want it to run doesn't exist or cannot be successfully executed.
+On the other hand, most widgets will fail if they can&apos;t do what they are supposed to do. For example, the <code>include</code> widget
+will fail is the file it&apos;s supposed to include doesn&apos;t exist or isn&apos;t readable. The <code>exec</code> widget will fail if the script
+you want it to run doesn&apos;t exist or cannot be successfully executed.
 </p>
 <p>
-If a required widget option is missing, that's also an error and you will also receive an error message about it.
+If a required widget option is missing, that&apos;s also an error and you will also receive an error message about it.
 </p>
 <p>
 This kind of errors can be treated as fatal or not, as discussed in a previous post. When the <code>strict = true</code> option is configured
@@ -61,5 +61,5 @@ supposed to produce.
 </p>
 <p>
 One limitation of soupault 1.3 is that errors in Lua plugins, no matter how serious, are never treated as fatal. Soupault will print warnings
-and errors, but otherwise it will proceed as if nothing has happened. That's also something to fix in the future.
+and errors, but otherwise it will proceed as if nothing has happened. That&apos;s also something to fix in the future.
 </p>

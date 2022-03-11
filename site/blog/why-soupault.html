@@ -5,37 +5,37 @@
 <p id="post-excerpt">
 There are so many static site generators already that another one needs a pretty good justification.
 I mainly made soupault for my own use, in fact it has grown out of a set of custom scripts that used to power
-the <a href="https://baturin.org">baturin.org</a> website. Still, if I'm making it public, I may as well want to
+the <a href="https://baturin.org">baturin.org</a> website. Still, if I&apos;m making it public, I may as well want to
 explain the decisions behind it and reasons why anyone else may want to use it.
 </p>
 <p>
 If you are not following that scene, I can tell you there are lots of them. A popular directory,
-<a href="https://www.staticgen.com/">staticgen.com</a>, lists 261 of them now, and I'm sure
-it's only a fraction of all projects in existence.
+<a href="https://www.staticgen.com/">staticgen.com</a>, lists 261 of them now, and I&apos;m sure
+it&apos;s only a fraction of all projects in existence.
 </p>
 <p>
-This is reminiscent of the early to mid-2000's CMS boom, but the scale is even larger because
-there are no ongoing maintenance costs. You can keep improving your generator, but you don't need
+This is reminiscent of the early to mid-2000&apos;s CMS boom, but the scale is even larger because
+there are no ongoing maintenance costs. You can keep improving your generator, but you don&apos;t need
 to keep up with libraries and make security updates just to keep it running.
 Well, usually... The static generator setup of staticgen.com broke down due to library incompatibilities lately,
-but that's JS ecosystem for you. Which brings us to the first point.
+but that&apos;s JS ecosystem for you. Which brings us to the first point.
 </p>
 <h2>Friendly to non-programmers and future-proof</h2>
 <p>
-So far static website generators was mostly a programmers' game. While most of them don't require programming knowledge
-to use, they often make an assumption that the user is familiar with programmers' workflows. For example,
-<a href="https://jekyllrb.org/">Jekyll</a>'s website says you need to run <code>gem install jekyll</code> to install it.
+So far static website generators was mostly a programmers&apos; game. While most of them don&apos;t require programming knowledge
+to use, they often make an assumption that the user is familiar with programmers&apos; workflows. For example,
+<a href="https://jekyllrb.org/">Jekyll</a>&apos;s website says you need to run <code>gem install jekyll</code> to install it.
 Does this say anything to a person not familiar with the Ruby language and its tools? 
-<a href="https://www.gatsbyjs.org">Gatsby</a>'s website just assumes you know how to install JS applications.
+<a href="https://www.gatsbyjs.org">Gatsby</a>&apos;s website just assumes you know how to install JS applications.
 UNIX-like system users have it easier since they can install from repositories/ports, but I still wonder how many
-non-programmers decided it's not worth the trouble after reading instructions like those.
+non-programmers decided it&apos;s not worth the trouble after reading instructions like those.
 </p>
 <p>
-With generators written in interpreted languages like Ruby or JS, there's also a hidden danger of software rot.
+With generators written in interpreted languages like Ruby or JS, there&apos;s also a hidden danger of software rot.
 Unless you bundle it with all libraries it needs, chances are it will eventually stop working when libraries change.
 With online software like CMSes, using an outdated version is unsafe, but with purely offline programs, there are no security risks.
 I believe they should be available in a form that end users can stick with even if the program becomes unmaintained or
-they don't like new versions. One of the Visicalc<span id="visicalc" class="footnote">The first widely available spreadsheet program.</span>
+they don&apos;t like new versions. One of the Visicalc<span id="visicalc" class="footnote">The first widely available spreadsheet program.</span>
 still uses a <a href="http://danbricklin.com/howmade.htm">tool from 2001</a>, and there seem to be quite a few HomeSite users around.
 Nothing wrong with that. If old tools work for them, why should they switch to something else?
 </p>
@@ -46,15 +46,15 @@ anyone can fork and maintain even if I stop working on it, but source code avail
 <p>
 That is why I made it a single, self-contained executable that can be &ldquo;installed&rdquo; just by unpacking it. The Linux version
 is statically linked with <a href="https://www.musl-libc.org/">musl</a> so that it will work on any Linux-based OS for years to come,
-unless system call numbers change (which hasn't happened yet and probably won't happen). With Windows and macOS versions, backwards compatibility
+unless system call numbers change (which hasn&apos;t happened yet and probably won&apos;t happen). With Windows and macOS versions, backwards compatibility
 is on the OS vendor.
 </p>
 <h3>Windows support</h3>
 <p>
-I don't like Windows and I don't use it, but there are many people using it, and I want soupault to be available to all people regardless of their OS choice.
-Soupault is a native program on Windows (i.e. you don't need to install anything else to run it), and I spent quite some time testing it there
-to make sure it works exactly like it works on UNIX-like systems. That said, since I don't use a Windows version daily, I might have missed some
-sharp edges. If you find anything, let me know, and I'll do my best to fix it.
+I don&apos;t like Windows and I don&apos;t use it, but there are many people using it, and I want soupault to be available to all people regardless of their OS choice.
+Soupault is a native program on Windows (i.e. you don&apos;t need to install anything else to run it), and I spent quite some time testing it there
+to make sure it works exactly like it works on UNIX-like systems. That said, since I don&apos;t use a Windows version daily, I might have missed some
+sharp edges. If you find anything, let me know, and I&apos;ll do my best to fix it.
 </p>
 
 <h2>Fast but extensible</h2>
@@ -65,28 +65,28 @@ tweaking their page layout.
 </p>
 <p>
 Indeed, performance is one of the biggest reasons for the popularity of <a href="https://gohugo.io">Hugo</a>,
-to the point that people are ready to give up extensibility for it. Hugo's variety of built-in functions sort of make up
+to the point that people are ready to give up extensibility for it. Hugo&apos;s variety of built-in functions sort of make up
 for lack of plugin support, but the point remains.
 </p>
 <p>
-There are two sources of performance problems: the program itself and the language it's written in. Interpreted languages like
-Python or Ruby have to read the program text and translate it to machine instructions every time it runs, there's no way around it.
-Hugo would still be faster than many alternatives even if its authors didn't put any effort into optimizing for performance,
-simply because it's written in Go, a language that compiles to native machine code.
+There are two sources of performance problems: the program itself and the language it&apos;s written in. Interpreted languages like
+Python or Ruby have to read the program text and translate it to machine instructions every time it runs, there&apos;s no way around it.
+Hugo would still be faster than many alternatives even if its authors didn&apos;t put any effort into optimizing for performance,
+simply because it&apos;s written in Go, a language that compiles to native machine code.
 </p>
 <p>
 Interpreted languages, however, make it very easy to make programs extensible with plugins. The program is a text file
 that is loaded into the interpreter, and plugins are also distributed as text files that can be loaded together with the main program.
-With native code, extensibility takes much more effort even if the language supports dynamic code loading (Go doesn't).
+With native code, extensibility takes much more effort even if the language supports dynamic code loading (Go doesn&apos;t).
 </p>
 <p>
 Soupault is written in <a href="https://ocaml.org">OCaml</a>, a fast language that does support dynamic linking, but distributing plugins
 would not be nearly as easy since plugins are also native libraries that would have to be compiled for each OS,
-against a specific program version and using a matching compiler version. There's one other static site generator that supports
-plugins—<a href="https://www.good-eris.net/stog/">Stog</a>, also written in OCaml, but I'm not aware of any third-party plugins for it.
+against a specific program version and using a matching compiler version. There&apos;s one other static site generator that supports
+plugins—<a href="https://www.good-eris.net/stog/">Stog</a>, also written in OCaml, but I&apos;m not aware of any third-party plugins for it.
 </p>
 <p>
-One way to break this cycle is to embed a small interpreted language into the program. I've revived an embeddable Lua 2.5 interpreter project,
+One way to break this cycle is to embed a small interpreted language into the program. I&apos;ve revived an embeddable Lua 2.5 interpreter project,
 Lua-ML, with help from its original maintainer, Christian Lindig. While Lua 2.5 is not nearly as nice as modern Lua 5.x (if Lua can be described
 as nice at all), it does allow users to go beyond the built-in functionality and add their own.
 </p>
@@ -98,39 +98,39 @@ For example, post dates in this blog are extracted from git commits, and the blo
 <h2>Web 1.0 support</h2>
 <p>
 Most existing generators are Web 2.0 applications in their spirit. The defining characteristic of Web 2.0 is complete separation
-of content and layout. With dynamic websites that visitors can modify, like Wikipedia, it's a necessity, since custom layout elements
+of content and layout. With dynamic websites that visitors can modify, like Wikipedia, it&apos;s a necessity, since custom layout elements
 inside user-submitted data can break website functionality and can be abused for malicious purposes.
 </p>
 <p>
 For static websites, that approach is not necessary. It can be valid of course: for example, a writer who just wants to publish stories
 on the web may not need anything but very basic formatting inside the stories. A blog generator that takes stories from plaintext files
-and inserts them into a fixed HTML page template can be a perfect tool for the job. Jekyll's tagline is &ldquo;transform your plaintext
-files into a website&rdquo;. Even though you can have custom HTML inside your page files, it's still inserted in a fixed place
+and inserts them into a fixed HTML page template can be a perfect tool for the job. Jekyll&apos;s tagline is &ldquo;transform your plaintext
+files into a website&rdquo;. Even though you can have custom HTML inside your page files, it&apos;s still inserted in a fixed place
 in a page template, unless you know how to do some advanced theme hackery.
 </p>
 <p>
-The web, by itself, however, does not have any layout and content separation. It's a medium of its own, with unique means of expression.
+The web, by itself, however, does not have any layout and content separation. It&apos;s a medium of its own, with unique means of expression.
 The main reason people are turning back to static websites and Web 1.0 is complete creative control over the presentation of their
 content.
 </p>
 <p>
-Tools that can automate the tedious tasks of static site maintenance without interfering with user's creative control need to be
+Tools that can automate the tedious tasks of static site maintenance without interfering with user&apos;s creative control need to be
 aware of the native language of the web, HTML. Libraries that can read and modify HTML have existed for a long time, but they were
 mostly used for extracting data from websites, not for making them. 
 </p>
 <p>
-That's the big idea of soupault. Rather than &ldquo;filling in the blanks&rdquo; like template processors do, it can transform your
-existing pages. It still has a concept of a &ldquo;page template&rdquo;, but it's really just an empty page. There are also ways
+That&apos;s the big idea of soupault. Rather than &ldquo;filling in the blanks&rdquo; like template processors do, it can transform your
+existing pages. It still has a concept of a &ldquo;page template&rdquo;, but it&apos;s really just an empty page. There are also ways
 to perform some actions only on specific pages, for example, insert a <code>&lt;script src="/scripts/tetris.js"&gt;</code> tag only into
 <code>site/tetris.html</code>.
 </p>
 <p>
-Also, site sections are just subdirectories. The workflow isn't so different from managing a static site by hand, you can automate
+Also, site sections are just subdirectories. The workflow isn&apos;t so different from managing a static site by hand, you can automate
 exactly what you want to automate.
 </p>
 
 <h2>Conclusion</h2>
 <p>
-Will it become the tool of choice for the Web 1.0 community? It's too early to say. But I hope it will help someone else build
+Will it become the tool of choice for the Web 1.0 community? It&apos;s too early to say. But I hope it will help someone else build
 and maintain their websites.
 </p>

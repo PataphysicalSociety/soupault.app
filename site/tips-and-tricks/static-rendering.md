@@ -17,15 +17,15 @@ For any website about programming and system administration, syntax highlighting
 Many static site generators have built-in syntax highlighting. Most sites seem to use some form of static
 highlighting now and few stick with JavaScript libraries for that. That makes me happy.
 
-So, how about soupault? It doesn't have built-in syntax highlighting, but the `preprocess_element` widget
-allows you to pipe and element's content through any program—including a highlighter of your choice.
+So, how about soupault? It doesn’t have built-in syntax highlighting, but the `preprocess_element` widget
+allows you to pipe and element’s content through any program—including a highlighter of your choice.
 
 Which highlighter to use? If I could only take one highlighter with me to a desert island, that would be
-Andre Simon's [highlight](http://www.andre-simon.de/doku/highlight/en/highlight.php).
-Why would I need a highlighter on a desert island is another question. In any case, it's fast,
+Andre Simon’s [highlight](http://www.andre-simon.de/doku/highlight/en/highlight.php).
+Why would I need a highlighter on a desert island is another question. In any case, it’s fast,
 cross-platform, and _very_ flexible.
 
-Let's see how to set up soupault to work with it.
+Let’s see how to set up soupault to work with it.
 
 ### Obtaining a CSS theme
 
@@ -34,15 +34,15 @@ You can list all installed themes with `highlight --list-scripts=theme`.
 
 It has an option to inline all CSS. For example:
 
-```
+```shell-session
 $ echo "<p>foo</p>" | highlight --style matrix --syntax=html -O html  -f --inline-css
 <span style="color:#55ff55; font-weight:bold">&lt;p&gt;</span>foo<span style="color:#55ff55; font-weight:bold">&lt;/p&gt;</span>
 ```
 
-As you can see, it's quite messy. Besides, you will not be able to switch styles without rebuilding the whole site,
-and the pages will be heavier than they could be. It's better to use external CSS. But first we need to get that CSS.
+As you can see, it’s quite messy. Besides, you will not be able to switch styles without rebuilding the whole site,
+and the pages will be heavier than they could be. It’s better to use external CSS. But first we need to get that CSS.
 
-Highlight's theme are [abstract](http://www.andre-simon.de/doku/highlight/en/highlight.php#ch3_4). They have to be since
+Highlight’s theme is [abstract](http://www.andre-simon.de/doku/highlight/en/highlight.php#ch3_4). They have to be since
 it supports multiple output formats, not only HTML.
 
 Luckily it has an option to print the CSS of any theme. Pick a theme, e.g. `matrix`, and run:
@@ -51,16 +51,16 @@ Luckily it has an option to print the CSS of any theme. Pick a theme, e.g. `matr
 highlight --style matrix --syntax=ocaml -O html --print-style --stdout
 ```
 
-It will give you CSS that you can add to your stylesheets. Less than 20 lines, so it doesn't even warrant its
+It will give you CSS that you can add to your stylesheets. Less than 20 lines, so it doesn’t even warrant its
 own file.
 
 ### Configuring soupault
 
 The `preprocess_element` widget sends the content of an element to an external program
 and replaces that original content with the output of that program. It can also place
-the output alongside the original element, but we won't need that now.
+the output alongside the original element, but we won’t need that now.
 
-We'll need to run `highlight` with `-O html` to make it produce HTML, and with `-f`
+We’ll need to run `highlight` with `-O html` to make it produce HTML, and with `-f`
 (`--fragment`) to make it produce HTML fragments rather than complete documents.
 
 We also need to tell it the language so that it knows which keywords to highlight.
@@ -94,7 +94,7 @@ And it works nicely:
   site_dir = "site"
 ```
 
-I'm not sure what would be the best way to replicate this on Windows, but if you are doing it, let me know.
+I’m not sure what would be the best way to replicate this on Windows, but if you are doing it, let me know.
 
 ## Mathematics
 
@@ -103,7 +103,7 @@ Credit for this recipe goes to [Thomas Letan](https://soap.coffee/~lthms/cleopat
 When it comes to mathematics, [LaTeX](https://www.latex-project.org) remains the de facto standard.
 And when it comes to converting it to HTML, [KaTeX](https://katex.org) is one of the best libraries.
 
-KaTeX is usually used as a client side JavaScript library. However, it doesn't really need
+KaTeX is usually used as a client side JavaScript library. However, it doesn’t really need
 a browser to work. If you have node.js and npm in your system, nothing prevents you from using it in an offline script.
 
 ### Wrapper script
@@ -126,7 +126,7 @@ var html = katex.renderToString(String.raw`${input}`, {
 console.log(html)
 ```
 
-Save it somewhere, e.g. to `scripts/katex.js`. Now it's ready to be called.
+Save it somewhere, e.g. to `scripts/katex.js`. Now it’s ready to be called.
 
 ### Configuring soupault
 

@@ -6,7 +6,7 @@
 One limitation of classic static site generators is that output of a template is generally final
 and cannot be processed further. They assemble pages by filling the blanks.
 In some implementations they can set variables, but they cannot create
-other templates. Soupault's widgets, however, form a pipeline where output of one input can be used
+other templates. Soupault&apos;s widgets, however, form a pipeline where output of one input can be used
 as input for another. You can also explicitly order the widgets to make sure they run when their input
 is available.
 </p>
@@ -33,10 +33,10 @@ You also keep the navigation links and the footer in separate files, and you wan
 inside the HTML imported from those files.
 </p>
 <p>
-If you don't specify the order, soupault may run the plugin before those files are included, and you'll end up
+If you don&apos;t specify the order, soupault may run the plugin before those files are included, and you&apos;ll end up
 with a page where links inside the page content have absolute URLs, but those in the navigation menu and the footer are relative.
 </p>
-<p>To avoid that, you need to tell soupault when to run it. Here's a sample config:</p>
+<p>To avoid that, you need to tell soupault when to run it. Here&apos;s a sample config:</p>
 <pre class="language-toml">
 [plugins.site-url]
   file = "plugins/site-url.lua"
@@ -65,9 +65,9 @@ $ soupault --debug
 [DEBUG] Widget processing order: nav-menu footer footnotes table-of-contents page-title highlight-active-link
 </pre>
 <p>
-Note that a dependency on a widget that doesn't exist is an error. It would be easy to ignore, but it's usually
-a sign of a mistyped widget name, so I thought it's better to give people a chance to fix their config,
+Note that a dependency on a widget that doesn&apos;t exist is an error. It would be easy to ignore, but it&apos;s usually
+a sign of a mistyped widget name, so I thought it&apos;s better to give people a chance to fix their config,
 rather than leave them wondering why their page looks wrong. Circular dependencies are errors too.
-In both cases soupault will tell you which widgets are causing problems so you shouldn't fear making complex
+In both cases soupault will tell you which widgets are causing problems so you shouldn&apos;t fear making complex
 pipelines.
 </p>

@@ -32,14 +32,14 @@ while the `selector` option defines the target element to insert the snippet in.
 
 For example, if some content requires some JavaScript to interpret, you may want to insert that JavaScript only in pages
 that actually need it. Of course, that JS usually has to go to the page `<head>`,
-not inside the content element, and you don't need it in _every_ element, so `insert_html`
-doesn't work well for this task.
+not inside the content element, and you don’t need it in _every_ element, so `insert_html`
+doesn’t work well for this task.
 
-One example is self-hosted [asciinema](https://asciinema.org) player. It's smaller than a video
-would be, but it's still quite a chunk of JS and it's better to insert it only in pages that have any `<asciinema-player>`
+One example is self-hosted [asciinema](https://asciinema.org) player. It’s smaller than a video
+would be, but it’s still quite a chunk of JS and it’s better to insert it only in pages that have any `<asciinema-player>`
 elements.
 
-There are other possible uses of course. Here's an example that adds a warning to your page if it has any `<blink>`
+There are other possible uses of course. Here’s an example that adds a warning to your page if it has any `<blink>`
 elements:
 
 ```toml
@@ -69,7 +69,7 @@ It will convert `<li>` elements that have `<ul>` or `<ol>` elements nested insid
 to collapsible tree nodes. If `collapsible_class` option is given, that class will be
 added to the affected `<li>` elements.
 
-A live example this plugin's output can be seen in the table of contents of the
+A live example this plugin’s output can be seen in the table of contents of the
 [iproute2 manual](https://baturin.org/docs/iproute2/).
 
 Download: <a href="/files/plugins/collapsible-list.lua">collapsible-list.lua</a>.
@@ -124,7 +124,7 @@ Download: <a href="/files/plugins/site-url.lua">site-url.lua</a>.
 ### Active link highlight
 
 This plugin highlights the link to the current page/section in a navigation menu. You can see that the &ldquo;Plugins&rdquo; link
-on this page is bold, it's what this plugin does (it adds a `nav-active` class to that link).
+on this page is bold, it’s what this plugin does (it adds a `nav-active` class to that link).
 
 It assumes that you are using relative links and that you keep all navigation links inside one element (like `<nav>`).
 It may require some tweaking for your website. Sample configuration:
@@ -195,7 +195,7 @@ To do that, set the `manual_timestamp_selector` option, and if a page has an ele
 matching that selector, then its content (i.e. inner HTML) will be used for the timestamp.
 
 The `timestamp_format` is the revision text as it appears in the page.
-It's a Lua format string, `%s` will be replaced with actual timestamp.
+It’s a Lua format string, `%s` will be replaced with actual timestamp.
 
 The `git_date_format` is an argument for the `--date` git option.
 It defaults to "short" (YYYY-MM-DD).
@@ -223,7 +223,7 @@ They serve the same purpose as &ldquo;shortcodes&rdquo; in other static site gen
 ### File inclusion
 
 For those who miss `{% include "path/to/file" %}` directives from template processors.
-If you remember SSI, it's also similar to `<!-- #include file="myfile.html" -->`.
+If you remember SSI, it’s also similar to `<!-- #include file="myfile.html" -->`.
 
 This plugin adds a fake HTML element `<include>path/to/file</include>`.
 For example:
@@ -238,7 +238,7 @@ By default the file is parsed as HTML, but you can also include it as raw text w
 characters escaped, using `<include raw>...</include>`.
 
 You can specify either an absolute or a relative path. If a relative path is given,
-it's relative to the current directory where you run soupault.
+it’s relative to the current directory where you run soupault.
 
 Sample configuration:
 ```
@@ -302,7 +302,7 @@ To make a glossary, first, define a `<glossary>` element with terms:
 ```html
 <glossary>
   <definition name="sepulka">
-    A prominent element of the civilization of Ardrites from the planet of Enteropia; see "sepuling".
+    A prominent element of the civilization of Ardrites from the planet of Enteropia; see “sepuling”.
   </definition>
   <definition name="sepuling">
    An activity of Ardrites from the planet of Enteropia; see "sepulka".
