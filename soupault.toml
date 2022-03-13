@@ -178,7 +178,7 @@ page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_
   after = "escape-html-in-pre"
   widget = "preprocess_element"
   selector = '*[class^="language-"]'
-  command = 'highlight --force=txt -O html -f --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
+  command = 'highlight --force -O html -f --syntax=$(echo $ATTR_CLASS | sed -e "s/language-//")'
 
 [widgets.quick-links]
   widget = "quick-links"
