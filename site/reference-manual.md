@@ -101,8 +101,8 @@ You can also override the locations of the source and destination directories wi
 
 Thus it’s possible to run soupault without a dedicated project directory at all:
 
-```
-SOUPAULT_CONFIG="mysite.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
+```shell-session
+$ SOUPAULT_CONFIG="mysite.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
 ```
 
 ## Page processing
@@ -201,7 +201,7 @@ If a page doesn’t have an `<html>` element in it, its content is inserted in a
 
 Note that the selector used to check for ‘completeness’ is a configurable option:
 
-```
+```toml
 [settings]
   complete_page_selector = "html"
 ```
@@ -560,11 +560,11 @@ this is the only way to guarantee it:
 ```toml
 [index]
   extract_after_widgets = ["add-tags", "add-reading-time"]
-  ...
+  # ...
 
 [widgets.prettify-blog-index]
   after = ["add-tags", "add-reading-time"]
-  ...
+  # ...
 ```
 
 ### Treating index pages as normal pages
@@ -751,11 +751,11 @@ It’s also possible to explicitly exclude pages or sections.
 [widgets.toc]
   # Don’t add a TOC to the main page
   exclude_page = "index.html"
-  ...
+  # ...
 
 [widgets.evil-analytics]
   exclude_section = "privacy"
-  ...
+  # ...
 ```
 
 #### Using regular expressions
@@ -766,7 +766,7 @@ When nothing else helps, `path_regex` and `exclude_path_regex` options may solve
 [widgets.toc]
   # Don’t add a TOC to any section index page
   exclude_path_regex = '^(.*)/index\.html$'
-  ...
+  # ...
 
 [widgets.cat-picture]
   path_regex = 'cats/'
@@ -789,7 +789,7 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
 [widgets.add-breadcrumbs]
   widget = "breadcrumbs"
   selector = "#breadcrumbs"
-  ...
+  # ...
 
 ## Remove div#breadcrumbs if the breadcrumbs widget left it empty
 [widgets.cleanup-breadcrumbs]
@@ -799,7 +799,7 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
 
   # Important!
   after = "add-breadcrumbs"
-  ...
+  # ...
 ```
 
 <h3 id="build-profiles">Limiting widgets to “build profiles”</h3>
@@ -1819,15 +1819,15 @@ Returns zero for elements whose tag name doesn’t look like a heading and for v
 
 Returns a table that represents the tree of HTML document headings in a format like this:
 
-```
+```json
 [
   {
-    "heading": ...,
+    "heading": "...",
     "children": [
-      {"heading": ..., "children": []}
+      {"heading": "...", "children": []}
     ]
   },
-  {"heading": ..., "children": []}
+  {"heading": "...", "children": []}
 ]
 ```
 
