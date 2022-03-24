@@ -13,7 +13,7 @@ The simplest way to start using soupault is to download a prebuilt executable. J
   <dd><soupault-release platform="macos-x86_64" /></dd>
 </dl>
 
-If you want CDNed links for your [CI scripts](/tips-and-tricks/deployment/), you can use [GitHub releases](https://github.com/dmbaturin/soupault/releases) mirror links.
+If you want <abbr title="content delivery network">CDN</abbr>’d links for your [<abbr title="continuous integration">CI</abbr> scripts](/tips-and-tricks/deployment/), you can use [GitHub releases](https://github.com/dmbaturin/soupault/releases) mirror links.
 
 ### Verifying digital signatures
 
