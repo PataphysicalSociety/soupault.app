@@ -1907,6 +1907,8 @@ Returns the first `length` characters of the string, counting in UTF-8 character
 For strings that contain invalid Unicode characters, it behaves like `String.truncate_ascii`
 and returns the first `length` _bytes_ instead.
 
+Example: `String.truncate("foobar", 3)` produces `"foo"`.
+
 ##### <function>String.truncate_ascii(string, length)</function>
 
 Returns the first `length` bytes of the string.
@@ -1921,17 +1923,11 @@ Example: `String.slugify_ascii("My Heading")` produces `"my-heading"`
 
 Replaces all characters other than English letters and digits with hyphens, exactly like the ToC widget.
 
-##### <function>String.truncate(string, length)</function>
-
-Truncates a string to a given length.
-
-Example: `String.truncate("foobar", 3)` produces `"foo"`.
-
 ##### <function>String.to_number(string)</function>
 
 Example: `String.to_number("2.7")` produces `2.7` (float).
 
-Converts strings to numbers. Returns `nil` is a string isn’t a valid representation of a number.
+Converts strings to numbers. Returns `nil` if a string isn’t a valid representation of a number.
 
 ##### <function>String.join(separator, list)</function>
 
