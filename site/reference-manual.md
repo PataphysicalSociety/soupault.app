@@ -1720,7 +1720,7 @@ Example: `HTML.delete_attribute(content_div, "id")`
 
 Removes an attribute.
 
-###### <function>HTML.classes(html_element)</function>
+###### <function>HTML.get_classes(html_element)</function>
 
 If an element has `class` attribute, returns a list (i.e. a number-indexed table) of its classes.
 
