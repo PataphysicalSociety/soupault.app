@@ -44,8 +44,8 @@ in completely arbitrary ways that other SSGs do not support.
 Soupault does not have a built-in content model. Instead, it allows you to define your own.
 You can make a blog, a wiki, or anything else you want.
 
-If you want to quickly start a blog with soupault, you can use the [soupault-blog](https://github.com/PataphysicalSociety/soupault-blog) application.
-It comes with a blog content model and relevant plugins (post reading time, Atom feeds...) ready to use.
+If you want to quickly start a blog with soupault, you can use the [blog blueprint](https://github.com/PataphysicalSociety/soupault-blueprints-blog).
+It comes with a blog content model and relevant plugins (post reading time, Atom feeds...)—just remove the demo posts and start writing your own.
 
 <h3 id="performance">Is soupault fast?</h3>
 
@@ -72,7 +72,8 @@ is not trivial. The reason for that is heavy use of templates that are by defini
 Working at the HTML element tree level allows soupault to decouple the logic from presentation to a much greater extent,
 so it needs themes less.
 
-However, there are some ready to use blueprints, such as blog..
+However, there are some ready to use blueprints, such as [blog](https://github.com/PataphysicalSociety/soupault-blueprints-blog)
+and [book](https://github.com/PataphysicalSociety/soupault-blueprints-book)
 
 <h3 id="template-processor">Does soupault use a template processor?</h3>
 
