@@ -2042,19 +2042,49 @@ and `Sys.has_extension("file.tar.gz", "gz")` is also true.
 
 Returns the base name of a path (its file name part), e.g. `"/usr/local/bin/soupault" → "soupault"`.
 
+This function uses OS-specific separators for splitting paths, so it should not be used for URLs,
+use `Sys.basename_unix` instead.
+
+##### <function>Sys.basename_unix(file_path)</function>
+
+Like `Sys.basename` but uses forward slashes as path separators on all OSes, so it's safe for splitting URLs.
+
+
 ##### <function>Sys.dirname(file_path)</function>
 
 Returns the directory name of a path, e.g. `"/usr/local/bin/soupault" → "/usr/local/bin"`.
 
+This function uses OS-specific separators for splitting	paths, so it should not	be used	for URLs,
+use `Sys.basename_unix`	instead.
+
+##### <function>Sys.dirname_unix(file_path)</function>
+
+Like `Sys.dirname` but uses forward slashes as path separators on all OSes, so it's safe for splitting URLs.
 
 ##### <function>Sys.join_path(left, right)</function>
 
-Joins two file paths, using a correct, OS-specific separator.
+Joins two file paths, using the path separator specific to the OS where soupault is running.
 E.g. `Sys.join_path("directory", "file")` will produce `directory/file` on UNIX, but `directory\file` on Windows.
 
 **Note:** This function **will not** replace existing separators in its arguments.
 
 You also **should not** use this function for concatenating _URLs_, at least not when using soupault on Windows.
+If you want your code to be portable, always use `Sys.join_path_unix` for concatenating URLs. 
+
+##### <function>Sys.join_path_unix(left, right)</function>
+##### <function>Sys.join_url(left, right)</function> (since 4.0.0-beta3)
+
+These two functions are just aliases for each other.
+
+They join two file paths, using forward slash as separator.
+E.g. `Sys.join_path_unix("directory", "file")` will always produce `directory/file`, no matter which OS soupault
+is running on.
+
+Since URLs use the UNIX path convention, you should always use these functions for joining parts of a URL.
+`Sys.join_path` uses _OS-specific_ path separators, so on Windows it will use back slashes and produce a broken URL. 
+
+**Note:** Just like `Sys.join_path, this function **will not** replace existing separators in its arguments.
+Make sure that 
 
 ##### <function>Sys.run_program(command)</function>
 ##### <function>Sys.run_program_get_exit_code(command)</function>
