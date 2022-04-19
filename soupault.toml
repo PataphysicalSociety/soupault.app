@@ -21,7 +21,7 @@
   plugin_dirs = ["plugins"]
 
 [preprocessors]
-  md = 'pandoc -f commonmark+smart -t html --no-highlight --lua-filter=scripts/cmark-code-blocks.lua'
+  md = 'pandoc -f commonmark+smart -t html --no-highlight --lua-filter=helpers/cmark-code-blocks.lua'
 
 [custom_options]
   site_url = "https://soupault.app"
