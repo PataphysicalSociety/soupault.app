@@ -8,10 +8,9 @@
 # Reference manual
 
 This manual applies to soupault $SOUPAULT_RELEASE$.
-Earlier versions may not support some of the features described here.<fn id="minimum-version">Ideally, everything should be marked with minimum version,
-like &ldquo;since 2.0.0&rdquo;. Unfortunately, it’s not the case because when a project has a very small community, versioned documentation isn’t 
-a big concern… and when it grows, it’s harder to add after the fact. If you want to add minimum version marks, your patches are welcome</fn>
-If you are running an older version, consider updating to the latest release.
+Earlier versions may not support some of the features described here.
+
+If you are running soupault older than $SOUPAULT_RELEASE$, consider upgrading to the latest version.
 
 ## Installation
 
@@ -1475,7 +1474,9 @@ Plugins have access to the following global variables:
   <dt>page_file</dt>
   <dd>Page file path, e.g. site/index.html</dd>
   <dt>target_dir</dt>
-  <dd>The directory where the page file will be saved, e.g. build/about/.</dd> 
+  <dd>The directory where the page file will be saved, e.g. build/about/.</dd>
+  <dt>target_file</dt>
+  <dd>Path to the output file, relative to the current working directory.</dd>
   <dt>nav_path</dt>
   <dd>A list of strings representing the logical <term>navigation path</term>. For example, for site/foo/bar/quux.html it’s <code>["foo", "bar"]</code>.</dd>
   <dt>page_url</dt>
@@ -1486,10 +1487,12 @@ Plugins have access to the following global variables:
   <dd>The global soupault config (deserialized contents of <code>soupault.conf</code>).</dd>
   <dt>site_index</dt>
   <dd>Site index data structure.</dd>
+  <dt>index_entry</dt>
+  <dd>Index entry of the current page, if <code>index.index_first</code> is enabled.</dd>
   <dt>site_dir, build_dir</dt>
   <dd>Convenience variables for the corresponding config options.</dd>
   <dt>persistent_data</dt>
-  <dd>A table for values supposed to be persistent between different plugin runs (since 3.2.0).</dd>
+  <dd>A table for values supposed to be persistent between different plugin runs.</dd>
 </dl>
 
 <h4 id="plugin-persistent-data">Persistent data</h4>
@@ -1808,6 +1811,8 @@ using this function.
 ###### <function>HTML.unwrap(element)</function>
 
 Removes the element and inserts its former children in its place.
+For example, `<div> <p>Test!</p> </div>` will remove the outer `<div>`
+and leave just `<p>Test!</p>`.
 
 ###### <function>HTML.get_heading_level(element)</function>
 
@@ -1851,7 +1856,6 @@ Example: `Regex.match("/foo/bar", "^/")`
 
 Checks if a string matches a regex.
 
-
 ##### <function>Regex.find_all(string, regex)</function>
 
 Example: `matches = Regex.find_all("/foo/bar", "([a-z]+)")`
@@ -1874,7 +1878,7 @@ Replaces every matching substring. It returns a new string and doesn’t modify 
 
 Example: `substrings = Regex.split("foo/bar", "/")`
 
-Splits a string at a separator.
+Splits a string into a list of substrings.
 
 </module>
 
@@ -1882,7 +1886,7 @@ Splits a string at a separator.
 
 ##### <function>String.length(string)</function>
 
-Returns string length, in UTF-8 characters.
+Returns the count of UTF-8 characters in a string.
 
 That is, `String.length("строка")` is 6; and `String.length("日本語")` is 3.
 
@@ -1948,13 +1952,27 @@ env["addressee"] = "world"
 s = String.render_template("{{greeting}} {{addressee}}", env)
 ```
 
-##### <function>String.base64_encode</function>
+##### <function>String.base64_encode(string)</function>
 
 Encodes a string in Base64.
 
-##### <function>String.base64_decode</function>
+##### <function>String.base64_decode(string)</function>
 
 Decodes Base64 data.
+
+##### <function>String.url_encode(string)</function>
+
+Encodes a string using URL percent-encoding as per [RFC3986](https://datatracker.ietf.org/doc/html/rfc3986).
+
+All characters except ASCII letters, hyphens, underscores, and tildes are replaced with
+percent-encoded versions (e.g. space is `%20`).
+
+You can also supply a list of characters to _exclude_ from encoding:
+`String.url_encode(string, {"?", "&"})`.
+
+##### <function>String.url_decode(string)</function>
+
+Decodes percent-encoded URL strings.
 
 </module>
 
@@ -2381,7 +2399,15 @@ Splits the table into a list of chunks of up to `size` items.
 
 <module name="Value">
 
-Contains functions for working with Lua values in ways Lua never intended.
+Contains functions for working with Lua values in ways that PUC-Rio's Lua design never intended.
+
+##### <function>Value.repr(value)</function>
+
+Returns a string representation of a Lua value for debug output.
+
+As of soupault 4.0.0, it's fairly limited. For example,
+tables just produce `"table"`. The main advantage is that it's safe to use with any values.
+Lua's `str()` will fail for `nil`, tables etc. so it can't be used for logging values in debug prints.
 
 ##### <function>Value.is_nil(value)</function>
 
