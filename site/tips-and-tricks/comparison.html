@@ -1,7 +1,7 @@
 <h1>Comparison with other static site generators</h1>
 
 <p>
-This table was compiled in February 2022 (Soupault 4.0.0, Jekyll 4.2.1, Hugo 0.91.2, Zola 0.15.3).
+This table was compiled in the spring of 2022 (Soupault 4.0.0, Jekyll 4.2.1, Hugo 0.91.2, Zola 0.15.3).
 If you spot outdated or incorrect information, let me know!
 </p>
 
@@ -36,7 +36,7 @@ If you spot outdated or incorrect information, let me know!
     <td>
       No (an intentional choice)<fn id="web-server">On most systems these days, you can serve a directory with <code>python3 -m http.server</code>,
       or one of the many small web server projects. As of page watching and live rebuild, I'm not convinced that
-      it's useful enough to justify the complexity.</fn>
+      it's useful enough to justity the complexity.</fn>
   </tr>
   <tr>
     <th>Page formats</th>
@@ -46,8 +46,8 @@ If you spot outdated or incorrect information, let me know!
       It's impossible to add new helpers or pass new options to existing helpers without modifying the Hugo source code though.</fn>)
     </td>
     <td>Markdown</td>
-    <td>Markdown (built-in), any (via <a href="https://jekyllrb.com/docs/plugins/converters/">converter plugins</a>)</td>
-    <td> HTML (built-in), any (via <a href="/reference-manual/#page-preprocessors">page preprocessors</a>)</td>
+    <td>Markdown (built-in), any (via <a href="https://jekyllrb.com/docs/plugins/converters/">convertor plugins</a>)</td>
+    <td>HTML (built-in), any (via <a href="/reference-manual/#page-preprocessors">page preprocessors</a>)</td>
   </tr>
   <tr>
     <th>Markdown processor</th>
@@ -87,9 +87,9 @@ If you spot outdated or incorrect information, let me know!
     <th>Content model</th>
     <td colspan="3" class="centered">Blog (built-in), extensible</td>
     <td>
-      No built-in, extensible.<fn id="content-model">You configure a <a href="/reference-manual/#index-fields">mapping
+      No built-in, extensible<fn id="content-model">You configure a <a href="/reference-manual/#index-fields">mapping
       of CSS selectors of elements</a> to extract metadata from to index fields, then give a template
-      or a script that defines <a href="/reference-manual/#index-views">how to render it</a>
+      or a script that defines <a href="/reference-manual/#index-views">how to render it</a>.</fn>
     </td>
   </tr>
   <tr>
@@ -117,7 +117,11 @@ If you spot outdated or incorrect information, let me know!
   </tr>
   <tr>
     <th>Table of contents</th>
-    <td>Markdown and AsciiDoc only, black box</td>
+    <td>
+      Markdown and AsciiDoc only, black box<fn id="blackbox-toc">ToC is a feature of the Markdown and AsciiDoc libraries it uses
+      rather than of Hugo itself, so uses have limited control over its rendering and cannot use extracted headings
+      in their own ways.</fn>
+    </td>
     <td>Markdown only, ToC datastructure available to templates</td>
     <td>No built-in, various plugins available</td>
     <td>
