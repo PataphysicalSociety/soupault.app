@@ -6,9 +6,9 @@ name: CI
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,7 +35,7 @@ jobs:
   
     - name: Install soupault
       env:
-        SOUPAULT_VERSION: 4.0.0-beta3
+        SOUPAULT_VERSION: 4.0.0-beta2
       run: |
         echo Downloading and unpacking soupault
         # I use self-hosted URL here to make it easier to try pre-release versions in the CI
