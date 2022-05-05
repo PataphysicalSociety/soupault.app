@@ -11,6 +11,7 @@ over your website generation process.
 
 If you are already familiar with other static site generators, check out the
 [comparison with Hugo, Zola, and Jekyll](/tips-and-tricks/comparison/).
+You may also want to read the [FAQ](/tips-and-tricks/faq).
 
 ## Quick start
 
