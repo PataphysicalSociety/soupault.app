@@ -272,5 +272,12 @@ In the current versions, if you have clean URLs enabled and there are both `site
 and `site/test/index.html`, then the latter will be used. But it just happens to be this way
 and may change any time, so don't count on it.
 
+<h3 id="plugin-and-builtin-name-collision">What happens if I load a plugin with the same name as a built-in widget?</h3>
+
+The plugin wins. You also get a log message that clarifies that.
+
+This is an intentional choice, so that people can replace built-in functionality with plugins if they want to.
+
 <hr>
 <div id="footnotes"> </div>
+
