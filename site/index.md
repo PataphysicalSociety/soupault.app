@@ -150,4 +150,4 @@ So far just me, [Daniil Baturin](https://baturin.org), but everyone is welcome t
 It has grown out of the bunch of ad hoc scripts that used to power my own website, and then I thought I can as well make it usable
 for everyone who finds other generators too annoying or too limiting.
 
-Feel free to [contact](/contact) me.
+Feel free to [contact](/support) me.
