@@ -1,12 +1,12 @@
 -- Adds a bunch of fake HTML elements for easily making links to popular websites
 --
 -- Supported elements:
---   <wikipedia lang="fr" page="Philippe Soupault">surrealist writer</wikipedia>
+--   <wikipedia lang="de" page="Philippe Soupault">surrealist writer</wikipedia>
 --   <github project="dmbaturin/soupault">soupault</github>
 --   <sourcehut project="dmbaturin/soupault">soupault</sourcehut>
 --   <mastodon user="@dmbaturin@mastodon.social">me on mastodon</mastodon>
 --   <twitter user="dmbaturin">me on twitter</twitter>
---   <rfc number="1945">HTTP RFC</rfc>
+--   <rfc number="1918">HTTP RFC</rfc>
 --
 -- All elements also support a short form where the content becomes the link data:
 --   <wikipedia>Philippe Soupault</wikipedia>
@@ -98,7 +98,6 @@ function make_wikipedia_link(element)
 
     wp_page = String.trim(wp_page)
     wp_page = Regex.replace_all(wp_page, "\\s+", "_")
-    Log.warning("WPP: " .. wp_page)
 
     href = format("https://%s.wikipedia.org/wiki/%s", lang, wp_page)
     real_link = make_link(element, href)
@@ -162,7 +161,7 @@ function make_twitter_link(element)
 end
 
 elements = HTML.select_all_of(page, {
-  "wikipedia", "github", "gitlab", "sourcehut", "mastodon", "twitter", "rfc"
+  "wikipedia", "github", "sourcehut", "codeberg", "mastodon", "twitter", "linkedin", "rfc"
 })
 
 local index = 1
@@ -174,14 +173,16 @@ while elements[index] do
     new_elem = make_wikipedia_link(elem)
   elseif (tag_name == "github") then
     new_elem = make_simple_link(elem, "project", "https://github.com/%s")
-  elseif (tag_name == "gitlab") then
-    new_elem = make_simple_link(elem, "project", "https://gitlab.com/%s")
   elseif (tag_name == "sourcehut") then
     new_elem = make_simple_link(elem, "project", "https://git.sr.ht/~%s")
+  elseif (tag_name == "codeberg") then
+    new_elem = make_simple_link(elem, "project", "https://codeberg.org/%s")
   elseif (tag_name == "mastodon") then
     new_elem = make_mastodon_link(elem)
   elseif (tag_name == "twitter") then
     new_elem = make_twitter_link(elem)
+  elseif (tag_name == "linkedin") then
+    new_elem = make_simple_link(elem, "user", "https://www.linkedin.com/in/%s")
   elseif (tag_name == "rfc") then
     new_elem = make_rfc_link(elem)
   end
