@@ -7,7 +7,7 @@ Soupault is free and open-source software, open for contributions.
 Soupault source code is available in two equally official locations:
 
 * GitHub: <github>PataphysicalSociety/soupault</github>
-* Codeberg: [codeberg.org/dmbaturin/soupault](https://codeberg.org/dmbaturin/soupault)
+* Codeberg: <codeberg>PataphysicalSociety/soupault</codeberg>
 
 I keep those repositories in sync, and you can open a pull request in either of them.
 
@@ -16,12 +16,10 @@ it’s better to discuss the idea with the maintainer first rather than make a p
 
 ## Contributing to the website
 
-The website source code, so far, is only on GitHub at <github>PataphysicalSociety/soupault</github>, mainly due to its CI/CD setup
-that relies on GitHub Actions right now.
+The website source code is also public and open for contributions:
 
-That should and will change, but it will take time. If you’d like an alternative way to contribute to it, let me know!
-
-In any case, the website source is open for contributions and suggestions.
+* GitHub: <github>PataphysicalSociety/soupault</github>
+* Codeberg: <codeberg>PataphysicalSociety/soupault</codeberg>
 
 ## Contributing plugins
 
