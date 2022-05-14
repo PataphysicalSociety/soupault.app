@@ -59,7 +59,7 @@ platform supported by the OCaml programming language.
 The source code is available from these git repositories:
 
 * [GitHub](https://github.com/dmbaturin/soupault) (primary location)
-* [Codeberg](https://codeberg.org/dmbaturin/soupault) (read-write mirror)
+* [Codeberg](https://codeberg.org/PataphysicalSociety/soupault) (read-write mirror)
 
 To build the latest source, you will need the OCaml compiler (4.08 or later) and the OPAM package manager.
 
