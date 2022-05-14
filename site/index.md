@@ -18,12 +18,14 @@ You may also want to read the [FAQ](/tips-and-tricks/faq).
 Soupault is very simple to [install](/install/): if you are on Linux (x86-64), macOS, or Microsoft Windows,
 you can just download an executable.
 
-Read a quick start guide to get a feel of soupault's workflow:
+If you are starting a blog or an online book, you can take a ready-to-use [blueprint](/blueprints) for it.
+
+If you want to make a custom setup, read a guide to get a feel of soupault's workflow:
 
 * [Create a blog setup from scratch](/tips-and-tricks/quickstart/).
 * [Use soupault as a post-processor for an existing website](/tips-and-tricks/getting-started-html-processor/).
 
-Or read on to learn about the advantages.
+Or read on to learn about the advantages of soupault.
 
 ## Store pages in any format
 
