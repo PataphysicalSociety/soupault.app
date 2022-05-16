@@ -262,6 +262,28 @@ It considers elements with `class="footnote"` footnotes and moves them
 to that div. The `back_links` option creates links back from footnotes
 to their original locations, you can set it to `false` if you only want forward links.
 
+<h2 id="security">Security</h2>
+
+<h3 id="untrusted-data">Is it safe to run soupault on untrusted data?</h3>
+
+No, it isn't safe.
+
+Soupault allows executing system commands from the config and from plugins,
+so you should never run soupault on any sites that aren't your own.
+You should either run it sandboxed or thoroughly inspect the config and plugins
+to make sure they aren't doing anything malicious.
+
+<h3 id="safe-mode">Is there a safe mode?</h3>
+
+No, there isn't.
+
+A "safe mode" that disallows execution of external commands would limit soupault's usefulness,
+because being able to bring external tools to its workflows is one of the main design points.
+
+Trying to guess what is safe and what is not also is very error-prone
+and can give a false sense of security. If you want to run soupault on untrusted data,
+use your operating system's isolation capabilities (virtual machines or containers).
+
 <h2 id="edge-cases">Edge cases</h2>
 
 <h3 id="page-section-collision">What happens if you have a directory and a page with the same name?</h3>
