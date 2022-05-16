@@ -2,7 +2,7 @@
 
 <div id="generated-toc"> </div>
 
-<h2>Basics</h2>
+<h2 id="basics">Basics</h2>
 
 <h3 id="other-ssgs">How does soupault compare to other static site generators?</h3>
 
@@ -101,7 +101,7 @@ It can be as simple as translating `<wikipedia lang="en">HTML</wikipedia>` to `<
 or much more complex, e.g. you can create hyperlinked glossaries. See examples in the [Augmented HTML](/plugins/#augmented-html)
 plugin catalog category.
 
-<h2>Using soupault</h2>
+<h2 id="usage">Using soupault</h2>
 
 <h3 id="project-setup">How to set up a basic project</h3>
 
@@ -262,7 +262,7 @@ It considers elements with `class="footnote"` footnotes and moves them
 to that div. The `back_links` option creates links back from footnotes
 to their original locations, you can set it to `false` if you only want forward links.
 
-## Edge cases
+<h2 id="edge-cases">Edge cases</h2>
 
 <h3 id="page-section-collision">What happens if you have a directory and a page with the same name?</h3>
 
