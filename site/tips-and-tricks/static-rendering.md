@@ -98,7 +98,7 @@ I’m not sure what would be the best way to replicate this on Windows, but if y
 
 ## Mathematics
 
-Credit for this recipe goes to [Thomas Letan](https://soap.coffee/~lthms/cleopatra/soupault.html#org97bbcd3).
+Credit for this recipe goes to [Thomas Letan](https://soap.coffee/~lthms/cleopatra/soupault.html#org867dee8).
 
 When it comes to mathematics, [LaTeX](https://www.latex-project.org) remains the de facto standard.
 And when it comes to converting it to HTML, [KaTeX](https://katex.org) is one of the best libraries.
