@@ -3,7 +3,7 @@
 <p>Date: <time id="post-date">2020-05-31</time> </p>
 
 <p id="post-excerpt">
-Soupault 1.12 release is available for [download](https://files.baturin.org/software/soupault/1.12.0/).
+Soupault 1.12 release is available for <a href="https://files.baturin.org/software/soupault/1.12.0/">download</a>.
 It’s a pretty small release, with just two essential changes. I haven’t had much time last month so big things from the roadmap
 aren’t there yet. What is there is better reporting of missing/misspelt widget dependencies and a way to properly
 loop through node’s children.
