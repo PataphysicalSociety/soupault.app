@@ -78,18 +78,61 @@ Here is a simplified flowchart:
 
 ## Basic configuration
 
-Very few soupault settings are fixed, and most can be changed in the configuration file. This is the settings from the default config that `soupault --init` generates:
+Very few soupault settings are fixed, and most can be changed in the configuration file.
 
+<details>
+<summary>This is the settings from the default config that <kbd>soupault --init</kbd> generates:</summary>
 <pre> <code class="language-toml" id="default-config"> </code> </pre>
+</details>
 
 Note that if you create a `soupault.conf` file before running `soupault --init`, it will not overwrite that file. 
 
-In this document, whenever a specific site or build dir has to be mentioned, we’ll use default values.
+In this document, whenever a specific site or build dir has to be mentioned, we’ll use default values: `site_dir` and `build_dir`.
 
 If you misspell an option, soupault will notify you about it and try to suggest a correction.
 
 Note that config values are typed and wrong value type has the same effect as missing option. All boolean values must be `true` or `false` (without quotes),
 all integer values must not have quotes around numbers, and all strings must be in single or double quotes.
+
+### Logging options
+
+By default, soupault will only log warnings and errors. However, its philosophy is that the user should be able to get as much insight
+into the build process as possible.
+
+It provides two settings for controlling the log level: `settings.verbose` and `settings.debug`. By default, both are false.
+
+```toml
+[settings]
+    verbose = false
+    debug = false
+```
+
+It's also possible to control the log level from the command line, by running `soupault --verbose` or `soupault --debug`.
+
+With `verbose = true`, soupault logs detailed build progress: what pages are being processed, what widgets run on them, and so on.
+
+With `debug = true`, it will also include the details of what it's doing: it will tell why it's not running certain widgets,
+display the input and output of external commands, etc.
+
+### HTML output options
+
+By default, soupault pretty-prints HTML in an attempt to make it more readable. If you want to keep the original formatting,
+you can disable pretty-printing:
+
+```toml
+[settings]
+    pretty_print_html = false
+```
+
+Soupault will also keep the original document type declaration, if it's present. If it's not, it will automatically
+add the HTML5 docype (`<!DOCTYPE html>`). However, you can change that: for example, force the HTML 4.01 doctype
+for all pages:
+
+```toml
+[settings]
+    keep_doctype = false
+    doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">'
+```
 
 ### Custom directory layouts
 
