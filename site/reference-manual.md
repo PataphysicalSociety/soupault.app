@@ -81,7 +81,7 @@ Here is a simplified flowchart:
 Very few soupault settings are fixed, and most can be changed in the configuration file.
 
 <details>
-<summary>This is the settings from the default config that <kbd>soupault --init</kbd> generates:</summary>
+<summary>This is the settings from the default config that <kbd>soupault --init</kbd> generates.</summary>
 <pre> <code class="language-toml" id="default-config"> </code> </pre>
 </details>
 
