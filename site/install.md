@@ -46,8 +46,7 @@ opam install soupault
 
 ### Nix
 
-Soupault is available in [nixpkgs](https://search.nixos.org/packages?channel=unstable&show=soupault&type=packages&query=soupault)
-(as of September 2021, only in unstable).
+Soupault is available in [nixpkgs](https://search.nixos.org/packages?channel=unstable&show=soupault&type=packages&query=soupault).
 
 Nix packaging is maintained by [toastal](https://toast.al/).
 
