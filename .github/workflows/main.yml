@@ -33,7 +33,7 @@ jobs:
     - name: Install TOML syntax definition for highlight
       run: |
         sudo cp scripts/toml.lang /usr/share/highlight/langDefs/
-  
+
     - name: Install soupault
       env:
         SOUPAULT_VERSION: 4.0.1
@@ -48,7 +48,7 @@ jobs:
       run: |
         make all
         zip -r soupault-website.zip build/
-        
+
     - name: Deploy to Netlify
       env:
         NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
