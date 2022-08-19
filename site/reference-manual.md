@@ -2099,6 +2099,10 @@ Check if the file at `file_path` has `extension`.
 For example, `Sys.has_extension("file.tar.gz", "tar")` is true,
 and `Sys.has_extension("file.tar.gz", "gz")` is also true.
 
+##### <function>Sys.strip_extensions(file_path)</function>
+
+Removes all extensions from a file name. For example, `Sys.strip_extensions("foo.png")` is `"foo"`.
+
 ##### <function>Sys.basename(file_path)</function>
 
 Returns the base name of a path (its file name part), e.g. `"/usr/local/bin/soupault" → "soupault"`.
@@ -2168,9 +2172,11 @@ The intended use case for it is creating and processing assets, e.g. converting 
 
 There’s also `Sys.run_program_get_exit_code` that does the same, but returns the raw exit code (0 on success).
 
-##### <function>Sys.get_program_output(command)</function>
+##### <function>Sys.get_program_output(command, input)</function>
 
 Executes a command in the system shell and returns its output.
+
+**Note:** the `input` argument is optional. When present, it's used for program's stdin.
 
 If the command fails, it returns `nil`. The stderr is shown in the execution log, but there’s no way a plugin can access its stderr or the exit code.
 
@@ -2486,8 +2492,8 @@ Page processing hooks allow Lua code to run between processing steps of replace 
 They have access to the same API functions as plugins, but their execution environments
 are somewhat different and depend on specific hook.
 
-Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.0.0:
-`pre-parse`, `pre-process`, `post-index`, `render`, `save`.
+Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.1.0:
+`pre-parse`, `pre-process`, `post-index`, `render`, `save`, `post-save`..
 
 Like widget subtables, hook subtables can contain arbitrary options.
 
@@ -2674,6 +2680,29 @@ For a trivial example, here’s how to just write the HTML to the default output
   '''
 ```
 
+<h3 id="hooks-post-save">Post-save</h3>
+
+The `post-save` hook runs after a page file is written to disk.
+
+It has the following variables in its environment:
+
+* `page_file` — path to the page source file.
+* `target_file` — full path to the output file for the generated page.
+* `target_dir` — path to the generated page output directory.
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+* `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
+
+For a trivial example, here’s how to output generated file size using `du` (on UNIX-like systems):
+
+```toml
+[hooks.post-save]
+  lua_source = '''
+    page_size = Sys.get_program_output(format("du -h %s", target_file))
+    Log.info(format("Page size: %s", page_size))
+```
 
 ## Glossary
 
