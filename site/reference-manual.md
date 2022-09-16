@@ -85,9 +85,9 @@ Very few soupault settings are fixed, and most can be changed in the configurati
 <pre> <code class="language-toml" id="default-config"> </code> </pre>
 </details>
 
-Note that if you create a `soupault.conf` file before running `soupault --init`, it will not overwrite that file. 
+Note that if you create a `soupault.toml` file before running `soupault --init`, it will not overwrite that file.
 
-In this document, whenever a specific site or build dir has to be mentioned, we’ll use default values: `site_dir` and `build_dir`.
+In this document, whenever a specific site or build dir has to be mentioned, we’ll use their default values: `site_dir` and `build_dir`.
 
 If you misspell an option, soupault will notify you about it and try to suggest a correction.
 
@@ -144,15 +144,44 @@ You can also override the locations of the source and destination directories wi
 Thus it’s possible to run soupault without a dedicated project directory at all:
 
 ```shell-session
-$ SOUPAULT_CONFIG="mysite.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
+$ SOUPAULT_CONFIG="mysite.toml" soupault --site-dir some-input-dir --build-dir some-other-dir
 ```
+
+Since 4.2.0, it's also possible to specify the config location using a command line option (`--config`) instead of an environment variable.
+That's especially useful on Windows, where there's no easy way to set an environment variable
+for a single command invocation:
+
+```shell-session
+C:\> soupault --config mysite.toml --site-dir some-input-dir --build-dir some-other-dir
+```
+
+## Asset processing
+
+By default, soupault simply copies non-page files unchanged. However, it's possible to run them through external tools instead,
+such as image optimizers, Sass/Less/etc. compilers, and similar tools.
+
+Example: running all `*.png` files through [pngcrush](https://pmt.sourceforge.io/pngcrush/) — a popular PNG optimizer.
+
+```toml
+[asset_processors]
+  png = "pngcrush {{source_file_path}} {{target_dir}}/{{source_file_name}}"
+
+```
+
+The value is a <term>Jingoo</term> template. There are following variables in the template environment:
+
+* `source_file_path` — full path to the source files (like `site/pictures/cat.png`).
+* `source_file_name` — name of the input file without the directory part (like `cat.png`).
+* `source_file_base_name` — name of the input file without extensions (like `cat`).
+* `target_dir` — output directory path.
+
 
 ## Page processing
 
 ### Page templates
 
-In soupault’s terminology, a page template is simply an HTML file without content—an empty page. Soupault does not use a template processor for assembling pages,
-instead it injects the content into the element tree. This way any empty HTML page can serve as a soupault ‘theme’
+In soupault’s terminology, a page template is simply an HTML file without content — an empty page. Soupault does not use a template processor for assembling pages,
+instead it injects the content into the element tree. This way any empty HTML page can serve as a soupault "theme".
 
 This is the default configuration:
 
@@ -2490,10 +2519,10 @@ Returns true if `value` is a table whose every key is an integer number.
 Page processing hooks allow Lua code to run between processing steps of replace them.
 
 They have access to the same API functions as plugins, but their execution environments
-are somewhat different and depend on specific hook.
+are somewhat different and vary between hooks.
 
-Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.1.0:
-`pre-parse`, `pre-process`, `post-index`, `render`, `save`, `post-save`..
+Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.2.0:
+`pre-parse`, `pre-process`, `post-index`, `render`, `save`, `post-save`.
 
 Like widget subtables, hook subtables can contain arbitrary options.
 
