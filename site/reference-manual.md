@@ -873,9 +873,9 @@ with a `delete_element` widget, but we need to make sure it only runs after brea
   # ...
 ```
 
-<h3 id="build-profiles">Limiting widgets to “build profiles”</h3>
+<h3 id="build-profiles">Limiting widgets to build profiles</h3>
 
-Sometimes you may want to enable certain widgets only for some builds. For example, include analytics scripts only in production builds. It can be done with “build profiles”.
+Sometimes you may want to enable certain widgets only for some builds. For example, include analytics scripts only in production builds. It can be done with build profiles.
 
 For example, this way you can only include `includes/analytics.html` file in your pages when the build profile is set to `live`:
 
@@ -2533,6 +2533,7 @@ using the `file` option, just like with plugins.
 There is no automatic discovery for hooks, they must always be configured explicitly.
 
 Like widgets, hooks can be limited to a subset of pages using any <term>limiting option</term>.
+They can also be limited to [build profiles](#build-profiles).
 
 <h3 id="hooks-pre-parse">Pre-parse</h3>
 
