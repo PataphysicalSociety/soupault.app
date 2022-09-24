@@ -15,8 +15,8 @@ and fixes a couple of bugs.
 
 ### Limiting hooks to build profiles
 
-This is a new feature that border on a bug fix. [Page processing hooks](/reference-manual/#page-processing-hooks) were supposed to be configured
-almost like widgets, so that people don't need to learn two sets of options.
+This is a new feature that borders on a bug fix. [Page processing hooks](/reference-manual/#page-processing-hooks) were supposed to be configured
+almost like widgets so that people don't need to learn two sets of options.
 In fact, internally, a lot of code is shared between widget and hook runners.
 
 Still, I forgot one thing — support for limiting hooks to [build profiles](/reference-manual/#build-profiles).

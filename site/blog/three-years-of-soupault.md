@@ -11,7 +11,7 @@ but not right now.
 
 Previous two years there were anniversary releases and I didn't have to hold
 anything back to match that date because releases were almost monthly anyway,
-unless other committments prevented me from working on it.
+unless other committments prevented me from working on soupault.
 This is the first time I have no _small_ improvements to make right now.
 
 Big improvements I want to make currently lie outside of soupault:
@@ -36,7 +36,7 @@ so I believe it's my duty to contribute back.
 Besides, if software that you want to use doesn't yet exist, why wait for anyone else to make it?
 Soupault itself started its life as a response to my own needs. My own [website](https://baturin.org)
 was powered by a bunch of custom scripts, while the blog was separate and powered by [Pelican](https://blog.getpelican.com/).
-At some point I started looking for a solution that could replace and unify both, and I also wanted to get rid of all client-side JavaScript,
+At some point I started looking for a solution that could replace and unify both, and I also wanted to get rid of all client-side JavaScript
 but quickly realized that a static website generator I wanted to use didn't exist at that time.
 
 Some of my requirements could be called frivolous, but they are indicative of deeper issues.
@@ -55,24 +55,24 @@ And since Markdown headings can only encode the heading level, there's no way to
 your headings permanent anchors to facilitate deep links to page sections,
 while in HTML you could write `<h2 id="some-section">Some section</h2>`.
 If you include HTML headings in a Markdown file, they will be insivible to most SSGs
-because ToC is a feature of a Markdown parser and it ignores non-Markdown syntax.
+because ToC is a feature of their Markdown parsers and they ignore non-Markdown syntax.
 
 Maybe you can do that if it uses an extended variant of Markdown, or a different, more flexible markup language.
 However, then you will typically be locked into that SSG forever because most of them only support a specific
 set of input formats and don't let you add new ones. Hugo is an especially weird example:
-it has built-in Markdown libraries with slightly different feature sets.
+it has two built-in Markdown libraries with slightly different feature sets.
 It also relies on external helpers for AsciiDoc and reStructuredText,
 but doesn't allow the user to pass any options to them or add new helpers.
 Needless to say, ToC generation functionality in Hugo is vastly different for every format.
 
-Ability to generate a page ToC as good as that old JavaScript could became my litmus test 
-I kept looking for SSGs and plugins that , and eventually found one Jekyll plugin
+Ability to generate a page ToC as good as that old JavaScript could became my litmus test.
+I kept looking for SSGs and plugins that could do that, and eventually found one Jekyll plugin
 that was as good. However, when I looked into its source code, I realized it does that by
 loading an HTML parser library, parsing the generated page, and manipulating its element tree.
 
 That was the moment when I realized that popular SSGs are using a wrong abstraction.
-HTML is the language of the web, it's expressive and machine-modifiable
-(even if sometimes annoying to write for humans). Treating it as an opaque format limits
+HTML is the language of the web, it's expressive and machine-modifiable,
+even if sometimes annoying to write for humans. Treating it as an opaque format limits
 what a static site generator can do. I set out to make a tool where HTML would be
 a first-class citizen. All other formats (Markdown, AsciiDoc, RST...) would be converted
 to HTML immediately after loading and all real functionality would work at the HTML level
@@ -86,7 +86,7 @@ element tree _manipulation_ is very limited—it's a web scraping library first 
 Everyone knows that I'm a huge fan of the OCaml programming language,
 but I'm not advocating it for every use case. I wanted the new SSG to be extensible,
 so I was considering Python or JS, but alas—none of HTML parsers I found for those languages
-was sufficiently fast and sufficiently good at element tree modification.
+were sufficiently fast and sufficiently good at element tree modification.
 
 [Lambda Soup](https://github.com/aantron/lambdasoup), an OCaml library, met both requirements.
 In fact, when it comes to rewriting element trees, in some areas it's even better than
@@ -97,11 +97,11 @@ so loading plugins is possible, but compiling and distributing native code plugi
 would be a nightmare for plugin authors and users alike.</fn>
 
 That's how I came up with the idea to allow the user to call arbitrary anything-to-HTML convertors
-depending on page source file extensions and then with widgets for injecting external helper outputs
+depending on page source file extensions and then with the idea of widgets for injecting external helper outputs
 into pages and piping HTML element content through external programs.
 
 Finally, I realized that I could add a scripting language interpreter,
-and roughly at that time, someone brought my attention to then-unmaintained Lua-ML project.
+and roughly at that time, someone brought my attention to the then-unmaintained Lua-ML project.
 Even if it only supports outdated Lua 2.5, it still represents the future of embedded interpreters
 I believe: it integrates with the type and module system of the host language
 and provides type safety guarantees that an interpreter written in C never will.
