@@ -14,7 +14,7 @@ If you spot outdated or incorrect information, let me know!
     <th>Soupault</th>
   </tr>
   <tr>
-    <th>Static executable</th>
+    <th>Single executable</th>
     <td>Yes</td>
     <td>Yes</td>
     <td>No</td>
@@ -22,7 +22,7 @@ If you spot outdated or incorrect information, let me know!
   </tr>
   <tr>
     <th>Extensibility</th>
-    <td colspan="2">
+    <td colspan="2" class="centered">
       None<fn id="extensibility">Hugo and Zola include a Turing-complete template processor,
       so it's possible to add custom logic to control its built-in functions.
       However, it's impossible to add any new functionality with loadable plugins or external helpers.</fn>
@@ -32,7 +32,7 @@ If you spot outdated or incorrect information, let me know!
   </tr>
   <tr>
     <th>Built-in web server</th>
-    <td colspan="3">Yes</td>
+    <td colspan="3" class="centered">Yes</td>
     <td>
       No (an intentional choice)<fn id="web-server">On most systems these days, you can serve a directory with <code>python3 -m http.server</code>,
       or one of the many small web server projects. As of page watching and live rebuild, I'm not convinced that
@@ -43,7 +43,7 @@ If you spot outdated or incorrect information, let me know!
     <td>
       Markdown, Org Mode (built-in); AsciiDoc, RST, Pandoc (external helpers, hardcoded<fn id="hugo-helpers">For some of the helpers, Hugo offers a limited range
       of built-in options, e.g. for AsciiDoc (see <a href="https://github.com/gohugoio/hugo/blob/master/markup/asciidocext/convert.go">markup/asciidocext/convert.go</a>).
-      It's impossible to add new helpers or pass new options to existing helpers without modifying the Hugo source code though.</fn>)
+      However, it's impossible to add new helpers or pass new options to existing helpers without modifying the Hugo source code.</fn>)
     </td>
     <td>Markdown</td>
     <td>Markdown (built-in), any (via <a href="https://jekyllrb.com/docs/plugins/converters/">convertor plugins</a>)</td>

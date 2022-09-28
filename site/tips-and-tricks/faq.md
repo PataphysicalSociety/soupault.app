@@ -15,7 +15,7 @@ and allows plugins to redefine its built-in features.
 Unlike any other SSG, it works on the HTML element tree level. This means that it:
 
 * supports any format that can be converted to HTML;
-* its features like [ToC](/reference-manual/#toc-widget) work consistently across all formats;
+* features like [ToC](/reference-manual/#toc-widget) work consistently across all formats;
 * it offers unique capabilities such as piping HTML element content through an external program.
 
 For details, check out the [comparison table](/tips-and-tricks/comparison/).
@@ -133,11 +133,16 @@ You can also override the locations of the config file
 and the source/output directories from the command line. A UNIX example of overriding everything at once:
 
 ```
-SOUPAULT_CONFIG="something.conf" soupault --site-dir some-input-dir --build-dir some-other-dir
+SOUPAULT_CONFIG="/tmp/mysite.conf" soupault --site-dir ~/mysite --build-dir ~/public_html
 ```
 
 On Windows, there's no easy way to set an environment variable for a command like that,
-but you can make a batch script or just keep the config file in a parent directory and call soupault from there.
+so you can use an option instead (since 4.2.0):
+
+```
+soupault --config A:\mysite.cfg --site-dir B:\mysite --build-dir C:\inetpub\wwwroot\
+```
+
 The `--site-dir` and `--build-dir` options work the same on all platforms.
 
 <h3 id="assets">How to add assets (pictures, CSS...)</h3>
@@ -269,7 +274,7 @@ to their original locations, you can set it to `false` if you only want forward 
 No, it isn't safe.
 
 Soupault allows executing system commands from the config and from plugins,
-so you should never run soupault on any sites that aren't your own.
+so you should exercise caution if you want to run soupault on anything you didn't write.
 You should either run it sandboxed or thoroughly inspect the config and plugins
 to make sure they aren't doing anything malicious.
 
@@ -290,8 +295,8 @@ use your operating system's isolation capabilities (virtual machines or containe
 
 Don't do it. It's undefined behaviour and anything may happen.
 
-In the current versions, if you have clean URLs enabled and there are both `site/test.html`
-and `site/test/index.html`, then the latter will be used. But it just happens to be this way
+Currently, if you have clean URLs enabled and there are both `site/test.html`
+and `site/test/index.html`, then the latter will be used. But it just happens to be this way now
 and may change any time, so don't count on it.
 
 <h3 id="plugin-and-builtin-name-collision">What happens if I load a plugin with the same name as a built-in widget?</h3>
