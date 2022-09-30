@@ -17,14 +17,14 @@ It’s a relatively small release with a few bug fixes and one new feature: conf
 ## Configurable entry sorting
 
 Originally, soupault assumed that the index entry sort key field is some kind of a date. You could configure supported date formats using the
-`index_date_formats` option, and it would attempt to parse every value as a date, or resorted to lexicographic comparison if parsing failed.
+`date_formats` option, and it would attempt to parse every value as a date, or resorted to lexicographic comparison if parsing failed.
 
 A lot of websites with auto-generated index pages are blogs, so that assumption wasn’t terribly unreasonable. However, it still was a rather
 inflexible design.
 
 Now there’s a new option: `sort_type` that can have three values: `calendar` (the default), `numeric`, and `lexicographic`.
 
-The `calendar` mode matches the old behaviour: it tries to parse a field value as a date according to supported `index_date_formats`.
+The `calendar` mode matches the old behaviour: it tries to parse a field value as a date according to supported `date_formats`.
 Invalid values are considered "older" than any valid values. Between themselves, invalid values are compared lexicographically.
 
 In the `numeric` mode, soupault will try to parse values as integer numbers. Invalid values are considered "less" than any valid values.
