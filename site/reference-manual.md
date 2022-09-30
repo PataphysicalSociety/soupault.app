@@ -381,7 +381,7 @@ These are the basic settings:
   # There are three supported ways to sort entries.
   #
   # In the "calendar" mode, soupault will try to parse field values as dates
-  # according to the index_date_formats option (see below).
+  # according to the date_formats option (see below).
   #
   # In the "numeric" mode, it will try to parse fields as integers.
   #
@@ -394,7 +394,7 @@ These are the basic settings:
   # Default %F means YYYY-MM-DD
   # Most of the classic UNIX date format specifiers are supported
   # see https://man7.org/linux/man-pages/man1/date.1.html for example.
-  index_date_formats = ["%F"]
+  date_formats = ["%F"]
 
   # By default, soupault will require valid values for "calendar" and "numeric" sorting
   # If a value is invalid, it’s assumed to be "less" than any valid value.
