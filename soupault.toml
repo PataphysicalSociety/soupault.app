@@ -184,6 +184,12 @@ page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_
 [widgets.quick-links]
   widget = "quick-links"
 
+# Add tabindex="0" to code snippets to aid keyboard and screen reader navigation
+[widgets.set-tab-index-for-code-snippets]
+  widget = "set-tab-index"
+  selectors = ["pre"]
+  tab_index = 0
+
 # Processes <soupault-release> elements and converts them into file/signature links
 [widgets.create-download-links]
   widget = "soupault-release"
