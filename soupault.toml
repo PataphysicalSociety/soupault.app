@@ -98,6 +98,9 @@ Log.debug("running pre-parse hook")
 page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_release)
 '''
 
+[widgets.insert-generator-meta]
+  widget = "generator-meta"
+
 [widgets.page-title]
   widget = "title"
   selector = ["#title", "#post-title", "h1"]
