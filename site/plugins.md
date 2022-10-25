@@ -74,6 +74,25 @@ A live example this plugin’s output can be seen in the table of contents of th
 
 Download: <a href="/files/plugins/collapsible-list.lua">collapsible-list.lua</a>.
 
+### Generator meta tag
+
+Adds `<meta name="generator" content="soupault $current_version">` to pages
+to let everyone know they are generated with soupault.
+
+It doesn't insert that tag if a generator meta tag already exists in the page,
+and tries to always group its output with existing `<meta>` tags.
+
+This plugin doesn't have any configurable options (as of now).
+
+Configuration example:
+
+```toml
+[widgets.insert-generator-meta]
+  widget = "generator-meta"
+```
+
+Download: [generator-meta.lua](/files/plugins/generator-meta.lua).
+
 ## Content
 
 ### Reading time
