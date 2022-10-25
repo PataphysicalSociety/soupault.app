@@ -5,11 +5,11 @@
 There are many reasons to avoid JavaScript. 
 Plain HTML and CSS are good for pages [designed to last](https://jeffhuang.com/designed_to_last/).
 Pages with less JS load faster and use less machine resources (still important for battery-powered devices).
-They also require less bandwidth—many JS libraries are quite large.
+They also require less bandwidth — many JS libraries are quite large.
 
 On this page I collect howto guides for rendering different kinds of content to static HTML.
 
-If you come up with some interesting ways to avoid JS, let me know!
+If you come up with more ways to avoid JS, let me know!
 
 ## Syntax highlighting
 
@@ -98,7 +98,7 @@ I’m not sure what would be the best way to replicate this on Windows, but if y
 
 ## Mathematics
 
-Credit for this recipe goes to [Thomas Letan](https://soap.coffee/~lthms/cleopatra/soupault.html#org867dee8).
+Credit for this recipe goes to [Thomas Letan](https://soap.coffee/~lthms/posts/cleopatra/soupault.html#katex).
 
 When it comes to mathematics, [LaTeX](https://www.latex-project.org) remains the de facto standard.
 And when it comes to converting it to HTML, [KaTeX](https://katex.org) is one of the best libraries.
