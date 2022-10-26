@@ -94,7 +94,6 @@
 [hooks.pre-parse]
   lua_source = '''
 soupault_release = soupault_config["custom_options"]["latest_soupault_version"]
-Log.debug("running pre-parse hook")
 page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_release)
 '''
 
