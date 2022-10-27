@@ -80,10 +80,9 @@ Here is a simplified flowchart:
 
 Very few soupault settings are fixed, and most can be changed in the configuration file.
 
-<details>
-<summary>This is the settings from the default config that <kbd>soupault --init</kbd> generates.</summary>
+This is the settings from the default config that `soupault --init` generates.
+
 <pre> <code class="language-toml" id="default-config"> </code> </pre>
-</details>
 
 Note that if you create a `soupault.toml` file before running `soupault --init`, it will not overwrite that file.
 
@@ -91,7 +90,8 @@ In this document, whenever a specific site or build dir has to be mentioned, weâ
 
 If you misspell an option, soupault will notify you about it and try to suggest a correction.
 
-Note that config values are typed and wrong value type has the same effect as missing option. All boolean values must be `true` or `false` (without quotes),
+Note that config values are typed and wrong value type has the same effect as missing option.
+All boolean values must be `true` or `false` (without quotes),
 all integer values must not have quotes around numbers, and all strings must be in single or double quotes.
 
 ### Logging options
