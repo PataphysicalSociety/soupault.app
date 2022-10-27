@@ -433,8 +433,8 @@ This is the configuration for this very site:
 ```
 
 The `selector` field is either a single CSS selector or a list of selectors that define what to extract
-from the page. Here, `selector = ["p#post-excerpt", "p"]` means “use `p#post-excerpt` for the excerpt,
-but if there’s no such element, just use the first paragraph”.
+from the page. Here, `selector = ["p#post-excerpt", "p"]` means "use `p#post-excerpt` for the excerpt,
+but if there’s no such element, just use the first paragraph".
 
 By default, soupault will extract only the first element, but you can change that with `select_all = true`.
 
@@ -447,36 +447,33 @@ while if it’s false, it will leave the field undefined.
 
 ### Built-in index fields
 
-Soupault provides technical metadata of the page as built-in fields.
+Soupault provides technical metadata of the page in these built-in fields:
 
 <dl>
   <dt>url</dt>
-  <dd>Absolute page URL path, like /papers/simple-imperative-polymorphism (or /papers/simple-imperative-polymorphism.html, if clean URLs are disabled)</dd>
+  <dd>Absolute page URL path, like <code>/papers/simple-imperative-polymorphism</code> (or <code>/papers/simple-imperative-polymorphism.html</code>, if clean URLs are disabled)</dd>
   <dt>nav_path</dt>
-  <dd>A list of strings that represents the logical section path, e.g. for <code>site/pictures/cats/grumpy.html</code> it will be <code>["pictures", "cats"]</code>.</dd> 
+  <dd>A list of strings that represents the logical section path. E.g., for <code>site/pictures/cats/grumpy.html</code> it will be <code>["pictures", "cats"]</code>.</dd> 
   <dt>page_file</dt>
-  <dd>Original page file path.</dd>
+  <dd>Page source file path (like <code>site/about.md</code>).</dd>
 </dl>
 
 ### Index views
 
 Soupault can insert HTML rendered from site metadata into the site index pages. By default those are pages named `index.*`.
 
-Note that you cannot insert an index into an arbitrary page, and you cannot extract any metadata
-from an index page.
-
-The way index data is rendered is defined by “index views”. You can have any number of views.
+The way index data is rendered is defined by "index views". You can have any number of views.
 
 Which view is used is determined by the `index_selector` option. It’s possible to use multiple views on the same page,
 e.g. if you want to display lists of posts grouped by date and by author.
 
 #### Ways to control index rendering
 
-There are three options that can define view rendering:
+There are four ways to render index data:
 
 * `index_item_template` — a <term>jingoo</term> template for an individual item, applied to each index data entry.
-* `index_template` — a jingoo template for the entire index.
-* `index_processor` — external script that receives index data (in JSON) to stdin and write HTML to stdout.
+* `index_template` — a jingoo template for the entire index (get a list of entries and iterate through it yourself).
+* `index_processor` — path to an external script that receives index data (in JSON) through stdin and writes HTML to stdout.
 * `file` or `lua_source` — path to a Lua index processor, or inline Lua code, respectively.
 
 #### Index item template
