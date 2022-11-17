@@ -175,7 +175,7 @@ Sample configuration:
 ```toml
 [widgets.make-links-safe]
   widget = "safe-links"
-  attributes = "nofollow noopener noreferrer"
+  attributes = ["nofollow", "noopener", "noreferrer"]
 ```
 
 Download: <a href="/files/plugins/safe-links.lua">safe-links.lua</a>.
