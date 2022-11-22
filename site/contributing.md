@@ -18,8 +18,8 @@ it’s better to discuss the idea with the maintainer first rather than make a p
 
 The website source code is also public and open for contributions:
 
-* GitHub: <github>PataphysicalSociety/soupault</github>
-* Codeberg: <codeberg>PataphysicalSociety/soupault</codeberg>
+* GitHub: <github>PataphysicalSociety/soupault.app</github>
+* Codeberg: <codeberg>PataphysicalSociety/soupault.app</codeberg>
 
 ## Contributing plugins
 
