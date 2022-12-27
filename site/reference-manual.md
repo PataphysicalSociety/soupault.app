@@ -2043,6 +2043,12 @@ You can also supply a list of characters to _exclude_ from encoding:
 
 Decodes percent-encoded URL strings.
 
+##### <function>String.starts_with(string, substring)</function>
+
+Checks is `string` starts with `substring`.
+For example, `String.starts_with("hello", "hell")` is true
+and `String.starts_with("maintenance", "fun")` is false.
+
 </module>
 
 <module name="Sys">
