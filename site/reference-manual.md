@@ -2044,7 +2044,7 @@ You can also supply a list of characters to _exclude_ from encoding:
 
 Decodes percent-encoded URL strings.
 
-##### <function>String.starts_with(string, substring)</function>
+##### <function>String.starts_with(string, substring)</function> (since 4.3.0)
 
 Checks is `string` starts with `substring`.
 For example, `String.starts_with("hello", "hell")` is true
