@@ -2189,6 +2189,7 @@ Make sure that if there are path separators in your string, they are all forward
 Splits a path into its components using OS-specific separators.
 
 ##### <function>Sys.split_path_unix(path_str)</function> (since 4.3.0)
+##### <function>Sys.split_path_url(path_str)</function> (since 4.3.0)
 
 Splits a path into its components using forward slash separator convention (safe for URLs).
 
