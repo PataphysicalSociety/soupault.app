@@ -2001,6 +2001,7 @@ Replaces all characters other than English letters and digits with hyphens, exac
 Example: `String.to_number("2.7")` produces `2.7` (float).
 
 Converts strings to numbers. Returns `nil` if a string isn’t a valid representation of a number.
+You can use [`Value.is_nil`](#Value.is_nil) to check is actually `nil` or just a zero (e.g. from `String.to_number("0.0")`.
 
 ##### <function>String.join(separator, list)</function>
 
