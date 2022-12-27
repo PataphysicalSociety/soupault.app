@@ -1965,7 +1965,7 @@ and measures their length in bytes instead.
 ##### <function>String.length_ascii(string)</function>
 
 Returns the count of bytes in the string. That is, `String.length("строка")` is 12
-and `String.length("日本語")` is 9.
+and `String.length("日本語")` is 6.
 
 ##### <function>String.trim(string)</function>
 
