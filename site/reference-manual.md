@@ -2181,8 +2181,8 @@ is running on.
 Since URLs use the UNIX path convention, you should always use these functions for joining parts of a URL.
 `Sys.join_path` uses _OS-specific_ path separators, so on Windows it will use back slashes and produce a broken URL. 
 
-**Note:** Just like `Sys.join_path, this function **will not** replace existing separators in its arguments.
-Make sure that 
+**Note:** Just like `Sys.join_path`, this function **will not** replace existing separators in its arguments.
+Make sure that if there are path separators in your string, they are all forward slashes.
 
 ##### <function>Sys.run_program(command)</function>
 ##### <function>Sys.run_program_get_exit_code(command)</function>
