@@ -16,7 +16,7 @@ It adds a few more Lua plugin functions and fixes a few minor bugs.
 
 * `String.starts_with(str, prefix)`
 * `Sys.split_path(path_str)` for splitting native file paths (uses `/` on UNIX-like systems, `\` on Windows).
-* `Sys.split_path_unit` (aks `Sys.split_path_url`) for splitting paths using the `/`-convention regardless of the OS (safe for URLs).
+* `Sys.split_path_unix` (aka `Sys.split_path_url`) for splitting paths using the `/`-convention regardless of the OS (safe for URLs).
 
 ## Bug fixes
 
