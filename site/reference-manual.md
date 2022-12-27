@@ -2184,6 +2184,14 @@ Since URLs use the UNIX path convention, you should always use these functions f
 **Note:** Just like `Sys.join_path`, this function **will not** replace existing separators in its arguments.
 Make sure that if there are path separators in your string, they are all forward slashes.
 
+##### <function>Sys.split_path(path_str)</function> (since 4.3.0)
+
+Splits a path into its components using OS-specific separators.
+
+##### <function>Sys.split_path_unix(path_str)</function> (since 4.3.0)
+
+Splits a path into its components using forward slash separator convention (safe for URLs).
+
 ##### <function>Sys.run_program(command)</function>
 ##### <function>Sys.run_program_get_exit_code(command)</function>
 
