@@ -311,8 +311,6 @@ pre
     box-sizing: border-box;
     overflow: auto;
     padding: 2rem;
-    margin-left: -2rem;
-    margin-right: -2rem;
     border: 1px solid var(--Pre-border);
     background: var(--Pre-bg);
     color: var(--Pre-color);
