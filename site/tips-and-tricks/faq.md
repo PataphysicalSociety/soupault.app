@@ -137,13 +137,15 @@ SOUPAULT_CONFIG="/tmp/mysite.conf" soupault --site-dir ~/mysite --build-dir ~/pu
 ```
 
 On Windows, there's no easy way to set an environment variable for a command like that,
-so you can use an option instead (since 4.2.0):
+so you can use a command-line option to specify the config file (since 4.2.0):
 
 ```
 soupault --config A:\mysite.cfg --site-dir B:\mysite --build-dir C:\inetpub\wwwroot\
 ```
 
-The `--site-dir` and `--build-dir` options work the same on all platforms.
+Note that `--config`, `--site-dir` and `--build-dir` options are available and work the same on all platforms,
+so on UNIX-like systems the choice between `--config` and `SOUPAULT_CONFIG` environment variable
+is up to the user.
 
 <h3 id="assets">How to add assets (pictures, CSS...)</h3>
 
