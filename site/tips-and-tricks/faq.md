@@ -282,11 +282,14 @@ to make sure they aren't doing anything malicious.
 
 No, there isn't.
 
-A "safe mode" that disallows execution of external commands would limit soupault's usefulness,
+A "safe mode" that disallows execution of external commands would limit soupault's usefulness
 because being able to bring external tools to its workflows is one of the main design points.
 
-Trying to guess what is safe and what is not also is very error-prone
-and can give a false sense of security. If you want to run soupault on untrusted data,
+There is no reliable way to automatically determine what is safe and what isn't
+and as long as there is a way to execute one external program and pass data to it,
+there's likely a way to execute anything.
+
+If you want to run soupault on untrusted data,
 use your operating system's isolation capabilities (virtual machines or containers).
 
 <h2 id="edge-cases">Edge cases</h2>
