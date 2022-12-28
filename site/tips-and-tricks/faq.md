@@ -91,7 +91,7 @@ That is done by inserting the content into an element specified by a CSS selecto
 
 However, it does have a built-in template processor ([jingoo](https://github.com/tategakibunko/jingoo)) and
 one of the options for rendering the site index is to supply a template. You can also call template rendering
-from Lua plugin code.
+[from Lua plugin code](/reference-manual/#String.render_template).
 
 <h3 id="shortcodes">Are the shortcodes?</h3>
 
