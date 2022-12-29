@@ -31,9 +31,10 @@ Examples below use GitHub links.
 [Netlify](https://netlify.com) is a popular static site hosting platform
 that has a built-in continuous integration service.
 
-One disadvantage is that as of early 2021, Netlify only provides an Ubuntu 16/Xenial [build image](https://github.com/netlify/build-image).
+One disadvantage is that as of early 2023, Netlify only provides a single Ubuntu LTS [build image](https://github.com/netlify/build-image).
 Worse yet, they do not give you root permissions in the container, so you _cannot install packages from APT repositories_.
-So, if you want to use external programs in your workflow, Netlify’s built-in CI isn’t for you.
+So, if you want to use external programs in your workflow, Netlify's built-in CI isn't for you,
+unless all programs you need are already in their container image or they are easy to get as downloadable executables.
 
 **Warning**: if you are using external CI for your Netlify sites, make sure to go to “Site settings”, “Build & deploy”,
 and tick the “Stop builds” option there. Otherwise Netlify will try ‘building’ your site with its built-in process
