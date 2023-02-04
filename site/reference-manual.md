@@ -155,6 +155,45 @@ for a single command invocation:
 C:\> soupault --config mysite.toml --site-dir some-input-dir --build-dir some-other-dir
 ```
 
+### Caching
+
+Starting from 4.4.0, soupault supports caching the output of [page preprocessors](#page-preprocessors)
+and commands called by [preprocess_element](#preprocess-element-widget) widgets.
+
+Caching is disabled by default because many websites will not benefit from it at all.
+However, if you use external preprocessors extensively, it can make repeated builds
+a few times faster.
+
+This is how to enable it:
+
+```toml
+[settings]
+  # Enable caching
+  caching = true
+
+  # Optionally, change the cache directory
+  cache_directory = ".soupault-cache"
+```
+
+If you want to clear the cache and build everything from scratch, you can run `soupault --force`.
+
+Soupault creates a subdirectory in the cache for each page to associate cached objects with their sources.
+When a page source file changes, its sub-cache is automatically invalidated and cleared,
+so in most cases you don't need to worry about stale cache
+or about the cache directory getting bloated with unused data.
+
+However, there are situations when you need to force cache invalidation and eviction with `soupault --force`:
+
+* When you change the `[preprocessors]` section or a `preprocess_element` widget config.
+* When you update external tools and their new versions produce different outputs.
+
+Note that [asset processor](#asset-processing) outputs are not cached, at least for now.
+That's because asset processor output file name is controlled by the user (or the command),
+not by soupault.
+
+Future versions may extend that configuration syntax to allow asset caching.
+For now, if you need an advanced asset pipeline, you may want to use an external tool instead.
+
 ## Asset processing
 
 By default, soupault simply copies non-page files unchanged. However, it's possible to run them through external tools instead,
@@ -1411,7 +1450,6 @@ Sample configuration:
 A prefix can be simply a directory, a URI schema or a host address is not required.
 
 This widget supports all options of the [`relative_links`](#relative_links) widget.
-
 
 ## Plugins
 
