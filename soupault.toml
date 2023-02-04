@@ -20,13 +20,15 @@
   plugin_discovery = true
   plugin_dirs = ["plugins"]
 
+  caching = true
+
 [preprocessors]
   md = 'pandoc -f commonmark+smart -t html --no-highlight --lua-filter=helpers/cmark-code-blocks.lua'
 
 [custom_options]
   site_url = "https://soupault.app"
 
-  latest_soupault_version = "4.3.1"
+  latest_soupault_version = "4.4.0"
 
 [index]
   index = true
