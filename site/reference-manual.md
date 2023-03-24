@@ -352,7 +352,7 @@ If you’ve had a website for a long time and there are links to your page that 
 
 Just add `clean_urls = false` to the `[settings]` section of your `soupault.conf` file.
 
-```
+```toml
 [settings]
   clean_urls = false
 ```
@@ -364,7 +364,7 @@ and doesn’t require the default_template to exist.
 
 Recommended settings for the preprocessor mode:
 
-```
+```toml
 [settings]
   generator_mode = false
   clean_urls = false
