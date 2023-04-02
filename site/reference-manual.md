@@ -177,6 +177,10 @@ This is how to enable it:
 
 If you want to clear the cache and build everything from scratch, you can run `soupault --force`.
 
+Since soupault 4.5.0, you can also completely disable caching even if it's enabled in the config:
+if you run `soupault --no-caching`, it will not attempt to create the cache directory
+or cache any outputs.
+
 Soupault creates a subdirectory in the cache for each page to associate cached objects with their sources.
 When a page source file changes, its sub-cache is automatically invalidated and cleared,
 so in most cases you don't need to worry about stale cache
@@ -1867,8 +1871,9 @@ Removes all attributes from an element.
 ##### Element tree modification
 
 ###### <function>HTML.append_root(parent, child)</function>
+###### <function>HTML.prepend_root(parent, child)</function> (since 4.5.0)
 
-Adds a child node at the end of an HTML document element tree.
+Adds a child node at the beginning or at the end of an HTML document element tree, respectively.
 
 ###### <function>HTML.append_child(parent, child)</function>
 ###### <function>HTML.prepend_child(parent, child)</function>
