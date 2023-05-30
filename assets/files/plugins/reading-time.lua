@@ -7,7 +7,7 @@
 --
 -- [widgets.reading-time]
 --   widget = "reading_time"
---   reading_speed = 350
+--   reading_speed = 150
 --
 --   # Where to insert the reading time estimate
 --   selector = "span#reading-time"
@@ -24,8 +24,8 @@ selector = config["selector"]
 content_selector = config["content_selector"]
 
 if (not reading_speed) then
-  Log.warning("Missing option \"reading_speed\", using default (300 WPM)")
-  reading_speed = 300
+  Log.warning("Missing option \"reading_speed\", using default (180 WPM)")
+  reading_speed = 180
 end
 
 if (not selector) then

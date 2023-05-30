@@ -107,7 +107,12 @@ that counts words inside a `<div id="content">` and inserts the result in `<span
   widget = "reading-time"
   selector = "span#reading-time"
   content_selector = "div#content"
+  reading_speed = 180
 ```
+
+Default reading speed is set to 180, based on this [research paper](https://iovs.arvojournals.org/article.aspx?articleid=2166061).
+That average reading speed was obtained for _simple_ middle school level texts, so sites on complex subjects
+may want to lower that value considerably.
 
 Download: <a href="/files/plugins/reading-time.lua">reading-time.lua</a>.
 
