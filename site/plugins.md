@@ -7,10 +7,10 @@ If you made a plugin and want it included in this directory, let me know!
 ## Installing plugins
 
 The simplest way to install a plugin is to create a `plugins` directory inside your project directory
-(next to `site`) and save a plugin file there. Since 1.10 release, soupault will automatically find them,
+(next to `site`) and save the plugin file there. Since 1.10 release, soupault will automatically find them,
 for example, `plugins/my-plugin.lua` will be registered as `my-plugin` widget.
 
-However, if you want to load a plugin from an unusual directory, or you want to give its widget a different name,
+However, if you want to load a plugin file explicitly or you want to give its widget a different name,
 you can also load it explicitly like this:
 
 ```toml
@@ -18,7 +18,9 @@ you can also load it explicitly like this:
   file = "tmp/some-plugin.lua"
 ```
 
-In this case `tmp/some-plugin.lua` will be registered as `my-cool-widget` widget.
+In this case `tmp/some-plugin.lua` will be registered as `my-cool-widget`.
+
+Consult the [reference manual](/reference-manual/#installing-plugins) for details.
 
 ## Generic
 
@@ -106,6 +108,7 @@ that counts words inside a `<div id="content">` and inserts the result in `<span
   selector = "span#reading-time"
   content_selector = "div#content"
 ```
+
 Download: <a href="/files/plugins/reading-time.lua">reading-time.lua</a>.
 
 ### Escape HTML special characters
@@ -260,7 +263,7 @@ You can specify either an absolute or a relative path. If a relative path is giv
 it’s relative to the current directory where you run soupault.
 
 Sample configuration:
-```
+```toml
 [widgets.process-include-tags]
   widget = "inline-include"
 ```
@@ -276,9 +279,9 @@ Provides fake HTML elements for easily creating links to popular websites.
 Supported elements:
 
 * `<wikipedia lang="fr" page="Philippe Soupault">surrealist writer</wikipedia>` (result: <wikipedia lang="fr" page="Philippe Soupault">surrealist writer</wikipedia>)
-* `<github project="dmbaturin/soupault">soupault</github>` (result: <github project="dmbaturin/soupault">soupault</github>)
+* `<github project="PataphysicalSociety/soupault">soupault</github>` (result: <github project="PataphysicalSociety/soupault">soupault</github>)
 * `<sourcehut project="dmbaturin/soupault">soupault</sourcehut>` (result: <sourcehut project="dmbaturin/soupault">soupault</sourcehut>)
-* `<mastodon user="@dmbaturin@mastodon.social">me on mastodon</mastodon>` (result: <mastodon user="@dmbaturin@mastodon.social">me on mastodon</mastodon>).
+* `<mastodon user="@dmbaturin@functional.cafe">me on mastodon</mastodon>` (result: <mastodon user="@dmbaturin@functional.cafe">me on mastodon</mastodon>).
 * `<twitter user="dmbaturin">me on twitter</twitter>` (result: <twitter user="dmbaturin">me on twitter</twitter>)
 * `<rfc number="1945">HTTP RFC</rfc>` (result: <rfc number="1945">HTTP RFC</rfc>).
 
@@ -290,8 +293,8 @@ All elements also support a short form where the content becomes the link data:
 * `<twitter>@dmbaturin</twitter>` (@ is optional)
 * `<rfc>RFC1945</rfc>` (automatically extracts 1945)
 
-Social media link elements also support `me` attribute. For example, `<mastodon me user="@dmbaturin@mastodon.social">`
-is translated to `<a rel="me" href="https://mastodon.social/@dmbaturin">`.
+Social media link elements also support `me` attribute. For example, `<mastodon me user="@dmbaturin@functional.cafe">`
+is translated to `<a rel="me" href="https://functional.cafe/@dmbaturin">`.
 
 Sample configuration:
 
