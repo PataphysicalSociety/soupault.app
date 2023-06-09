@@ -1763,9 +1763,9 @@ Example: add `class="silly-class"` to every element inside the page `<body>`.
 body = HTML.select_one(page, "body")
 children = HTML.children(body)
 
-function add_silly_class(e)
-  if HTML.is_element(children[i]) then
-    HTML.add_class(children[i], "silly-class")
+function add_silly_class(elem)
+  if HTML.is_element(elem) then
+    HTML.add_class(elem, "silly-class")
   end
 end
 
