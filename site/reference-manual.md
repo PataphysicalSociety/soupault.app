@@ -1778,7 +1778,7 @@ Returns the number of element’s children (handy for checking if it has any).
 
 ##### Tag and attribute manipulation
 
-###### <function>HTML.is_element</function>
+###### <function>HTML.is_element(elem)</function>
 
 Web browsers provide a narrower API than general purpose HTML parsers. In the JavaScript DOM API, `element.children` provides access to all _child elements_ of an element.
 
@@ -1790,6 +1790,14 @@ The goal of soupault is to allow modifying HTML pages in any imaginable way, so 
 Many operations like `HTML.add_class` still make no sense for text nodes, so there has to be a way to check if something is an element or not.
 
 That’s where `HTML.is_element` comes in handy.
+
+###### <function>HTML.is_empty(elem)</function> (since 4.6.0)
+
+Returns true is `elem` has no child nodes.
+
+###### <function>HTML.is_root(elem)</function> (since 4.6.0)
+
+Returns true if `elem` has no parent node.
 
 ###### <function>HTML.get_tag_name(html_element)</function>
 
@@ -2004,6 +2012,10 @@ Splits a string into a list of substrings.
 
 <module name="String">
 
+##### <function>String.is_valid_utf8(string)</function> (since 4.6.0)
+
+Returns true if `string` is a valid UTF-8 encoded string, false otherwise.
+
 ##### <function>String.length(string)</function>
 
 Returns the count of UTF-8 characters in a string.
@@ -2095,11 +2107,15 @@ You can also supply a list of characters to _exclude_ from encoding:
 
 Decodes percent-encoded URL strings.
 
-##### <function>String.starts_with(string, substring)</function> (since 4.3.0)
+##### <function>String.starts_with(string, prefix)</function> (since 4.3.0)
 
-Checks is `string` starts with `substring`.
+Checks is `string` starts with `prefix`.
 For example, `String.starts_with("hello", "hell")` is true
 and `String.starts_with("maintenance", "fun")` is false.
+
+##### <function>String.ends_with(string, suffix)</function> (since 4.6.0)
+
+Like `String.starts_with`, but checks if a string ends with given suffix.
 
 </module>
 
@@ -2297,6 +2313,12 @@ Returns true on UNIX-like systems (Linux, Mac OS, BSDs), false otherwise.
 ##### <function>Sys.is_windows()</function>
 
 Returns true on Microsoft Windows, false otherwise.
+
+##### <function>Sys.getenv(name, default_value)</function> (since 4.6.0)
+
+Returns the value of an environment variable if it's set.
+
+If `default_value` is given, it returns that value if the variable is not set. Otherwise returns `nil`.
 
 </module>
 
@@ -2529,6 +2551,14 @@ Takes a table and a function `func(v)`, and returns a list of values for which `
 
 Does not modify the table.
 
+##### <function>Table.for_all(func, table)</function> (since 4.6.0)
+
+Checks if boolean function `func` is true for all items in a table.
+
+##### <function>Table.for_any(func, table)</function> (since 4.6.0)
+
+Checks if boolean function `func` is true for at least one item in a table.
+
 ##### <function>Table.take(table, count)</function>
 
 Remove the first `count` items from the table and return them as a list.
@@ -2536,6 +2566,18 @@ Remove the first `count` items from the table and return them as a list.
 ##### <function>Table.chunks(table, size)</function>
 
 Splits the table into a list of chunks of up to `size` items.
+
+##### <function>Table.length(table)</function> (since 4.6.0)
+
+Returns table length (the number of items in it).
+
+##### <function>Table.is_empty(table)</function> (since 4.6.0)
+
+Returns true if table doesn't contain any items.
+
+##### <function>Table.copy(table)</function> (since 4.6.0)
+
+Returns a copy of `table`.
 
 </module>
 
@@ -2575,6 +2617,10 @@ Returns true if `value` is a table.
 ##### <function>Value.is_list(value)</function>
 
 Returns true if `value` is a table whose every key is an integer number.
+
+##### <function>Value.is_html(value)</function> (since 4.6.0)
+
+Returns true if `value` is an HTML element tree data structure (either document or element).
 
 </module>
 
