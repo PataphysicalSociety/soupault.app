@@ -2235,7 +2235,7 @@ end
 
 ##### <function>Sys.random(max)</function>
 
-Example: `Sys.ranrom(1000)`
+Example: `Sys.random(1000)`
 
 Generates a random number from 0 to `max`.
 
