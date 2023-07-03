@@ -3,7 +3,7 @@
 -- Supported elements:
 --   <wikipedia lang="de" page="Philippe Soupault">surrealist writer</wikipedia>
 --   <github project="dmbaturin/soupault">soupault</github>
---   <sourcehut project="dmbaturin/soupault">soupault</sourcehut>
+--   <sourcehut vcs="git" project="~dmbaturin/soupault">soupault</sourcehut>
 --   <mastodon user="@dmbaturin@mastodon.social">me on mastodon</mastodon>
 --   <twitter user="dmbaturin">me on twitter</twitter>
 --   <rfc number="1918">HTTP RFC</rfc>
@@ -11,7 +11,7 @@
 -- All elements also support a short form where the content becomes the link data:
 --   <wikipedia>Philippe Soupault</wikipedia>
 --   <github>dmbaturin/soupault</github>
---   <sourcehut>dmbaturin/soupault</sourcehut>
+--   <sourcehut>~dmbaturin/soupault</sourcehut>
 --   <mastodon>@dmbaturin@mastodon.social</mastodon>
 --   <twitter>@dmbaturin</twitter> -- "@" is optional
 --   <rfc>RFC1945</rfc> -- yes, it can extract the number from this
@@ -174,7 +174,14 @@ while elements[index] do
   elseif (tag_name == "github") then
     new_elem = make_simple_link(elem, "project", "https://github.com/%s")
   elseif (tag_name == "sourcehut") then
-    new_elem = make_simple_link(elem, "project", "https://git.sr.ht/~%s")
+    -- SourceHut supports multiple version control systems as well as
+    -- having a project page without a subdomain.
+    local vcs = HTML.get_attribute(elem, "vcs")
+    if vcs then
+       new_elem = make_simple_link(elem, "project", "https://" .. vcs .. ".sr.ht/%s")
+    else
+       new_elem = make_simple_link(elem, "project", "https://sr.ht/%s")
+    end
   elseif (tag_name == "codeberg") then
     new_elem = make_simple_link(elem, "project", "https://codeberg.org/%s")
   elseif (tag_name == "mastodon") then
