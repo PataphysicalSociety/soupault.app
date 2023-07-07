@@ -44,6 +44,8 @@
 
   date_formats = ["%F"]
 
+  leaf_file = ".leaf"
+
 # Metadata extracted from pages, using CSS selectors to find elements to extract data from
 [index.fields]
 
