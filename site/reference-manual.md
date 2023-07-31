@@ -2816,7 +2816,7 @@ For a trivial example, here’s how to just write the HTML to the default output
 ```toml
 [hooks.save]
   lua_source = '''
-    Sys.write_file(page_source, target_file)
+    Sys.write_file(target_file, page_source)
   '''
 ```
 
