@@ -23,7 +23,7 @@ Since the Linux version of soupault is a statically linked executable, you can r
 
 The primary location for soupault downloads is [files.baturin.org/software/soupault/](https://files.baturin.org/software/soupault/).
 
-However, for a CI process, you may rather want to use a CDN’d link. For this reason I mirror releases to [GitHub](https://github.com/dmbaturin/soupault/releases).
+However, for a CI process, you may rather want to use a CDN’d link. For this reason I mirror releases to [GitHub](https://github.com/PataphysicalSociety/soupault/releases).
 Examples below use GitHub links.
 
 ## Netlify
@@ -53,7 +53,7 @@ First you need a build script.
 
 SOUPAULT_VERSION="3.0.0"
 
-wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
+wget https://github.com/PataphysicalSociety/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
 if [ $? != 0 ]; then
     echo "Error: failed to download soupault."
     exit 1
@@ -73,8 +73,6 @@ This is specified in the `netlify.toml` file.
   command = "./netlify.sh"
 ```
 
-You can also deploy a website from my [sample repo](https://app.netlify.com/start/deploy?repository=dmbaturin/soupault-sample-blog) in one click.
-
 ## GitHub Actions
 
 GitHub Actions is Microsoft GitHub’s built-in CI service.
@@ -85,7 +83,7 @@ Advantages:
 * Good selection of build images, newer GNU/Linux distro versions.
 
 I use it for building this site and the [OCaml book](https://ocamlbook.org) and deploying it to Netlify,
-so you can use its [build script](https://github.com/dmbaturin/ocaml-book/blob/master/.github/workflows/main.yml) as a basis for your own.
+so you can use its [build script](https://github.com/PataphysicalSociety/ocaml-book/blob/master/.github/workflows/main.yml) as a basis for your own.
 
 The build part in `.github/workflows/main.yml` boils down to this:
 
@@ -105,7 +103,7 @@ jobs:
         SOUPAULT_VERSION: 3.0.0
       run: |
         echo Downloading and unpacking soupault
-        wget https://github.com/dmbaturin/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
+        wget https://github.com/PataphysicalSociety/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
         tar xvf soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
         sudo mv -v ./soupault-$SOUPAULT_VERSION-linux-x86_64/soupault /usr/bin/
 

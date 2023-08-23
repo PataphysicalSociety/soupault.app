@@ -13,7 +13,7 @@ The simplest way to start using soupault is to download a prebuilt executable. J
   <dd><soupault-release platform="macos-x86_64" /></dd>
 </dl>
 
-If you want <abbr title="content delivery network">CDN</abbr>’d links for your [<abbr title="continuous integration">CI</abbr> scripts](/tips-and-tricks/deployment/), you can use [GitHub releases](https://github.com/dmbaturin/soupault/releases) mirror links.
+If you want <abbr title="content delivery network">CDN</abbr>’d links for your [<abbr title="continuous integration">CI</abbr> scripts](/tips-and-tricks/deployment/), you can use [GitHub releases](https://github.com/PataphysicalSociety/soupault/releases) mirror links.
 
 ### Verifying digital signatures
 
@@ -55,12 +55,12 @@ Nix packaging is maintained by [toastal](https://toast.al/).
 Soupault is free software published under the [MIT license](https://mit-license.org/). You can build it from source for any
 platform supported by the OCaml programming language.
 
-The source code is available from these git repositories:
+The source code is available from these git repositories that are kept in sync:
 
-* [GitHub](https://github.com/dmbaturin/soupault) (primary location)
-* [Codeberg](https://codeberg.org/PataphysicalSociety/soupault) (read-write mirror)
+* [GitHub](https://github.com/PataphysicalSociety/soupault)
+* [Codeberg](https://codeberg.org/PataphysicalSociety/soupault)
 
-To build the latest source, you will need the OCaml compiler (4.08 or later) and the OPAM package manager.
+To build the latest source, you will need the OCaml compiler (4.13 or later) and the OPAM package manager.
 
 ```shell-session
 $ git clone <url>
