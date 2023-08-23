@@ -51,7 +51,7 @@ First you need a build script.
 ```bash
 #!/bin/sh
 
-SOUPAULT_VERSION="3.0.0"
+SOUPAULT_VERSION="$SOUPAULT_RELEASE$"
 
 wget https://github.com/PataphysicalSociety/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
 if [ $? != 0 ]; then
@@ -100,7 +100,7 @@ jobs:
 
     - name: Install soupault
       env:
-        SOUPAULT_VERSION: 3.0.0
+        SOUPAULT_VERSION: $SOUPAULT_RELEASE$
       run: |
         echo Downloading and unpacking soupault
         wget https://github.com/PataphysicalSociety/soupault/releases/download/$SOUPAULT_VERSION/soupault-$SOUPAULT_VERSION-linux-x86_64.tar.gz
