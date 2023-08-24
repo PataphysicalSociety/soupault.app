@@ -54,16 +54,16 @@ in completely arbitrary ways that other SSGs do not support.
 Soupault does not have a built-in content model. Instead, it allows you to define your own.
 You can make a blog, a wiki, or anything else you want.
 
-If you want to quickly start a blog with soupault, you can use the [soupault-blog](https://github.com/PataphysicalSociety/soupault-blog) application.
+If you want to quickly start a blog with soupault, you can use the [soupault-blog](https://github.com/PataphysicalSociety/soupault-blueprints-blog) application.
 It comes with a blog content model and relevant plugins (post reading time, Atom feeds...) ready to use.
 
 <h3 id="performance">Is soupault fast?</h3>
 
-It's subjective, but here are some tests made on my 8th gen Intel NUC machine: i5-8259U, SSD, Fedora 35, NVMe SSD.
+It's subjective, but here are some tests I once ran on an 8th gen Intel NUC machine: i5-8259U, SSD, Fedora 35, NVMe SSD.
 <fn id="build-time">Those figures are for "warm" builds (pages [cached in RAM](https://linuxatemyram.com/)),
 but the initial build takes maybe a couple of ms longer. For machines with magnetic drives reading pages from disk may take longer.</fn>
 
-Assembling 1000 HTML pages (~4kbytes) each takes ~2s (with `verbose = true`) or ~1.6s (with progress logging disabled).
+Assembling 1000 HTML pages (~4kbytes each) takes ~2s (with `verbose = true`) or ~1.6s (with progress logging disabled).
 
 If you add an external Markdown preprocessor (I tested with `cmark --smart --unsafe`), it takes ~3.5s in the verbose mode
 or ~3.2s with logging disabled.
