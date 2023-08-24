@@ -69,7 +69,7 @@ in any location identifiable with a CSS selector.
 ```
 
 But you can also _pipe_ element content through an external program and insert the output back.
-Run code examples through your favorite syntax highlighter, automatically check if they compile—there are many possibilities.
+Run code examples through your favorite syntax highlighter, automatically check if they compile — there are many possibilities.
 
 This is how this website highlights source code in `<pre>` and `<code>` tags
 with Andre Simon's [highlight](http://www.andre-simon.de/doku/highlight/en/highlight.php):
@@ -133,13 +133,15 @@ to executing external programs, loading data from JSON/YAML/TOML, and more.
 
 Soupault is available as a statically-linked executable with no dependencies. You can stick with the same version
 for years if it works for you. Or you can download every new version, try it out, and easily revert back
-if something doesn't work.
+if you run into any issues.
 
 <h2 id="name">Why it's named soupault?</h2>
 
-Soupault is named after the French dadaist and surrealist writer <wikipedia>Philippe Soupault</wikipedia>
+Soupault is named after <wikipedia>Philippe Soupault</wikipedia>, a French dadaist and surrealist writer,
 because it's based on the <github project="aantron/lambdasoup">lambdasoup</github> library.
-Its development is sponsored by the [College of 'Pataphysics](http://www.college-de-pataphysique.org/) </a>.<fn id="pataphysics">Not really.</fn>
+
+Its development is sponsored by the [College of 'Pataphysics](http://www.college-de-pataphysique.org/) and the
+[International Hobby Horsing Association](https://en.wikipedia.org/wiki/Hobby_horsing).<fn id="sponsors">Not really.</fn>
 
 <h2 id="graphics">Graphics</h2>
 
