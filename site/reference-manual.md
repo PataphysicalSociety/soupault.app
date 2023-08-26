@@ -553,11 +553,11 @@ This is the equivalent of `index_item_template`:
   index_selector = "#blog-index"
   index_template = """
     {% for e in entries %}
-    <h2><a href="{{url}}">{{title}}</a></h2>
-    <p><strong>Last update:</strong> {{date}}.</p>
-    <p><strong>Reading time:</strong> {{reading_time}}.</p>
-    <p>{{excerpt}}</p>
-    <a href="{{url}}">Read more</a>
+    <h2><a href="{{e.url}}">{{e.title}}</a></h2>
+    <p><strong>Last update:</strong> {{e.date}}.</p>
+    <p><strong>Reading time:</strong> {{e.reading_time}}.</p>
+    <p>{{e.excerpt}}</p>
+    <a href="{{e.url}}">Read more</a>
     {% endfor %}
   """
 ```
