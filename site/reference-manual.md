@@ -2791,7 +2791,9 @@ For example, this is how you simply pretty-print the page:
 
 ```toml
 [hooks.render]
-  page_source = HTML.pretty_print(page)
+  lua_source = '''
+    page_source = HTML.pretty_print(page)
+  '''
 ```
 
 <h3 id="hooks-save">Save</h3>
