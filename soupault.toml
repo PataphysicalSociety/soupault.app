@@ -28,13 +28,14 @@
 [custom_options]
   site_url = "https://soupault.app"
 
-  latest_soupault_version = "4.6.0"
+  latest_soupault_version = "4.7.0"
 
 [index]
   index = true
 
   sort_descending = true
   sort_by = "date"
+  #strict_sort = true
 
   extract_after_widgets = ["insert-reading-time"]
   strip_tags = false
@@ -266,3 +267,4 @@ page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_
   feed_title = "soupault"
   feed_subtitle = "A static website generator and programmable HTML processor"
   feed_logo = "https://soupault.app/images/soupault_stick_horse.png"
+
