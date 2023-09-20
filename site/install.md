@@ -4,9 +4,11 @@ The simplest way to start using soupault is to download a prebuilt executable. J
 
 <dl>
   <dt>Linux (x86-64)<fn id="linux-musl">Before you have a chance to interject for a moment,
-      I&apos;ll say that it&apos;s linked statically with <a href="https://www.musl-libc.org/">musl</a>, so it will work on any Linux-based OS,
+      I&apos;ll say that it&apos;s linked statically with <a href="https://musl.libc.org/">musl</a>, so it will work on any Linux-based OS,
       not only GNU/Linux.</span></dt>
   <dd><soupault-release platform="linux-x86_64" />
+  <dt>Linux (AArch64/ARM64)</dt>
+  <dd><soupault-release platform="linux-aarch64" />
   <dt>Microsoft Windows (64-bit)</dt>
   <dd><soupault-release platform="win64" /></dd>
   <dt>macOS</dt>

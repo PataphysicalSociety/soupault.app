@@ -19,7 +19,7 @@ If you are running soupault older than $SOUPAULT_RELEASE$, consider upgrading to
 Soupault is distributed as a single, self-contained executable, so installing it from a binary release package it trivial.
 
 You can download it from [files.baturin.org/software/soupault](https://files.baturin.org/software/soupault) or from [GitHub releases](https://github.com/PataphysicalSociety/soupault/releases).
-Prebuilt executables are available for Linux (x86-64, statically linked), macOS (x86-64), and Microsoft Windows (64-bit).
+Prebuilt executables are available for Linux (x86-64 and ARM64, statically linked), macOS (x86-64), and Microsoft Windows (64-bit).
 
 Just unpack the archive and copy the executable wherever you want.
 
