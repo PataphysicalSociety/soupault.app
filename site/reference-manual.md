@@ -35,7 +35,27 @@ Since version 1.6, soupault is available from the [opam](https://opam.ocaml.org)
 If you want the latest development version, the git repository is at [github.com/PataphysicalSociety/soupault](https://github.com/PataphysicalSociety/soupault).
 There’s also a Codeberg mirror at [codeberg.org/PataphysicalSociety/soupault](https://codeberg.org/PataphysicalSociety/soupault).
 
-To build a statically linked executable for Linux, identical to the official one, first install a `+musl+static+flambda` compiler flavor, then uncomment the `(flags (-ccopt -static))` line in `src/dune`.
+#### Building static executables for Linux
+
+The official soupault executables for Linux are built with [musl](http://musl.libc.org/) so that they depend only on the kernel ABI
+(while GNU libc is not designed to produce truly static binaries). Since OCaml uses GNU libc on Linux by default,
+you need to create an OPAM switch with a compiler built with musl instead.
+
+Suppose you want to build soupault with OCaml 4.14.1. You will need the following commands:
+
+```
+# Install dependencies, for Fedora:
+sudo dnf install musl-gcc musl-libc-static
+
+# Install dependencies, for Debian:
+sudo apt install musl musl-dev musl-tools
+
+# Create an OCaml installation with musl
+opam switch create 4.14.1-musl ocaml-variants.4.14.1+options ocaml-option-musl ocaml-option-static
+opam switch 4.14.1-musl
+```
+
+Then uncomment the `(flags (-ccopt -static))` line in `src/dune` and run `dune build` as usual.
 
 ###  Using soupault on Windows
 
