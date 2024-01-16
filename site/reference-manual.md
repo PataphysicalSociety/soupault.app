@@ -175,6 +175,20 @@ for a single command invocation:
 C:\> soupault --config mysite.toml --site-dir some-input-dir --build-dir some-other-dir
 ```
 
+### Ignoring files and directories
+
+If you want to ignore certain paths insite the site directory (e.g., exclude auxilliary directories created by third-party tools),
+you can use either `settings.ignore_directories` to exclude a list of directories with all their subdirectories,
+or use `settings.ignore_path_regexes` to ignore arbitraty patterns.
+
+```toml
+[settings]
+  ignore_directories = ["images", "videos"]
+
+  # Ignore all directories that start with a dot, like ".hidden"
+  ignore_path_regexes = ["^\.(.*)"]
+```
+
 ### Caching
 
 Starting from 4.4.0, soupault supports caching the output of [page preprocessors](#page-preprocessors)
@@ -1741,6 +1755,10 @@ Example: `h = HTML.inner_html(HTML.select(page, "body"))`
 
 Returns element content as a string.
 
+###### <function>HTML.inner_text(html)</function>
+
+Similar to `HTML.inner_html` but strips all tags away and returns only the text.
+
 ###### <function>HTML.strip_tags(html)</function>
 
 Example: `h = HTML.strip_tags(HTML.select(page, "body"))`
@@ -2823,7 +2841,9 @@ The `post-index` hook runs after index extraction and can modify index fields.
 
 It has the following variables in its environment:
 
-* `index_fields` — a table with page’s index entry.
+* `index_fields` — a table with page's index entry.
+* `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
+* `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page` — the element tree of the page.
 * `page_url` — page URL relative to the site root.
 * `page_file` — path to the page source file.
@@ -2865,6 +2885,8 @@ The `render` hook, if present, runs _instead of_ the built-in page rendering fun
 It has the following variables in its environment:
 
 * `index_fields` — a table with page’s index entry.
+* `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
+* `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page` — the element tree of the page.
 * `page_url` — page URL relative to the site root.
 * `page_file` — path to the page source file.
@@ -2897,6 +2919,9 @@ The `save` hook runs _instead of_ the build-in generated page file output functi
 
 It has the following variables in its environment:
 
+* `index_fields` — a table with page’s index entry.
+* `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
+* `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page_source` — rendered HTML.
 * `page_url` — page URL relative to the site root.
 * `page_file` — path to the page source file.
@@ -2925,6 +2950,9 @@ The `post-save` hook runs after a page file is written to disk.
 
 It has the following variables in its environment:
 
+* `index_fields` — a table with page’s index entry.
+* `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
+* `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page_file` — path to the page source file.
 * `target_file` — full path to the output file for the generated page.
 * `target_dir` — path to the generated page output directory.
@@ -2959,6 +2987,7 @@ It has the following variables in its environment:
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
 * `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
+* `site_index` — the complete site index.
 * `soupault_pass` — the number of the pass in the [two-pass workflow](#making-index-data-available-to-every-page).
 * `global_data` — the global shared data table.
 
