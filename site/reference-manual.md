@@ -2878,13 +2878,16 @@ using this hook:
   '''
 ```
 
+The `index_entry` variable is provided to give the hook access to auxilliary fields in a uniform way
+but is not taken back by soupault — all its modifications are ignored (to prevent the hook from interfering with
+those internal fields). If you want to inject new index entry fields, modify the `index_fields` variable.
+
 <h3 id="hooks-render">Render</h3>
 
 The `render` hook, if present, runs _instead of_ the built-in page rendering functionality.
 
 It has the following variables in its environment:
 
-* `index_fields` — a table with page’s index entry.
 * `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
 * `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page` — the element tree of the page.
@@ -2909,7 +2912,7 @@ For example, this is how you simply pretty-print the page:
 ```toml
 [hooks.render]
   lua_source = '''
-    page_source = HTML.pretty_print(page)
+    page_source = soupault_config["settings"]["doctype"] .. "\n" .. HTML.pretty_print(page)
   '''
 ```
 
@@ -2919,7 +2922,6 @@ The `save` hook runs _instead of_ the build-in generated page file output functi
 
 It has the following variables in its environment:
 
-* `index_fields` — a table with page’s index entry.
 * `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
 * `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page_source` — rendered HTML.
@@ -2950,7 +2952,6 @@ The `post-save` hook runs after a page file is written to disk.
 
 It has the following variables in its environment:
 
-* `index_fields` — a table with page’s index entry.
 * `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
 * `site_index` — the complete site index.* `site_index` — the complete site index.
 * `page_file` — path to the page source file.
