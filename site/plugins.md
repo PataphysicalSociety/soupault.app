@@ -95,6 +95,30 @@ Configuration example:
 
 Download: [generator-meta.lua](/files/plugins/generator-meta.lua).
 
+### Inline CSS styles
+
+Moves CSS from `<inlineStyle>` elements in the page body to `<style>` elements in its `<head>`.
+
+While it's possible to _just_ use `<style>` elements in `<body>`,
+keeping them in <head> is arguably cleaner and more idiomatic
+and has less potential to cause strange behavior with browsers and HTML tools
+
+Configuration example:
+
+```toml
+[widgets.inline-styles]
+  widget = "inline-styles"
+```
+
+Then if you want to have one particulat page to have a pink background, you can do something like this
+anywhere in the page file:
+
+```
+<inlineStyle>
+body { background: pink }
+</inlineStyle>
+```
+
 ## Content
 
 ### Reading time
