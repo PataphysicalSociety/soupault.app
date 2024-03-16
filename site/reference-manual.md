@@ -2209,12 +2209,14 @@ Like `String.starts_with`, but checks if a string ends with given suffix.
 
 Example: `Sys.read_file("site/index.html")`
 
-Reads a file into a string. The path is relative to the working directory.
+Reads a file and returns its content as a string.
 
-##### <function>Sys.write_file(file_path, data)</function>
+If the path is relative, it is considered relative to the working directory of soupault.
 
-Writes data to a file. If a file doesn’t exist, it will be created.
-If a file already exists, it will be overwritten.
+##### <function>Sys.write_file(path, data)</function>
+
+Writes data to a file. If the file at `path` doesn’t exist, it will be created.
+If the file already exists, it will be overwritten.
 
 ##### <function>Sys.delete_file(path)</function>
 
@@ -2235,7 +2237,7 @@ Checks if a file exists.
 
 ##### <function>Sys.is_file(file_path)</function>
 
-Checks if a path is a regular file (not a directory). Returns `nil` if the file path does not exist at all.
+Checks if a path is a regular file (not a directory). Returns `nil` if it's a directory or the path does not exist at all.
 
 ##### <function>Sys.get_file_modification_date(file_path)
 
@@ -2243,11 +2245,11 @@ Returns the UNIX timestamp of the moment when the file was last modified.
 
 ##### <function>Sys.is_dir(file_path)</function>
 
-Checks if a path is a directory. Returns `nil` if the file path does not exist at all.
+Checks if a path is a directory. Returns `nil` if it's a file or the file path does not exist at all.
 
 ##### <function>Sys.mkdir(path)</function>
 
-Creates a directory. If a path is several directories deep,
+Creates a directory. If the path is several directories deep,
 and some are missing, creates them as needed (like `mkdir -p`).
 
 ##### <function>Sys.list_dir(path)</function>
@@ -2259,8 +2261,9 @@ Always check the path with `Sys.is_dir` beforehand!
 
 ##### <function>Sys.get_extension(file_path)</function>
 
-Returns the file extension, if it has one. For files without an extension it returns an empty string.
-For files with multiple extensions like `.tar.bz2`, returns the last extension.
+Returns the last extension of the file at `path`, if it has any extensions.
+For files without any extensions it returns an empty string.
+For files with multiple extensions like `.tar.bz2`, it returns the last extension.
 
 Examples:
 
@@ -2268,24 +2271,24 @@ Examples:
 * `"/bin/bash" → ""`
 * `"soupault.tar.gz" → "gz"`
 
-##### <function>Sys.get_extensions(file_path)</function>
+##### <function>Sys.get_extensions(path)</function>
 
-Returns a list with all extensions of the file, or an empty list if the file has no extensions.
+Returns the list of all extensions of the file, or an empty list if the file has no extensions.
 
 * `"/bin/bash" → {}`
 * `"cat.jpg → {"jpg"}`
 * `"soupault.tar.gz" → {"tar", "gz"}`
 
-##### <function>Sys.has_extension(file_path, extension)</function>
+##### <function>Sys.has_extension(path, extension)</function>
 
-Check if the file at `file_path` has `extension`.
+Check if the file at `path` has `extension` in its list of extensions.
 
 For example, `Sys.has_extension("file.tar.gz", "tar")` is true,
 and `Sys.has_extension("file.tar.gz", "gz")` is also true.
 
-##### <function>Sys.strip_extensions(file_path)</function>
+##### <function>Sys.strip_extensions(path)</function>
 
-Removes all extensions from a file name. For example, `Sys.strip_extensions("foo.png")` is `"foo"`.
+Removes all extensions from a file name. For example, the result of `Sys.strip_extensions("foo.png")` is `"foo"`.
 
 ##### <function>Sys.basename(file_path)</function>
 
@@ -2321,7 +2324,7 @@ You also **should not** use this function for concatenating _URLs_, at least not
 If you want your code to be portable, always use `Sys.join_path_unix` for concatenating URLs. 
 
 ##### <function>Sys.join_path_unix(left, right)</function>
-##### <function>Sys.join_url(left, right)</function> (since 4.0.0-beta3)
+##### <function>Sys.join_url(left, right)</function> (since 4.0.0)
 
 These two functions are just aliases for each other.
 
@@ -2345,14 +2348,13 @@ Splits a path into its components using OS-specific separators.
 Splits a path into its components using forward slash separator convention (safe for URLs).
 
 ##### <function>Sys.run_program(command)</function>
-##### <function>Sys.run_program_get_exit_code(command)</function>
 
 Executes given command in the <term>system shell</term>.
 Returns 1 (sic!) on success, `nil` on failure, so that `if Sys.run_program(...)` statements work as expected.
 
-The output of the command is ignored. If command fails, its stderr is logged.
+The output of the command is ignored. If command fails, its stderr is displayed as an error-level log message.
 
-Example: create a silly file in the directory where generated page will be stored.
+Example: create a silly file in the directory where the currently processed page will be stored.
 
 ```lua
 res = Sys.run_program(format("echo \"Kilroy was here\" > %s/graffiti", target_dir))
@@ -2361,19 +2363,21 @@ if not res then
 end
 ```
 
-The intended use case for it is creating and processing assets, e.g. converting images to different formats.
+The intended use case for it is creating and processing assets, e.g., converting images to different formats.
 
-There’s also `Sys.run_program_get_exit_code` that does the same, but returns the raw exit code (0 on success).
+##### <function>Sys.run_program_get_exit_code(command)</function>
+
+Like `Sys.run_program`, but returns the raw exit code value (0 on success).
 
 ##### <function>Sys.get_program_output(command, input)</function>
 
-Executes a command in the system shell and returns its output.
+Executes a command in the <term>system shell</term> and returns its output.
 
-**Note:** the `input` argument is optional. When present, it's used for program's stdin.
+**Note:** the `input` argument is optional. When present, it must be a string — its contents will be passed to the program through its `stdin`.
 
-If the command fails, it returns `nil`. The stderr is shown in the execution log, but there’s no way a plugin can access its stderr or the exit code.
+If the command fails, it returns `nil`. The stderr output is displayed as an error-level log message, but there’s no way a plugin can access its stderr or the exit code.
 
-Example: getting the last modification date of a page from git.
+Example: getting the last modification date of the page from git.
 
 ```lua
 git_command = "git log -n 1 --pretty=format:%ad --date=format:%Y-%m-%d -- " .. page_file
@@ -2389,10 +2393,12 @@ end
 Example: `Sys.random(1000)`
 
 Generates a random number from 0 to `max`.
+The RNG is seeded at soupault startup time so numbers are not completely predictable,
+but it's not cryptographically secure.
 
 ##### <function>Sys.is_unix()</function>
 
-Returns true on UNIX-like systems (Linux, Mac OS, BSDs), false otherwise.
+Returns true on UNIX-like systems (Linux, macOS, BSDs), false otherwise.
 
 ##### <function>Sys.is_windows()</function>
 
@@ -2413,7 +2419,8 @@ Provides functions for communicating with the plugin runner code.
 
 Example: `Plugin.fail("Error occured")`
 
-Stops plugin execution immediately and signals an error. Errors raised this way are treated as widget processing errors by soupault, for the purpose of the `strict` option.
+Stops plugin execution immediately and signals an error. Errors raised this way are treated as widget processing errors by soupault, for the purpose of the `settings.strict` option
+(with `settings.strict = true`, it immediately stops the build process and terminates soupault with a non-zero exit code).
 
 ##### <function>Plugin.exit(message)</function>
 
@@ -2421,7 +2428,7 @@ Example: `Plugin.exit("Nothing to do"`), `Plugin.exit()`
 
 Stops plugin execution immediately. The message is optional. This kind of termination is not considered an error by soupault.
 
-##### <function>Plugin.require_version(version_string)</function>
+##### <function>Plugin.require_version(version_string)</function> (since 1.7.0)
 
 Example: `Plugin.require_version("1.8.0")`
 
@@ -2430,7 +2437,7 @@ You can use a full version like `1.9.0` or a short version like `1.9`. This func
 
 ##### <function>Plugin.soupault_version()</function>
 
-Returns soupault version string (e.g. `"2.2.0"`).
+Returns soupault version string (e.g., `"2.2.0"`).
 
 </module>
 
@@ -2438,11 +2445,11 @@ Returns soupault version string (e.g. `"2.2.0"`).
 
 ##### <function>Log.debug(message)</function>
 
-Displayed with a `[DEBUG]` prefix when `debug` under `[settings]` is `true`.
+Displayed with `[DEBUG]` prefix when `settings.debug` is `true`.
 
 ##### <function>Log.info(message)</function>
 
-Displayed with an `[INFO]` prefix if `verbose` or `debug` is true.
+Displayed with `[INFO]` prefix if either `settings.verbose` or `settings.debug` is true.
 
 ##### <function>Log.warning(message)</function>
 
@@ -2478,7 +2485,7 @@ Same as `JSON.to_string` but produces human-readable, indented JSON.
 
 </module>
 
-<module name="TOML">
+<module name="TOML"> (since 3.0.0)
 
 Provides TOML parsing functions. This module doesn’t provide TOML <em>printing</em>
 because TOML has a richer type system than Lua, and thus parsing it into a Lua table
@@ -2494,14 +2501,14 @@ Same as `TOML.from_string`, but returns `nil` on parse errors. Parse error messa
 
 </module>
 
-<module name="YAML">
+<module name="YAML"> (since 3.0.0)
 
 Provides YAML parsing functions. Doesn’t provide any printing functions as of now.
 For debugging purposes, you can use `JSON.pretty_print` instead.
 
 ##### <function>YAML.from_string(string)</function>
 
-Parses a YAML string and returns a table. Fails plugin execution if `string` isn’t a syntactically correct TOML document.
+Parses a YAML string and returns a table. Fails plugin execution if `string` isn’t a syntactically correct YAML document.
 
 ##### <function>YAML.unsafe_from_string(string)</function>
 
@@ -2569,7 +2576,7 @@ Why is this function needed? There are two possible reasons why `if my_table["so
 * `my_table` does not have a field named `some_key`.
 * `my_table` has a field `some_key` but its truth value is false (e.g. `""` or `0`).
 
-This functions tells you for certain.
+This functions tells you for certain that the value is missing.
 
 ##### <function>Table.get_key_default(table, key, default_value)</function>
 
@@ -2662,27 +2669,31 @@ Checks if boolean function `func` is true for all items in a table.
 
 ##### <function>Table.for_any(func, table)</function> (since 4.6.0)
 
-Checks if boolean function `func` is true for at least one item in a table.
+Checks if the boolean function `func` is true for at least one item in `table`.
 
 ##### <function>Table.take(table, count)</function>
 
-Remove the first `count` items from the table and return them as a list.
+Removes the first `count` items from `table` and return them as a list.
 
 ##### <function>Table.chunks(table, size)</function>
 
-Splits the table into a list of chunks of up to `size` items.
+Splits the `table` into a list of chunks of up to `size` items.
 
 ##### <function>Table.length(table)</function> (since 4.6.0)
 
-Returns table length (the number of items in it).
+Returns the table size (the number of items in it).
 
 ##### <function>Table.is_empty(table)</function> (since 4.6.0)
 
-Returns true if table doesn't contain any items.
+Returns true if `table` doesn't contain any items.
 
 ##### <function>Table.copy(table)</function> (since 4.6.0)
 
-Returns a copy of `table`.
+Returns a shallow copy of `table`.
+If a value is mutable (like a string or a sub-table) and it's mutated in the original table,
+that change will also be reflected in all copies.
+
+Note: there is no deep copy functionality in Lua-ML or soupault's API yet.
 
 </module>
 
@@ -2698,6 +2709,8 @@ As of soupault 4.0.0, it's fairly limited. For example,
 tables just produce `"table"`. The main advantage is that it's safe to use with any values.
 Lua's `str()` will fail for `nil`, tables etc. so it can't be used for logging values in debug prints.
 
+For dumping the contents of tables, you may want to use [`JSON.pretty_print()`](#JSON.pretty_print) instead.
+
 ##### <function>Value.is_nil(value)</function>
 
 Returns true if `value` is `nil`.
@@ -2709,7 +2722,7 @@ Returns true if `value` is an integer number.
 ##### <function>Value.is_float(value)</function>
 
 Returns true if `value` is a number. Integers are considered a subset of floats,
-so it returns true for integers.
+so it returns true for integers as well.
 
 ##### <function>Value.is_string(value)</function>
 
@@ -2725,7 +2738,7 @@ Returns true if `value` is a table whose every key is an integer number.
 
 ##### <function>Value.is_html(value)</function> (since 4.6.0)
 
-Returns true if `value` is an HTML element tree data structure (either document or element).
+Returns true if `value` is an HTML element tree data structure (either a document or an element).
 
 </module>
 
