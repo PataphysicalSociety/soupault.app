@@ -41,21 +41,25 @@ The official soupault executables for Linux are built with [musl](http://musl.li
 (while GNU libc is not designed to produce truly static binaries). Since OCaml uses GNU libc on Linux by default,
 you need to create an OPAM switch with a compiler built with musl instead.
 
-Suppose you want to build soupault with OCaml 4.14.1. You will need the following commands:
+Suppose you want to build soupault with OCaml 4.14.2. You will need the following commands:
 
 ```
-# Install dependencies, for Fedora:
+# Install dependencies, for Fedora (or recent RHEL/CentOS Stream):
 sudo dnf install musl-gcc musl-libc-static
 
 # Install dependencies, for Debian:
 sudo apt install musl musl-dev musl-tools
 
-# Create an OCaml installation with musl
-opam switch create 4.14.1-musl ocaml-variants.4.14.1+options ocaml-option-musl ocaml-option-static
-opam switch 4.14.1-musl
+# Create an OCaml installation that uses musl-based runtime
+opam switch create 4.14.2-musl ocaml-variants.4.14.2+options ocaml-option-musl ocaml-option-static
+opam switch 4.14.2-musl
 ```
 
-Then uncomment the `(flags (-ccopt -static))` line in `src/dune` and run `dune build` as usual.
+Then use the `static` dune profile for your build command:
+
+```
+dune build --profile=static
+```
 
 ###  Using soupault on Windows
 
@@ -2301,6 +2305,9 @@ use `Sys.basename_unix` instead.
 
 Like `Sys.basename` but uses forward slashes as path separators on all OSes, so it's safe for splitting URLs.
 
+##### <function>Sys.basename_url(file_path)</function>
+
+An alias for `Sys.basename_unix`.
 
 ##### <function>Sys.dirname(file_path)</function>
 
@@ -2312,6 +2319,10 @@ use `Sys.basename_unix`	instead.
 ##### <function>Sys.dirname_unix(file_path)</function>
 
 Like `Sys.dirname` but uses forward slashes as path separators on all OSes, so it's safe for splitting URLs.
+
+##### <function>Sys.dirname_url(file_path)</function>
+
+An alias for `Sys.dirname_unix`.
 
 ##### <function>Sys.join_path(left, right)</function>
 
@@ -2565,6 +2576,37 @@ Example: `Date.reformat("2007-06-23", {"%Y-%m-%d", "%d.%m.%Y"}, "%Y/%d/%m")`
 
 </module>
 
+<module name="Digest">
+
+Provides functions for cryptographic hash sums. All these functions take a string
+and return a hex digest.
+
+##### <function>Digest.md5(str)</function>
+
+Returns an MD5 digest of `str`.
+
+##### <function>Digest.sha1(str)</function>
+
+Returns	an SHA-1 digest of `str`.
+
+##### <function>Digest.sha256(str)</function>
+
+Returns an SHA-256 digest of `str`.
+
+##### <function>Digest.sha512(str)</function>
+
+Returns an SHA-512 digest of `str`.
+
+##### <function>Digest.blake2s(str)</function>
+
+Returns a BLAKE2-S digest of `str`.
+
+##### <function>Digest.blake2b(str)</function>
+
+Returns a BLAKE2-B digest of `str`.
+
+</module>
+
 <module name="Table">
 
 ##### <function>Table.has_key(table, key)</function>
@@ -2749,8 +2791,11 @@ Page processing hooks allow Lua code to run between processing steps of replace 
 They have access to the same API functions as plugins, but their execution environments
 are somewhat different and vary between hooks.
 
-Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.7.0:
-`pre-parse`, `pre-process`, `post-index`, `render`, `save`, `post-save`, and `post-build`.
+Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.9.0:
+`startup`, `pre-parse`, `pre-process`, `post-index`, `render`, `save`, `post-save`, and `post-build`.
+
+Two of those hooks are global: `startup` and `post-build` — they run before the build process is started
+and when it's finished, respectively. All other hooks run for every page.
 
 Like widget subtables, hook subtables can contain arbitrary options.
 
@@ -2760,8 +2805,24 @@ Hook source code can be given inline using `lua_source` option or loaded from a 
 using the `file` option, just like with plugins.
 There is no automatic discovery for hooks, they must always be configured explicitly.
 
-Like widgets, hooks can be limited to a subset of pages using any <term>limiting option</term>.
+Like widgets, hooks that run on every page can be limited to a subset of pages using any <term>limiting option</term>.
 They can also be limited to [build profiles](#build-profiles).
+
+<h3 id="hooks-pre-process">Startup</h3>
+
+The `startup` hook runs once, on soupault startup, before any pages are processed.
+
+It has the following variables in its environment:
+
+* `config` (aka `hook_config`) — the hook config table.
+* `soupault_config` — the complete soupault config.
+* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
+* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+* `global_data` — the global shared data table.
+
+Soupault takes back the following variables:
+
+* `global_data`
 
 <h3 id="hooks-pre-parse">Pre-parse</h3>
 
@@ -2813,6 +2874,7 @@ Soupault takes back the following variables:
 * `page`
 * `target_file`
 * `target_dir`
+* `global_data`
 
 This means you can adjust not only the element tree of the page, but also change the output path for it.
 
@@ -2874,6 +2936,7 @@ The following variables are taken back by soupault:
 
 * `index_fields`
 * `page`
+* `global_data`
 
 For example, if you store post tags like `<tags>foo, bar, baz</tags>`, you can convert tag strings to lists
 using this hook:
@@ -2919,6 +2982,7 @@ It has the following variables in its environment:
 Soupault takes back the following variables:
 
 * `page_source` — string representation of the page element tree.
+* `global_data`
 
 For example, this is how you simply pretty-print the page:
 
@@ -2959,6 +3023,10 @@ For a trivial example, here’s how to just write the HTML to the default output
   '''
 ```
 
+Soupault takes back the following variables:
+
+* `global_data`
+
 <h3 id="hooks-post-save">Post-save</h3>
 
 The `post-save` hook runs after a page file is written to disk.
@@ -2987,6 +3055,10 @@ For a trivial example, here’s how to output generated file size using `du` (on
     Log.info(format("Page size: %s", page_size))
   '''
 ```
+
+Soupault takes back the following variables:
+
+* `global_data`
 
 <h3 id="hooks-post-build">Post-build</h3>
 
