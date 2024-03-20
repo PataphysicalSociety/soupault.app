@@ -25,7 +25,7 @@
 [custom_options]
   site_url = "https://soupault.app"
 
-  latest_soupault_version = "4.8.0"
+  latest_soupault_version = "4.9.0"
 
 [index]
   index = true
