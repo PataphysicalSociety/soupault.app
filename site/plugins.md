@@ -26,7 +26,7 @@ Consult the [reference manual](/reference-manual/#installing-plugins) for detail
 
 ### Conditional HTML insertion
 
-This plugin inserts an HTML snippet into the page iff that page has an element matching certain selector.
+This plugin inserts an HTML snippet into the page <abbr title="if and only if">iff</abbr> that page has an element matching certain selector.
 
 The key difference from the built-in `insert_html` widget is that it can check for one element,
 but insert in another. The element to check for is defined by the `check_selector` option,
