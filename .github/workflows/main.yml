@@ -36,7 +36,7 @@ jobs:
 
     - name: Install soupault
       env:
-        SOUPAULT_VERSION: 4.8.0
+        SOUPAULT_VERSION: 4.10.0
       run: |
         echo Downloading and unpacking soupault
         # I use self-hosted URL here to make it easier to try pre-release versions in the CI
