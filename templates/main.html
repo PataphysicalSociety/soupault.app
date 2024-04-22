@@ -20,7 +20,12 @@
         <nav> </nav>
       </div>
       <main> </main>
-      <div id="footnotes"> </div>
+      <div id="footnotes">
+        <!-- The footnotes container is deleted on pages
+             where it has no actual footnotes
+             (see widgets.clean-up-footnote-container) -->
+        <hr class="footnotes">
+      </div>
       <footer> </footer>
     </div>
   </body>

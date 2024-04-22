@@ -119,5 +119,3 @@ it's very hard to explain. Perhaps that's why it's yet to gain any momentum.
 Still, there are people who instantly get it when they see it, and that makes me think
 that I did make a tool that will make the future of static websites better—that future
 just isn't evenly distributed yet.
-
-<div id="footnotes"> </div>

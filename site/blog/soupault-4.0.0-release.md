@@ -485,5 +485,3 @@ We'll see how it works out.
 ## Acknowledgements
 
 Special thanks to Hristos N. Triantofillou, Lulu Cathrinus Grimalkin, and Soni for testing new features and finding bugs.
-
-<div id="footnotes">

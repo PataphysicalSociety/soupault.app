@@ -510,6 +510,3 @@ in a highly flexible way… And you can write your own Lua plugins to manipulate
 pages in completely arbitrary ways.
 
 Consult the [reference manual](/reference-manual/) for details.
-
-<hr>
-<div id="footnotes"> </div>

@@ -117,8 +117,3 @@ I’d like to say special thanks to:
 * Hristos N. Triantafillou, Thomas Letan, Anton Bachin, toastal, Aoirthoir An Broc, and everyone who contributed to soupault and helped to test it over these two years.
 * The [OCaml](https://ocaml.org) compiler team and developers of the libraries soupault depends on<fn>Even the authors of To.ml, the TOML library I had to replace—it still provided me with TOML parsing at least. ;)</fn>. Without a fast, expressive, and type-safe language and such a great HTML manipulation library as [lambdasoup](https://github.com/aantron/lambdasoup), this project wouldn’t be possible.
 * The now-defunct bakery that, unbestknown to them, provided fuel for initial development.
-
-
-
-<hr>
-<div id="footnotes"> </div>

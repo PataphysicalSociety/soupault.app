@@ -310,6 +310,3 @@ The plugin wins. You also get a log message that clarifies that.
 
 This is an intentional choice, so that people can replace built-in functionality with plugins if they want to.
 
-<hr>
-<div id="footnotes"> </div>
-

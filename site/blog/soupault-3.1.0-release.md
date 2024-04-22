@@ -81,6 +81,3 @@ Implementing a fully 1.0.0-compliant TOML library took much more effort than I h
 and there have been too many other things to take care of. However, that idea is not abandoned
 and I’ll get back to it as time allows. If you have any ideas for a hook system that would allow
 plugins to take over any step, feel free to share them.
-
-<hr>
-<div id="footnotes"> </div>

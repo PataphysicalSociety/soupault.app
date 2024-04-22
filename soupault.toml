@@ -19,6 +19,8 @@
 
   caching = true
 
+  soupault_version = "4.10.0"
+
 [preprocessors]
   md = 'pandoc -f commonmark+smart -t html --no-highlight --lua-filter=helpers/cmark-code-blocks.lua'
 
@@ -115,6 +117,16 @@ page_source = Regex.replace_all(page_source, "\\$SOUPAULT_RELEASE\\$", soupault_
   back_links = true
   link_id_prepend = "footnote-"
   back_link_id_append = "-ref"
+
+# The footnotes container is in the page template
+# This widget deletes it if there are no actual footnotes
+# in the page.
+[widgets.clean-up-footnotes-containers]
+  after = "footnotes"
+
+  widget = "delete_element"
+  selector = "div#footnotes"
+  when_no_child = "p"
 
 [widgets.table-of-contents]
   exclude_page = ["reference-manual-v1.html", "reference-manual.md"]

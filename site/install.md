@@ -70,6 +70,3 @@ $ cd soupault
 $ opam pin add .
 
 ```
-
-<hr>
-<div id="footnotes"> </div>
