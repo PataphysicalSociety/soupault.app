@@ -1412,8 +1412,8 @@ Their navigation path is considered one level shorter than any other page in the
 
 The opposite of `insert_html`. Deletes an element that matches a selector. It can be useful in two situations:
 
-Another widget may leave an element empty and you want to clean it up.
-Your pages are generated with another tool and it inserts something you don’t want.
+* Another widget may leave an element empty and you want to clean it up.
+* Your pages are generated with another tool and it inserts something you don't want.
 
 ```toml
 # Who reads footers anyway?
@@ -1424,7 +1424,18 @@ Your pages are generated with another tool and it inserts something you don’t 
 
 You can limit it to deleting only empty elements with `only_if_empty = true`. Element is considered empty if there’s nothing but whitespace inside it.
 
-It’s possible to delete only the first element matching a selector by adding `delete_all = false` to its config.
+It's also possible to only delete elements that do not have certain children. For example, suppose you have a footnotes container
+in the template and you want to delete it on pages where it doesn't contain any actual footnotes.
+You can do it with something like `when_no_child = "p.footnote"`.
+
+```toml
+[widgets.delete_unused_footnotes_containers]
+  widget = "delete_element"
+  selector = "div#footnotes"
+  when_no_child = "p.footnote"
+```
+
+By default, this widget removes all matching elements. It's possible to delete only the first matching element by setting `delete_all = false`.
 
 #### wrap
 
