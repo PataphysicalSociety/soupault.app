@@ -119,6 +119,8 @@ body { background: pink }
 </inlineStyle>
 ```
 
+Download: [inline-style.lua](/files/plugins/inline-style.lua).
+
 ## Content
 
 ### Reading time
