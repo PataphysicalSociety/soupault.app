@@ -1952,7 +1952,7 @@ Adds a new class. If an element has no classes, adds a `class` attribute in the 
 
 ###### <function>HTML.has_class(html_element, class_name)</function>
 
-Returns true is an element has given class.
+Returns true if an element has given class.
 
 ###### <function>HTML.remove_class(html_element, class_name)</function>
 
