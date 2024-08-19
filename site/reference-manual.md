@@ -1714,7 +1714,7 @@ This can be used to avoid running some expensive calculations more than once, or
 
 <module name="HTML">
 
-##### Document parsing, creation, and formatting
+##### Parsing and rendering
 
 ###### <function>HTML.parse(string)</function>
 
@@ -1729,16 +1729,6 @@ and correct errors as much as it can.
 For best results, make sure that your HTML is valid, since invalid HTML
 may silently produce unexpected behavior.
 
-###### <function>HTML.create_document()</function>
-
-Creates an empty HTML element tree root.
-
-Example: `doc = HTML.create_document()`
-
-###### <function>HTML.clone_document(html)</function>
-
-Creates a full copy of an HTML document element tree.
-
 ###### <function>HTML.to_string(html)</function>
 
 Converts an HTML element tree to HTML source, without adding any whitespace.
@@ -1747,14 +1737,13 @@ Converts an HTML element tree to HTML source, without adding any whitespace.
 
 Converts an HTML element tree to HTML source and adds whitespace for readability.
 
-##### Element creation and destructuring
+##### Node creation
 
-###### <function>HTML.create_text(string)</function>
+###### <function>HTML.create_document()</function>
 
-Example: `h = HTML.create_text("hello world")`
+Creates an empty HTML element tree root.
 
-Creates a text node that can be inserted into the page just like element nodes.
-This function automatically escapes all HTML special characters inside the string. 
+Example: `doc = HTML.create_document()`
 
 ###### <function>HTML.create_element(tag, text)</function>
 
@@ -1764,23 +1753,29 @@ Creates an HTML element node. The text argument can be `nil`,
 so you can safely omit it and write something like
 `h = HTML.create_element("hr")`.
 
-###### <function>HTML.inner_html(html)</function>
+###### <function>HTML.create_text(string)</function>
 
-Example: `h = HTML.inner_html(HTML.select(page, "body"))`
+Example: `h = HTML.create_text("hello world")`
 
-Returns element content as a string.
+Creates a text node that can be inserted into an element tree just like element nodes.
+This function automatically escapes all HTML special characters inside the string.
 
-###### <function>HTML.inner_text(html)</function>
+##### Node cloning
 
-Similar to `HTML.inner_html` but strips all tags away and returns only the text.
+###### <function>HTML.clone_document(html)</function>
 
-###### <function>HTML.strip_tags(html)</function>
+Creates a full copy of an HTML document element tree.
 
-Example: `h = HTML.strip_tags(HTML.select(page, "body"))`
+###### <function>HTML.clone_content(html_element)</function>
 
-Returns element content as a string, with all HTML tags removed.
+Creates a new HTML element tree object from the content of an element.
 
-##### Element tree queries
+Useful for duplicating an element elsewhere in the page.
+Since `HTML.select` and friends return _references_ to elements within the `page` tree.
+To create a new element _value_ that can be independently modified, you need to clone an element
+using this function.
+
+##### Selection and selector match checking
 
 ###### <function>HTML.select(html, selector)</function>
 
@@ -1815,7 +1810,7 @@ Example: `HTML.matches_selector(page, (HTML.select_one(page, "body")), "body")`
 
 Checks if an element node matches given selector.
 
-The `elem` value must be an element node retrieved from an `document` with a function from the `HTML.select_*` family.
+The `elem` value must be an element node retrieved from an `document` with a function from the `HTML.select_*` fami>
 
 The reason you need to give that function both parent document and child element values is that
 otherwise composite selectors like `div > p` wouldn’t work.
@@ -1825,7 +1820,7 @@ otherwise composite selectors like `div > p` wouldn’t work.
 Like `HTML.matches_selector`, but allows checking against a list of selectors
 and returns true if any of them would match.
 
-##### Access to surrounding elements
+##### Access to element tree surroundings
 
 ###### <function>HTML.parent(elem)</function>
 
@@ -1866,34 +1861,17 @@ Table.iter_values(add_silly_class, children)
 
 Returns the number of element’s children (handy for checking if it has any).
 
-##### Tag and attribute manipulation
-
-###### <function>HTML.is_element(elem)</function>
-
-Web browsers provide a narrower API than general purpose HTML parsers. In the JavaScript DOM API, `element.children` provides access to all _child elements_ of an element.
-
-However, in the HTML parse tree, the picture is more complex. Text nodes are also child nodes—browsers just filter those out because JavaScript code rarely has a need to do anything with text nodes.
-
-Consider this HTML: `<p>This is a <em>great</em> paragraph</p>`. How many children does the `<p>` element have? In fact, three: `text("This is a ")`, `element("em", "great")`, `text(" paragraph")`.
-
-The goal of soupault is to allow modifying HTML pages in any imaginable way, so it cannot ignore this complexity.
-Many operations like `HTML.add_class` still make no sense for text nodes, so there has to be a way to check if something is an element or not.
-
-That’s where `HTML.is_element` comes in handy.
-
 ###### <function>HTML.is_empty(elem)</function> (since 4.6.0)
 
-Returns true is `elem` has no child nodes.
+Returns true is `elem` has no child nodes (a shortcut for `HTML.child_cound(elem) == 0`).
 
-###### <function>HTML.is_root(elem)</function> (since 4.6.0)
-
-Returns true if `elem` has no parent node.
+##### Element property access and manipulation
 
 ###### <function>HTML.get_tag_name(html_element)</function>
 
 Returns the tag name of an element.
 
-Example: 
+Example:
 
 ```lua
 link_or_pic = HTML.select_any_of(page, {"a", "img"})
@@ -1923,10 +1901,10 @@ end
 
 Example: `href = HTML.get_attribute(link, "href")`
 
-Returns the value of an element attribute. The first argument must be an element reference produced by `HTML.select_one` or another function.
+Returns the value of an element attribute. The first argument must be an element reference produced by `HTML.select>
 
-If the attribute is missing, it returns `nil`. If the attribute is present but its value is empty (like in `<elem attr="">` or `<elem attr>`), it returns an empty string.
-In Lua, both empty strings and `nil` are false for the purpose of `if value then … end`, so if you want to check for presence of an attribute regardless of its value, you should explicitly check for `nil`.
+If the attribute is missing, it returns `nil`. If the attribute is present but its value is empty (like in `<elem a>
+In Lua, both empty strings and `nil` are false for the purpose of `if value then … end`, so if you want to check fo>
 
 ###### <function>HTML.set_attribute(html_element, attribute, value)</function>
 
@@ -1934,15 +1912,35 @@ Example: `HTML.set_attribute(content_div, "id", "content")`
 
 Sets an attribute value.
 
+###### <function>HTML.append_attribute(html_element, attribute, value)</function>
+
+Appends a string to the value of an attribute.
+
+For example, a crude reimplementation of `HTML.add_class`: `HTML.append_attribute(content_div, "class", " green-background")`
+
 ###### <function>HTML.delete_attribute(html_element, attribute)</function>
 
 Example: `HTML.delete_attribute(content_div, "id")`
 
-Removes an attribute.
+Removes an attribute from an element.
+
+###### <function>HTML.list_attributes(html_element)</function>
+
+Returns a list (i.e., a number-indexed table) with names of all attributes of an element.
+For example, for `<div id="content" class="green-background">`
+it would return `{"id", "class"}`.
+
+###### <function>HTML.clear_attributes(html_element)</function>
+
+Removes all attributes from an element.
 
 ###### <function>HTML.get_classes(html_element)</function>
 
 If an element has `class` attribute, returns a list (i.e. a number-indexed table) of its classes.
+
+###### <function>HTML.has_class(html_element, class_name)</function>
+
+Returns true is an element has given class.
 
 ###### <function>HTML.add_class(html_element, class_name)</function>
 
@@ -1958,15 +1956,23 @@ Returns true if an element has given class.
 
 Example: `HTML.remove_class(p, "centered")`
 
-###### <function>HTML.list_attributes(html_element)</function>
+###### <function>HTML.inner_html(html)</function>
 
-Returns a list (i.e. a number-indexed table) with names of all attributes of an element.
+Example: `h = HTML.inner_html(HTML.select(page, "body"))`
 
-###### <function>HTML.clear_attributes(html_element)</function>
+Returns element content as a string.
 
-Removes all attributes from an element.
+###### <function>HTML.inner_text(html)</function>
 
-##### Element tree modification
+Similar to `HTML.inner_html` but strips all tags away and returns only the text.
+
+###### <function>HTML.strip_tags(html)</function>
+
+Example: `h = HTML.strip_tags(HTML.select(page, "body"))`
+
+Returns element content as a string, with all HTML tags removed.
+
+##### Element tree manipulation
 
 ###### <function>HTML.append_root(parent, child)</function>
 ###### <function>HTML.prepend_root(parent, child)</function> (since 4.5.0)
@@ -2001,30 +2007,26 @@ HTML.insert_before(main, header)
 HTML.insert_after(main, footer)
 ```
 
+###### <function>HTML.replace(orig, new)</function> (legacy name)
+###### <function>HTML.replace_element(orig, new)</function> (new name, recommended)
+
+Deletes the `orig` element from the element tree where it belongs
+and inserts the `new` element in its former place.
+
 ###### <function>HTML.replace_content(parent, child)</function>
 
 Deletes all existing children of the `parent` element and inserts the `child` element in their place.
 
-###### <function>HTML.delete(element)</function>
+###### <function>HTML.delete(element)</function> (legacy name)
+###### <function>HTML.delete_element(element)</function> (new name, recommended)
 
 Example: `HTML.delete(HTML.select_one(page, "h1"))`
 
-Deletes an element from the page.
+Deletes an element from an element tree.
 
 ###### <function>HTML.delete_content(element)</function>
 
 Deletes all children of an element (but leaves the element itself in place).
-
-###### <function>HTML.clone_content(html_element)</function>
-
-Creates a new HTML element tree object from the content of an element.
-
-Useful for duplicating an element elsewhere in the page.
-Since `HTML.select` and friends return _references_ to elements within the `page` tree.
-To create a new element _value_ that can be independently modified, you need to clone an element
-using this function.
-
-##### Convenience functions
 
 ###### <function>HTML.wrap(node, elem)</function> (since 4.7.0)
 
@@ -2038,14 +2040,18 @@ and leave just `<p>Test!</p>`.
 
 ###### <function>HTML.swap(l, r)</function>
 
-Swaps two elements in the element tree. Element nodes `l` and `r`, obviously,
-must belong to the same element tree.
+Swaps two elements in an element tree.
+Element nodes `l` and `r`, obviously, must belong to the same element tree.
+
+##### Node tests
+
+##### High-level convenience functions
 
 ###### <function>HTML.get_heading_level(element)</function>
 
 For elements whose tag name matches `<h[1-9]>` pattern, returns the heading level.
 
-Returns zero for elements whose tag name doesn’t look like a heading and for values that aren’t HTML elements.
+Returns zero for elements whose tag name doesn't look like a heading and for values that aren't HTML elements.
 
 ###### <function>HTML.get_headings_tree(element)</function>
 
@@ -2063,7 +2069,7 @@ Returns a table that represents the tree of HTML document headings in a format l
 ]
 ```
 
-Values of `heading` fields are HTML element references. Perfect for those who want to implement their own ToC generator.
+Values of `heading` fields are HTML element references (not clones). Perfect for those who want to implement their own ToC generator.
 
 ##### Behaviour
 
