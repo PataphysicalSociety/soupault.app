@@ -1901,10 +1901,7 @@ end
 
 Example: `href = HTML.get_attribute(link, "href")`
 
-Returns the value of an element attribute. The first argument must be an element reference produced by `HTML.select>
-
-If the attribute is missing, it returns `nil`. If the attribute is present but its value is empty (like in `<elem a>
-In Lua, both empty strings and `nil` are false for the purpose of `if value then … end`, so if you want to check fo>
+Returns the value of an element attribute.
 
 ###### <function>HTML.set_attribute(html_element, attribute, value)</function>
 
@@ -2629,13 +2626,6 @@ Returns a BLAKE2-B digest of `str`.
 ##### <function>Table.has_key(table, key)</function>
 
 Returns `nil` if and only if `table` does not have a field `key`. 
-
-Why is this function needed? There are two possible reasons why `if my_table["some_key"] then` may not be true:
-
-* `my_table` does not have a field named `some_key`.
-* `my_table` has a field `some_key` but its truth value is false (e.g. `""` or `0`).
-
-This functions tells you for certain that the value is missing.
 
 ##### <function>Table.get_key_default(table, key, default_value)</function>
 
