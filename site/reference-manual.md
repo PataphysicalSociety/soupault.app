@@ -1948,6 +1948,10 @@ Example: `HTML.add_class(p, "centered")`
 
 Adds a new class. If an element has no classes, adds a `class` attribute in the process.
 
+###### <function>HTML.has_class(html_element, class_name)</function>
+
+Returns true if an element has given class.
+
 ###### <function>HTML.remove_class(html_element, class_name)</function>
 
 Example: `HTML.remove_class(p, "centered")`
