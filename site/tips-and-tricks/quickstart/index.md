@@ -35,8 +35,8 @@ Create a directory for your blog project (say `my-blog/`) and save the following
   # Where the output goes
   build_dir = "build"
 
-  # Pages will other extensions are considered static assets
-  # and copied to build/ unchanged
+  # Files with other extensions are considered static assets
+  # and copied to build/ unchanged.
   page_file_extensions = ["htm", "html", "md", "rst", "adoc"]
 
   # Files with these extensions are ignored.
