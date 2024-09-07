@@ -19,7 +19,7 @@
 
   caching = true
 
-  soupault_version = "4.10.0"
+  soupault_version = "4.11.0"
 
 [preprocessors]
   md = 'pandoc -f commonmark+smart -t html --no-highlight --lua-filter=helpers/cmark-code-blocks.lua'
@@ -27,7 +27,7 @@
 [custom_options]
   site_url = "https://soupault.app"
 
-  latest_soupault_version = "4.10.0"
+  latest_soupault_version = "4.11.0"
 
 [index]
   index = true
