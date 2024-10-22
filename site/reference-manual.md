@@ -123,9 +123,8 @@ In this document, whenever a specific site or build dir has to be mentioned, we 
 
 If you misspell an option, soupault will notify you about it and try to suggest a correction.
 
-Note that config values are typed and wrong value type has the same effect as missing option.
-All boolean values must be `true` or `false` (without quotes),
-all integer values must not have quotes around numbers, and all strings must be in single or double quotes.
+Soupault attempts to convert value types in a manner similar to many dynamically typed programming languages
+like Perl and UNIX shells. For example, `settings.debug = true` and `settings.debug = 1` will both work.
 
 ### Logging options
 
