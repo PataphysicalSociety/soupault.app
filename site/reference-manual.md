@@ -8,7 +8,7 @@
 # Reference manual
 
 This manual applies to soupault $SOUPAULT_RELEASE$.
-Earlier versions may not support some of the features described here.
+Earlier versions may not support some of the features described here and may have different configuration syntax.
 
 If you are running soupault older than $SOUPAULT_RELEASE$, consider upgrading to the latest version.
 
@@ -19,29 +19,35 @@ If you are running soupault older than $SOUPAULT_RELEASE$, consider upgrading to
 Soupault is distributed as a single, self-contained executable, so installing it from a binary release package it trivial.
 
 You can download it from [files.baturin.org/software/soupault](https://files.baturin.org/software/soupault) or from [GitHub releases](https://github.com/PataphysicalSociety/soupault/releases).
-Prebuilt executables are available for Linux (x86-64 and ARM64, statically linked), macOS (x86-64), and Microsoft Windows (64-bit).
+Prebuilt executables are available for Linux (x86-64 and Aarch64, statically linked), macOS (x86-64), and Microsoft Windows (64-bit).
 
-Just unpack the archive and copy the executable wherever you want.
+Just unpack the archive and copy the executable to a target directory.
 
 Prebuilt executables are compiled with debug symbols. It makes them a couple of megabytes larger than they could be, but you can get better error messages if something goes wrong.
 If you encounter an internal error, you can run `soupault --debug` to enable detailed logging and exception traces.
 
 ###  Building from source
 
-If you are familiar with the [OCaml](https://ocaml.org) programming language, you may want to install from source.
+Soupault is written in the [OCaml](https://ocaml.org) programming language, so you will need the OCaml toolchain
+to build it. The best way to install the toolchain and build dependencies is to use [opam](https://ocaml.org/docs/installing-ocaml),
+the OCaml package manager.
 
-Since version 1.6, soupault is available from the [opam](https://opam.ocaml.org) repository. If you already have opam installed, you can install it with opam install soupault.
+Since version 1.6, soupault is available from the [opam](https://opam.ocaml.org) repository. If you already have opam installed, you can install it with `opam install soupault`.
 
 If you want the latest development version, the git repository is at [github.com/PataphysicalSociety/soupault](https://github.com/PataphysicalSociety/soupault).
-There’s also a Codeberg mirror at [codeberg.org/PataphysicalSociety/soupault](https://codeberg.org/PataphysicalSociety/soupault).
+There is also a Codeberg mirror at [codeberg.org/PataphysicalSociety/soupault](https://codeberg.org/PataphysicalSociety/soupault).
 
 #### Building static executables for Linux
 
-The official soupault executables for Linux are built with [musl](http://musl.libc.org/) so that they depend only on the kernel ABI
-(while GNU libc is not designed to produce truly static binaries). Since OCaml uses GNU libc on Linux by default,
-you need to create an OPAM switch with a compiler built with musl instead.
+Official soupault executables for Linux are statically linked so that they can work on any distro.
+That is achieved by linking them with [musl](http://musl.libc.org/) rather than GNU libc,
+because GNU libc is not designed to produce truly statically linked binaries (even when compiled with `-static`,
+executables linked with GNU libc may try to dynamically load shared libraries).
 
-Suppose you want to build soupault with OCaml 4.14.2. You will need the following commands:
+OCaml uses GNU libc on Linux by default,
+so to replicate official releases, you need to create an opam switch with musl and static linking enabled.
+
+Suppose you want to build soupault with OCaml 5.2.0 (the latest as of October 2024). You will need the following commands:
 
 ```
 # Install dependencies, for Fedora (or recent RHEL/CentOS Stream):
@@ -51,8 +57,8 @@ sudo dnf install musl-gcc musl-libc-static
 sudo apt install musl musl-dev musl-tools
 
 # Create an OCaml installation that uses musl-based runtime
-opam switch create 4.14.2-musl ocaml-variants.4.14.2+options ocaml-option-musl ocaml-option-static
-opam switch 4.14.2-musl
+opam switch create 5.2.0-musl ocaml-variants.5.2.0+options ocaml-option-musl ocaml-option-static
+opam switch 5.2.0-musl
 ```
 
 Then use the `static` dune profile for your build command:
@@ -63,14 +69,16 @@ dune build --profile=static
 
 ###  Using soupault on Windows
 
-Windows is a supported platform and soupault includes some fixups to account for the differences.
+Windows is a supported platform and soupault includes some fixups to account for the differences between UNIX-like systems and Windows.
+
 This document makes a UNIX cultural assumption throughout, but most of the time the same configs will work on both systems. Some differences, however, require user intervention to resolve.
 
-If a file path is only used by soupault itself, then the UNIX convention will work, i.e. `file = 'templates/header.html'` and `file = 'templates\header.html'` are both valid options for the include widget.
-However, if it’s passed to something else in the system, then you must use the Windows convention with back slashes.
-This applies to the preprocessors, the command option of the exec widget, and the `index_processor` option.
+If a file path is only used by soupault itself, then the UNIX convention will work. For example, `file = 'templates/header.html'` and `file = 'templates\header.html'` are both valid options for the [`include`](#include-widget) widget when running soupault on Windows.
 
-So, if you are on Windows, remember to adjust the paths if needed, e.g.:
+However, if a path is passed to an external program, then you must use the Windows convention with backslashes.
+This applies, for example, to [page preprocessors](#page-preprocessors), the `command` option of the [`exec`](#exec-widget) widget, and [external index processors](#external-index-processor).
+
+So, if you are on Windows, remember to adjust the paths if needed. For example:
 
 ```toml
 [widgets.some-script]
@@ -79,20 +87,21 @@ So, if you are on Windows, remember to adjust the paths if needed, e.g.:
   selector = 'body'
 ```
 
-Note that inside double quotes, the backslash is an escape character, so you should either use single quotes for such paths (`'scripts\myscript.bat'`) or use a double backslash (`\.\.\."scripts\\myscript.bat"`).
+Note that inside double quotes, the backslash is an escape character, so you should either use single quotes for such paths (`'scripts\myscript.bat'`) or use a double backslash (`"scripts\\myscript.bat"`).
 
 ## Overview
 
-In the website generator mode (the default), soupault takes a page “template”—an HTML file devoid of content, parses it into an element tree, and locates the content container element inside it.
+Soupault has two distinct modes: the _website generator mode_ and the _HTML processor mode_.
 
-By default the content container is `<body>`, but you can use any selector: `div#content` (a `<div id="content">` element), `article` (an HTML5 `<article>` element), `#post` (any element with `id="post"`)
+In the website generator mode (the default), soupault takes a page "template" — an HTML file devoid of content, parses it into an element tree, and locates the content container element inside it (defined by the `settings.default_content_selector` option).
+
+By default, the content container is `<body>`, but you can use any selector, for example: `div#content` (a `<div id="content">` element), `article` (the HTML5 `<article>` element), `#post` (any element with `id="post"`)
 or any other valid CSS selector.
 
-Then it traverses your site directory where page source files are stored, takes a page file, and parses it into an HTML element tree too.
-If the file is not a complete HTML document (doesn’t have an `<html>` element in it), soupault inserts it into the content container element of the template. If it is a complete page, then it goes straight to the next step.
+Then it traverses your site directory where page source files are stored (by default, `site`), takes a page file, and parses it into an HTML element tree too.
+If the file is not a complete HTML document (doesn not have an `<html>` element in it), soupault inserts it into the content container element of the template. If it is a complete page, then it goes straight to the next step.
 
-The new HTML tree is then passed to widgets—HTML rewriting modules that manipulate it in different ways: include other files or outputs of external programs into specific elements,
-create breadcrumbs for your page, they may delete unwanted elements too.
+The new HTML tree is then passed to widgets — HTML rewriting modules that manipulate it in different ways. Widgets can be built-in or can be implemented by plugins.
 
 Processed pages are then written to disk, into a directory structure that mirrors your source directory structure.
 
@@ -104,13 +113,13 @@ Here is a simplified flowchart:
 
 Very few soupault settings are fixed, and most can be changed in the configuration file.
 
-This is the settings from the default config that `soupault --init` generates.
+These are the settings from the default config that `soupault --init` generates.
 
 <pre> <code class="language-toml" id="default-config"> </code> </pre>
 
 Note that if you create a `soupault.toml` file before running `soupault --init`, it will not overwrite that file.
 
-In this document, whenever a specific site or build dir has to be mentioned, we’ll use their default values: `site_dir` and `build_dir`.
+In this document, whenever a specific site or build dir has to be mentioned, we will use their default values: `site_dir` and `build_dir`.
 
 If you misspell an option, soupault will notify you about it and try to suggest a correction.
 
@@ -120,8 +129,7 @@ all integer values must not have quotes around numbers, and all strings must be 
 
 ### Logging options
 
-By default, soupault will only log warnings and errors. However, its philosophy is that the user should be able to get as much insight
-into the build process as possible.
+By default, soupault will only log warnings and errors. However, its philosophy is that the user should be able to get as much insight into the build process as possible.
 
 It provides two settings for controlling the log level: `settings.verbose` and `settings.debug`. By default, both are false.
 
@@ -131,7 +139,7 @@ It provides two settings for controlling the log level: `settings.verbose` and `
     debug = false
 ```
 
-It's also possible to control the log level from the command line, by running `soupault --verbose` or `soupault --debug`.
+It is also possible to control the log level from the command line, by running `soupault --verbose` or `soupault --debug`.
 
 With `verbose = true`, soupault logs detailed build progress: what pages are being processed, what widgets run on them, and so on.
 
@@ -160,19 +168,19 @@ for all pages:
 
 ### Custom directory layouts
 
-If you are using soupault as an HTML processor, or using it as a part of a CI pipeline, typical website generator approach with a single “project directory” may not be optimal.
+If you are using soupault as an HTML processor, or using it as a part of a CI pipeline, typical website generator approach with a single "project directory" may not be optimal.
 
 You can override the location of the config using an environment variable `SOUPAULT_CONFIG`.
 You can also override the locations of the source and destination directories with `--site-dir` and `--build-dir` options.
 
-Thus it’s possible to run soupault without a dedicated project directory at all:
+Thus it is possible to run soupault without a dedicated project directory at all:
 
 ```shell-session
 $ SOUPAULT_CONFIG="mysite.toml" soupault --site-dir some-input-dir --build-dir some-other-dir
 ```
 
-Since 4.2.0, it's also possible to specify the config location using a command line option (`--config`) instead of an environment variable.
-That's especially useful on Windows, where there's no easy way to set an environment variable
+Since 4.2.0, it is also possible to specify the config location using a command line option (`--config`) instead of an environment variable.
+That is especially useful on Windows, where there is no easy way to set an environment variable
 for a single command invocation:
 
 ```shell-session
@@ -181,12 +189,14 @@ C:\> soupault --config mysite.toml --site-dir some-input-dir --build-dir some-ot
 
 ### Ignoring files and directories
 
-If you want to ignore certain paths insite the site directory (e.g., exclude auxilliary directories created by third-party tools),
-you can use either `settings.ignore_directories` to exclude a list of directories with all their subdirectories,
+If you want to ignore certain paths inside the site directory (e.g., exclude auxilliary directories created by third-party tools),
+you can use either `settings.ignore_directories` option to exclude a list of directories with all their subdirectories,
 or use `settings.ignore_path_regexes` to ignore arbitraty patterns.
+Those options are not mutually exclusive and you can use them both at the same time:
 
 ```toml
 [settings]
+  # Ignore specific directories
   ignore_directories = ["images", "videos"]
 
   # Ignore all directories that start with a dot, like ".hidden"
@@ -199,8 +209,7 @@ Starting from 4.4.0, soupault supports caching the output of [page preprocessors
 and commands called by [preprocess_element](#preprocess-element-widget) widgets.
 
 Caching is disabled by default because many websites will not benefit from it at all.
-However, if you use external preprocessors extensively, it can make repeated builds
-a few times faster.
+However, if you use external preprocessors extensively, it can make repeated builds a few times faster.
 
 This is how to enable it:
 
@@ -210,35 +219,36 @@ This is how to enable it:
   caching = true
 
   # Optionally, change the cache directory
+  # The default is `.soupault-cache`
   cache_directory = ".soupault-cache"
 ```
 
-If you want to clear the cache and build everything from scratch, you can run `soupault --force`.
-
-Since soupault 4.5.0, you can also completely disable caching even if it's enabled in the config:
+Since soupault 4.5.0, you can also completely disable caching even if it is enabled in the config:
 if you run `soupault --no-caching`, it will not attempt to create the cache directory
 or cache any outputs.
 
 Soupault creates a subdirectory in the cache for each page to associate cached objects with their sources.
 When a page source file changes, its sub-cache is automatically invalidated and cleared,
-so in most cases you don't need to worry about stale cache
+so in most cases you do not need to worry about stale cache
 or about the cache directory getting bloated with unused data.
 
-However, there are situations when you need to force cache invalidation and eviction with `soupault --force`:
+However, there are situations when the cache can become stale in ways that soupault will not detect automatically:
 
 * When you change the `[preprocessors]` section or a `preprocess_element` widget config.
 * When you update external tools and their new versions produce different outputs.
 
-Note that [asset processor](#asset-processing) outputs are not cached, at least for now.
-That's because asset processor output file name is controlled by the user (or the command),
-not by soupault.
+In those cases, you can force cache invalidation and eviction by running `soupault --force`.
+With that option, soupault will delete the cache directory and build everything from scratch.
+
+Note that [asset processor](#asset-processing) outputs are not cached.
+That is because asset processor output file name is controlled by the user (or the command), not by soupault.
 
 Future versions may extend that configuration syntax to allow asset caching.
 For now, if you need an advanced asset pipeline, you may want to use an external tool instead.
 
 ## Asset processing
 
-By default, soupault simply copies non-page files unchanged. However, it's possible to run them through external tools instead,
+By default, soupault simply copies non-page files unchanged. However, it is possible to run them through external tools instead,
 such as image optimizers, Sass/Less/etc. compilers, and similar tools.
 
 Example: running all `*.png` files through [pngcrush](https://pmt.sourceforge.io/pngcrush/) — a popular PNG optimizer.
@@ -258,9 +268,9 @@ The value is a <term>Jingoo</term> template. There are following variables in th
 
 ## Character encoding
 
-By default, soupault assumes that all pages are stored in UTF-8.
+By default, soupault assumes that all pages are stored in <wikipedia>UTF-8</wikipedia>.
 However, if your website uses a different encoding and you have reasons to keep it that way,
-you can configure soupault to use it.
+you can specify the encoding explicitly.
 
 ```toml
 [settings]
@@ -276,7 +286,7 @@ are equally acceptable).
 
 ### Page templates
 
-In soupault’s terminology, a page template is simply an HTML file without content — an empty page. Soupault does not use a template processor for assembling pages,
+In soupault's terminology, a page template is simply an HTML file without content — an empty page. Soupault does not use a template processor for assembling pages,
 instead it injects the content into the element tree. This way any empty HTML page can serve as a soupault "theme".
 
 This is the default configuration:
@@ -305,11 +315,11 @@ This is the minimal template good for `default_content_selector = "body"`:
 
 ### Additional templates
 
-It’s possible to use multiple templates. However, note that additional templates *must* be limited to specific pages with using a <term>limiting option</term>!
+It i possible to use multiple templates. However, note that additional templates *must* be limited to specific pagesusing a <term>limiting option</term>!
 
-You also cannot omit the default template. This is because there is no reliable way to sort templates and content selector by "specificity" that would satisfy every
-user’s needs. Without an explicit default template to use for pages that didn’t match any of the custom templates, soupault would have to guess,
-but software should never guess, so it requires an explicit default template.
+You also cannot omit the default template. This is because there is no reliable way to sort templates and content selectors by "specificity".
+
+Without an explicit default template, soupault would have to guess what template to use for pages that do not match any of the custom templates, and there is no way to guess it in a way that would satisfy every user's needs.
 
 Thus a config that uses custom templates will look like this:
 
@@ -327,7 +337,7 @@ Thus a config that uses custom templates will look like this:
 
 ### Page files
 
-With default config, soupault will look for page files in `site/`.
+With default settings, soupault will look for page files in `site/`.
 
 #### Page file extensions
 
@@ -354,19 +364,19 @@ For example, this configuration will make soupault preprocess Markdown files wit
   md = "cmark --unsafe --smart"
 ```
 
-Preprocessor commands are executed in the <term>system shell</term>, so it’s fine to use relative paths and specify command arguments. Page file name is appended to the command string.
+Preprocessor commands are executed in the <term>system shell</term>, so it is fine to use relative paths and specify command arguments. Page file name is appended to the command string.
 For example, with the above config, when soupault processes `site/about.md`, it will run `cmark --unsafe --smart site/about.md` and read the standard output of that process.
 
 ### Partial and complete pages
 
 Soupault allows you to have pages with a unique, non-templated layout even in generator mode.
-If a page has an `<html>` element in it, it’s assumed to be a complete page.
+If a page has an `<html>` element in it, it is assumed to be a complete page.
 
 Complete pages are exempt from templating, they are only parsed and processed by widgets.
 
-If a page doesn’t have an `<html>` element in it, its content is inserted in a page template first.
+If a page does not have an `<html>` element in it, its content is inserted in a page template first.
 
-Note that the selector used to check for ‘completeness’ is a configurable option:
+Note that the selector used to check for "completeness" is a configurable option:
 
 ```toml
 [settings]
@@ -375,7 +385,7 @@ Note that the selector used to check for ‘completeness’ is a configurable op
 
 ### Clean URLs
 
-Soupault uses clean URLs by default. If you add a page to `site/`, for example, `site/about.html`, it will turn into `build/about/index.html` so that it can be accessed as `https://mysite.example.com/about`.
+Soupault uses <wikipedia>clean URLs</wikipedia> by default. If you add a page to `site/`, for example, `site/about.html`, it will turn into `build/about/index.html` so that it can be accessed as `https://mysite.example.com/about`.
 
 Index files are simply copied to the target directory.
 
@@ -383,7 +393,7 @@ Index files are simply copied to the target directory.
 * `site/about.html` → `build/about/index.html`
 * `site/papers/theorems-for-free.html` → `build/papers/theorems-for-free/index.html`
 
-Note: having a page named `foo.html` and a section directory named `foo/` results in undefined behaviour when clean URLs are on. Don’t do that to avoid unpredictable results.
+Note: if you add a page file `foo.html` and a section directory named `foo/`, soupault makes no guarantees about its conflict resolution behavior. Just do not do that.
 
 This is what soupault will make from a source directory, when clean URLs are enabled:
 
@@ -405,7 +415,7 @@ build/
 
 #### Disabling clean URLs
 
-If you’ve had a website for a long time and there are links to your page that will break if you change the URLs, you can make soupault mirror your site directory structure exactly and preserve original file names.
+If you have had a website for a long time and there are links to your pages that will break if you change the URLs, you can make soupault mirror your site directory structure exactly and preserve original file names.
 
 Just add `clean_urls = false` to the `[settings]` section of your `soupault.conf` file.
 
@@ -451,7 +461,7 @@ just the pages you are interested in.
 
 ## Metadata extraction and rendering
 
-Soupault can extract metadata from pages using CSS selectors, similar to what web scrapers are doing. This is more flexible than “front matter”,
+Soupault can extract metadata from pages using CSS selectors, similar to what web scrapers are doing. This is more flexible than "front matter",
 and allows you to automatically generate index pages for existing websites, without having to edit their pages.
 
 What you do with extracted metadata is up to you. You can simply export it to JSON for further processing, like generating an RSS/Atom feed,
@@ -466,7 +476,7 @@ Metadata extraction is disabled by default. You need to enable it first:
 
 ### Index settings
 
-These are the basic settings:
+These are the basic settings and their default values:
 
 ```toml
 [index]
@@ -512,7 +522,7 @@ These are the basic settings:
 
 ### Index fields
 
-Soupault doesn’t have a built-in ‘content model’. Instead, it allows you to define what to extract from pages,
+Soupault does not have a built-in "content model". Instead, it allows you to define what to extract from pages,
 in the spirit of [microformats](http://microformats.org/).
 
 This is the configuration for this very site:
@@ -536,7 +546,7 @@ This is the configuration for this very site:
   selector = "span#reading-time"
 ```
 
-The `selector` field is either a single CSS selector or a list of selectors that define what to extract
+The "selector" field is either a single CSS selector or a list of selectors that define what to extract
 from the page. Here, `selector = ["p#post-excerpt", "p"]` means "use `p#post-excerpt` for the excerpt,
 but if there’s no such element, just use the first paragraph".
 
@@ -544,10 +554,10 @@ By default, soupault will extract only the first element, but you can change tha
 
 You can also set the default value with `default` option (only for fields without `select_all = true`).
 
-As you can see from the `date` field definition, it’s possible to make soupault extract an attribute
-rather than content. The `fallback_to_content` option defines what soupault will do if an element has
-no such attribute. With `fallback_to_content = true` it will extract the element content instead,
-while if it’s false, it will leave the field undefined.
+As you can see from the `date` field definition, it is possible to make soupault extract an attribute of an element
+rather than its content. The `fallback_to_content` option defines what soupault will do if an element has
+no such attribute. With `fallback_to_content = true` it will extract the element content instead.
+If it is false, it will leave the field undefined.
 
 ### Built-in index fields
 
@@ -577,7 +587,7 @@ There are four ways to render index data:
 
 * `index_item_template` — a <term>jingoo</term> template for an individual item, applied to each index data entry.
 * `index_template` — a jingoo template for the entire index (get a list of entries and iterate through it yourself).
-* `index_processor` — path to an external script that receives index data (in JSON) through stdin and writes HTML to stdout.
+* `index_processor` — path to an external script that receives index data (in JSON) from stdin and writes HTML to stdout.
 * `file` or `lua_source` — path to a Lua index processor, or inline Lua code, respectively.
 
 #### Index item template
@@ -621,7 +631,7 @@ If you have a favorite programming language or a favorite template processor and
 you can call an external program with `index_processor = /path/to/script`. The value is actually a shell command,
 so you can also specify arguments.
 
-Soupault will send a JSON representation of the site index data to the script’s stdin and expects HTML source in the stdout.
+Soupault will send a JSON representation of the site index data to the script's stdin and expects HTML source in the stdout.
 
 The index data format is the same as what you get when [exporting site index to JSON](#exporting-metadata-to-json).
 Use the `index.dump_json` option and inspect the output to get familiar with that format.
@@ -631,7 +641,7 @@ Use the `index.dump_json` option and inspect the output to get familiar with tha
 Finally, if you want total control over the process, you can write an index processor in Lua. The most important advantage
 of Lua index processors is that they can generate new pages and inject them in the processing queue.
 
-For example, here’s a reimplementation of the built-in `index_template` behavior in Lua, but with a twist:
+For example, here is a reimplementation of the built-in `index_template` behavior in Lua, but with a twist:
 it also creates a clone of the index page.
 
 ```toml
@@ -678,8 +688,7 @@ you can use any path and place the generated page in any section.
 The `page_content` must be a _string representation_ of the page, that you can make with `HTML.to_string` or `HTML.pretty_print` functions.
 This is because generated pages are treated the same as pages that actually exist on disk, and need to be parsed.
 
-Soupault will automatically prevent autogenerated pages from generating more pages so there shouldn’t be any infinite loops
-or fork bombs coming from this functionality.
+Soupault will automatically prevent autogenerated pages from generating more pages so this functionality is unlikely to cause infinite loops or fork bombs.
 
 ### Index view options
 
@@ -727,8 +736,8 @@ Suppose you want metadata extraction to happen only after widgets `foo` and `bar
   extract_after_widgets = ["foo", "bar"]
 ```
 
-Note that it doesn’t mean that soupault will schedule widgets `foo` and `bar` to run before everything else. It doesn’t mean that
-soupault will not schedule any other widgets to run before metadata extraction happens. It only means that metadata extraction
+Note that it does not mean that soupault will schedule widgets `foo` and `bar` to run before everything else. It does not mean that
+soupault will not schedule any other widgets to run before metadata extraction happens, either. It only means that metadata extraction
 will happen immediately after the last of `foo` and `bar` widgets have run.
 
 Thus, if you have a setup where some widgets produce metadata you want extracted (*producers*) and other widgets that modify the
@@ -749,20 +758,20 @@ this is the only way to guarantee it:
 
 ### Treating index pages as normal pages
 
-Since soupault can transform normal pages to clean URLs by itself, normally it’s best to keep a logical site structure: directory = section, file = page, and leave creation of clean URLs to the software.
+Since soupault can transform normal pages to clean URLs by itself, normally it is best to keep a logical site structure: directory = section, file = page, and leave creation of clean URLs to the software.
 
 However, sometimes creating a degenerate section by hand is a sensible thing to do. One use case is bundling a page with its assets.
-Suppose you are making a page with a lot of photos, and those photos aren’t going to be used by any other page.
+Suppose you are making a page with a lot of photos, and those photos are not going to be used by any other page.
 In that case, placing those photos in a shared asset directory will only make it harder to remember or find what pages they are used by, and will make all links to those images longer.
-Storing them in a directory with the page offers the easiest mental model. 
+Storing them in a directory with the page offers the easiest mental model.
 
 Using the `force_indexing_path_regex` option in the `[index]` table, you can make soupault treat some pages as normal pages even though their files are named `index.*`.
 This can be helpful if you only have a few such pages, or they all are within a single directory.
 
-If you want to be able to mark any directory as a "leaf" (hand-made clean URL), there’s another way: a `leaf_file` option to the `[index]` table.
+If you want to be able to mark any directory as a "leaf" (hand-made clean URL), there is another way: a `leaf_file` option to the `[index]` table.
 Suppose you set `leaf_file = ".leaf"`. In that case, when soupault finds a directory that has files named `index.html` and `.leaf`, it treats `index.html` as a normal page and extracts metadata from it.
 
-There’s no default value for the `leaf_file option`, you need to set it explicitly if you want it.
+There is no default value for the `leaf_file option`, you need to set it explicitly if you want it.
 
 ### Making index data available to every page
 
@@ -771,7 +780,7 @@ That is fine most of the time, but what if you want to write a plugin to display
 on every page?
 
 One option would be to [export the site index to JSON](#exporting-metadata-to-json), generate the sidebar from it,
-then run soupault again and have your plugin load that generated file. That’s workable, but not very convenient.
+then run soupault again and have your plugin load that generated file. That is workable, but not very convenient.
 
 Since soupault 4.0.0, a two-pass workflow is a built-in feature that you can enable with the new `index.index_first` option.
 
@@ -780,7 +789,7 @@ Since soupault 4.0.0, a two-pass workflow is a built-in feature that you can ena
   index_first = true
 ```
 
-When it’s true, soupault will make a first pass to do the bare minimum of work to extract the site metadata: read pages,
+When it is true, soupault will make a first pass to do the bare minimum of work to extract the site metadata: read pages,
 run widgets set to run before index extraction, and extract the data. It will not run every widget, render anything,
 or write pages to disk during that first pass.
 
@@ -829,12 +838,12 @@ setting page title and more.
 ### Widget behaviour
 
 Widgets that require a selector option first check if there’s an element matching that selector in the page.
-If there’s no such element, they do nothing, since they wouldn’t have a place to insert their output anyway.
+If there is no such element, they do nothing, since they would not have a place to insert their output anyway.
 
-Thus, the simplest way to ensure a widget doesn’t run on a particular page is to make sure that page doesn’t
+Thus, the simplest way to ensure a widget does not run on a particular page is to make sure that page does not
 have its target element.
 
-If a page has more than one element matching the same selector, the first element is used as widget’s target.
+If a page has more than one element matching the same selector, the first element is used as widget's target.
 
 ### Widget configuration
 
@@ -932,7 +941,7 @@ If you want a widget to apply to a directory and its subdirectories, add `includ
 
 #### Excluding sections or pages
 
-It’s also possible to explicitly exclude pages or sections.
+It is also possible to explicitly exclude pages or sections.
 
 ```toml
 [widgets.toc]
@@ -961,7 +970,7 @@ When nothing else helps, `path_regex` and `exclude_path_regex` options may solve
 
 ### Widget processing order
 
-The order of widgets in your config file doesn’t determine their processing order. By default, soupault assumes that widgets are independent and can be processed in arbitrary order.
+The order of widgets in your config file does not determine their processing order. By default, soupault assumes that widgets are independent and can be processed in arbitrary order.
 In future versions they may even be processed in parallel, who knows.
 
 This can be an issue if one widget relies on output from another. In that case, you can order widgets explicitly with the after parameter.
@@ -1005,12 +1014,12 @@ For example, this way you can only include `includes/analytics.html` file in you
 
 Soupault will only process that widget if you run `soupault --profile live`. If you run `soupault --profile dev`, or run it without the `--profile` option, it will ignore that widget.
 
-Since soupault 2.7.0, it’s possible to specify more than one build profile. For example, if you run `soupault --profile foo --profile bar`, it will enable both `foo` and `bar` profiles
+Since soupault 2.7.0, it is possible to specify more than one build profile. For example, if you run `soupault --profile foo --profile bar`, it will enable both `foo` and `bar` profiles
 and their associated widgets.
 
 ### Disabling widgets
 
-Since soupault 2.7.0, it’s possible to disable a widget by adding `disabled = true` to its config.
+Since soupault 2.7.0, it is possible to disable a widget by adding `disabled = true` to its config.
 
 ## Built-in widgets
 
@@ -1136,7 +1145,7 @@ External programs executed by `exec` and `preprocess_element` widgets get a few 
   <dd>The directory where the rendered page will be saved.</dd>
 </dl>
 
-This is how you can include page’s own source into a page, on a UNIX-like system:
+This is how you can include page's own source into a page, on a UNIX-like system:
 
 ```toml
 [widgets.page-source]
@@ -1146,7 +1155,7 @@ This is how you can include page’s own source into a page, on a UNIX-like syst
   command = "cat $PAGE_FILE"
 ```
 
-If you store your pages in git, you can get a page timestamp from the git log with a similar method (note that it’s not a very fast operation for long commit histories):
+If you store your pages in git, you can get a page timestamp from the git log with a similar method (note that it is not a very fast operation for long commit histories):
 
 ```toml
 [widgets.last-modified]
@@ -1158,7 +1167,7 @@ If you store your pages in git, you can get a page timestamp from the git log wi
 The `PAGE_FILE` variable can be used in many different ways, for example, you can use it to fetch the page author and modification date from a revision control system like git or mercurial.
 
 The `TARGET_DIR` variable is useful for scripts that modify or create page assets.
-For example, this snippet will create PNG images from Graphviz graphs inside `<pre class="graphviz-png">` elements and replace those pre’s with relative links to images.
+For example, this snippet will create PNG images from Graphviz graphs inside `<pre class="graphviz-png">` elements and replace those `<pre>`'s with relative links to images.
 
 ```toml
 [widgets.graphviz-png]
@@ -1191,7 +1200,7 @@ input = sys.stdin.read()
 print(input)
 ```
 
-Attempting to wait for soupault to read your program’s output before it finishes reading soupault’s input
+Attempting to wait for soupault to read your program's output before it finishes reading soupault's input
 may cause a deadlock and hang the build process.
 There’s no plan to make communication with the child process asynchronous (that would require quite some trade-offs),
 so be careful to first read the input until the end, then write the output back.
@@ -1224,7 +1233,7 @@ Example:
 
 If `selector` is not specified, it uses the first `<h1>` as the title source element by default.
 
-The `selector` option can be a list. For example, `selector = ["h1", "h2", "#title"]` means “use the first `<h1>` if the page has it, else use `<h2>`, else use anything with `id="title"`, else use default”.
+The `selector` option can be a list. For example, `selector = ["h1", "h2", "#title"]` means 'use the first `<h1>` if the page has it, else use `<h2>`, else use anything with `id="title"`, else use default'.
 
 Optional `prepend` and `append` parameters allow you to insert some text before and after the title.
 
@@ -1268,7 +1277,7 @@ As usual, the container element can be anywhere in the page—you can have footn
 
 The `footnote_selector` option can be a list, in that case all elements matching any of those selectors will be considered footnotes.
 
-By default, the number in front of a footnote is a hyperlink back to the original location. You can disable it and make footnotes one way links with `back_links = false`.
+By default, the number in front of a footnote is a hyperlink back to the original location. You can disable it and make footnotes one-way links with `back_links = false`.
 
 You can create a custom “namespace” for footnotes and reference links using `link_id_prepend` and `back_link_id_append` options. This makes it easier to use custom styling for those elements.
 
@@ -1358,7 +1367,7 @@ Here is a sample ToC configuration:
 
 For the table of contents to work, every heading needs a unique `id` attribute that can be used as an anchor.
 
-If a heading has an `id` attribute, it will be used for the anchor. If it doesn’t, soupault has to generate one.
+If a heading has an `id` attribute, it will be used for the anchor. If it does not, soupault has to generate one.
 
 By default, if a heading has no `id`, soupault will generate a unique numeric identifier for it.
 This is safe, but not very good for readers (links are non-indicative) and for people who want to share direct links to sections (they will change if you add more sections).
@@ -1424,7 +1433,7 @@ The opposite of `insert_html`. Deletes an element that matches a selector. It ca
 
 You can limit it to deleting only empty elements with `only_if_empty = true`. Element is considered empty if there’s nothing but whitespace inside it.
 
-It's also possible to only delete elements that do not have certain children. For example, suppose you have a footnotes container
+It is also possible to only delete elements that do not have certain children. For example, suppose you have a footnotes container
 in the template and you want to delete it on pages where it doesn't contain any actual footnotes.
 You can do it with something like `when_no_child = "p.footnote"`.
 
@@ -1435,7 +1444,7 @@ You can do it with something like `when_no_child = "p.footnote"`.
   when_no_child = "p.footnote"
 ```
 
-By default, this widget removes all matching elements. It's possible to delete only the first matching element by setting `delete_all = false`.
+By default, this widget removes all matching elements. It is possible to delete only the first matching element by setting `delete_all = false`.
 
 #### wrap
 
@@ -1455,16 +1464,16 @@ By default it will wrap every element that matches the `selector`, but you can m
 
 ##### Wrapper selectors
 
-If there are multiple HTML elements in the wrapper snippet, it’s impossible to automatically decide where to insert the content.
-However, if there’s only one element, then asking the user to specify where to insert is redundant and annoying.
+If there are multiple HTML elements in the wrapper snippet, it is impossible to automatically decide where to insert the content.
+However, if there is only one element, then asking the user to specify where to insert is redundant and annoying.
 Soupault solves it with a `wrapper_selector` parameter.
 
 If your wrapper snippet has only one element, like `<div class="main-wrapper">`, then you can safely omit the `wrapper_selector` option.
 
-Soupault will check the element count in the wrapper snippet. Iff it has exactly one element, then it just inserts the content into it.
+Soupault will check the element count in the wrapper snippet. If it has exactly one element, then it just inserts the content into it.
 If not, it checks whether a `wrapper_selector` is specified.
 
-If you don’t specify it, you will get an error like this:
+If you do not specify it, you will get an error like this:
 
 ```
 [ERROR] Could not process page site/reference-manual.md: the wrapper has more then one child element but the wrapper selector is not specified
@@ -1481,8 +1490,7 @@ Example: wrap all `<article>` elements in `<div class="article-outer"> <div clas
   wrap_all = true
 ```
 
-If the snippet does not have an element matching the `wrapper_selector`, the build will fail. If there are multiple elements that match the selector,
-then soupault will pick the first one.
+If the snippet does not have an element matching the `wrapper_selector`, the build will fail. If there are multiple elements that match the selector, then soupault will pick the first one.
 
 #### relative_links
 
@@ -1515,7 +1523,7 @@ The default regex is meant to exclude links that are either:
 If you want to narrow the scope down, you can use the `only_target_regex` option instead.
 For example, with `only_target_regex = '^/[a-zA-Z0-9]'`, it will only rewrite links like `/style.css`.
 
-The `check_file` option is helpful is you have pages with unmarked relative links, e.g. there’s `about/index.html`
+The `check_file` option is helpful is you have pages with unmarked relative links. Suppose there is `about/index.html`
 with `<img src="selfie.jpg">` in it, and also `about/selfie.jpg` file. Arguably, it would be a good idea to use
 `<img src="./selfie.jpg">` to make it explicit where the file is, but it may be impractical to modify all old pages
 just to be able to use this widget.
@@ -1554,7 +1562,7 @@ like [ordered iteration](#Table.iter_ordered) and iterating over table with non-
 
 Plugins are treated like widgets and configured the same way.
 
-You can find ready to use plugins in the [Plugins](/plugins) section on this site.
+You can find a selection of useful plugins in the [Plugins](/plugins) section on this site.
 
 ###  Installing plugins
 
@@ -1723,7 +1731,7 @@ Example: `h = HTML.parse("<p>hello world<p>")`
 Parses a string into an HTML element tree.
 
 Note that this function never signals any parse errors. Just like web browsers,
-it will try to make some sense even out of the most patently invalid HTML
+it will try to make some sense even of the most patently invalid HTML
 and correct errors as much as it can.
 
 For best results, make sure that your HTML is valid, since invalid HTML
@@ -1813,7 +1821,7 @@ Checks if an element node matches given selector.
 The `elem` value must be an element node retrieved from an `document` with a function from the `HTML.select_*` fami>
 
 The reason you need to give that function both parent document and child element values is that
-otherwise composite selectors like `div > p` wouldn’t work.
+composite selectors like `div > p` would not work otherwise.
 
 ###### <function>HTML.matches_any_of_selectors(document, elem, selectors)</function>
 
@@ -1824,9 +1832,9 @@ and returns true if any of them would match.
 
 ###### <function>HTML.parent(elem)</function>
 
-Returns element’s parent.
+Returns element's parent.
 
-Example: if there’s an element that has a `<blink>` in it, insert a warning just before that element.
+Example: if there is an element that has a `<blink>` in it, insert a warning just before that element.
 
 ```lua
 blink_elem = HTML.select_one(page, "blink")
@@ -1859,7 +1867,7 @@ Table.iter_values(add_silly_class, children)
 
 ###### <function>HTML.child_count(elem)</function>
 
-Returns the number of element’s children (handy for checking if it has any).
+Returns the number of element's children (handy for checking if it has any).
 
 ###### <function>HTML.is_empty(elem)</function> (since 4.6.0)
 
@@ -1882,7 +1890,7 @@ tag_name = HTML.get_tag_name(link_of_pic)
 
 Changes the tag name of an element.
 
-Example: ”modernize” `<blink>` elements by converting them to `<span class="blink">`.
+Example: "modernize" `<blink>` elements by converting them to `<span class="blink">`.
 
 ```lua
 blinks = HTML.select(page, "blink")
@@ -1901,13 +1909,15 @@ end
 
 Example: `href = HTML.get_attribute(link, "href")`
 
-Returns the value of an element attribute.
+Returns the value of an element attribute. The first argument must be an element reference produced by `HTML.select`.
+
+If the attribute is missing, it returns `nil`.
 
 ###### <function>HTML.set_attribute(html_element, attribute, value)</function>
 
 Example: `HTML.set_attribute(content_div, "id", "content")`
 
-Sets an attribute value.
+Sets attribute value.
 
 ###### <function>HTML.append_attribute(html_element, attribute, value)</function>
 
@@ -1937,17 +1947,13 @@ If an element has `class` attribute, returns a list (i.e. a number-indexed table
 
 ###### <function>HTML.has_class(html_element, class_name)</function>
 
-Returns true is an element has given class.
+Returns true if an element has given class.
 
 ###### <function>HTML.add_class(html_element, class_name)</function>
 
 Example: `HTML.add_class(p, "centered")`
 
 Adds a new class. If an element has no classes, adds a `class` attribute in the process.
-
-###### <function>HTML.has_class(html_element, class_name)</function>
-
-Returns true if an element has given class.
 
 ###### <function>HTML.remove_class(html_element, class_name)</function>
 
@@ -2078,7 +2084,7 @@ so you don’t need to check for `nil` at every step and can safely chain calls 
 </module>
 
 <module name="Regex">
-Regular expressions used by this module are mostly Perl-compatible. However, capturing groups and back references are not supported.
+Regular expressions used by this module are mostly Perl-compatible. However, capturing groups and back references are not supported yet.
 
 ##### <function>Regex.match(string, regex)</function>
 
@@ -2096,7 +2102,7 @@ Returns a list of substrings matching a regex.
 
 Example: `s = Regex.replace("/foo/bar", "^/", "")`
 
-Replaces the first matching substring. It returns a new string and doesn’t modify the original.
+Replaces the first matching substring. It returns a new string and does not modify the original.
 
 ##### <function>Regex.replace_all(string, regex, string)</function>
 
@@ -2419,7 +2425,7 @@ Example: `Sys.random(1000)`
 
 Generates a random number from 0 to `max`.
 The RNG is seeded at soupault startup time so numbers are not completely predictable,
-but it's not cryptographically secure.
+but it is not cryptographically secure.
 
 ##### <function>Sys.is_unix()</function>
 
@@ -2500,7 +2506,7 @@ Note that there are valid JSON strings that parse to `nil` (e.g. `"null"`), so `
 
 ##### <function>JSON.to_string(value)</function>
 
-Converts a Lua value to JSON. The value doesn’t have to be a table, any value will work.
+Converts a Lua value to JSON. The value does not have to be a table, any value will work.
 
 It produces minified JSON.
 
@@ -2512,13 +2518,13 @@ Same as `JSON.to_string` but produces human-readable, indented JSON.
 
 <module name="TOML"> (since 3.0.0)
 
-Provides TOML parsing functions. This module doesn’t provide TOML <em>printing</em>
+Provides TOML parsing functions. This module does not provide TOML <em>printing</em>
 because TOML has a richer type system than Lua, and thus parsing it into a Lua table
 erases a lot of type information. For debugging purposes, you can use `JSON.pretty_print` instead.
 
 ##### <function>TOML.from_string(string)</function>
 
-Parses a TOML string and returns a table. Fails plugin execution if `string` isn’t a syntactically correct TOML document.
+Parses a TOML string and returns a table. Fails plugin execution if `string` is not a syntactically correct TOML document.
 
 ##### <function>TOML.unsafe_from_string(string)</function>
 
@@ -2528,12 +2534,12 @@ Same as `TOML.from_string`, but returns `nil` on parse errors. Parse error messa
 
 <module name="YAML"> (since 3.0.0)
 
-Provides YAML parsing functions. Doesn’t provide any printing functions as of now.
+Provides YAML parsing functions. Does not provide any printing functions as of now.
 For debugging purposes, you can use `JSON.pretty_print` instead.
 
 ##### <function>YAML.from_string(string)</function>
 
-Parses a YAML string and returns a table. Fails plugin execution if `string` isn’t a syntactically correct YAML document.
+Parses a YAML string and returns a table. Fails plugin execution if `string` is not a syntactically correct YAML document.
 
 ##### <function>YAML.unsafe_from_string(string)</function>
 
@@ -2545,7 +2551,7 @@ Same as `YAML.from_string`, but returns `nil` on parse errors. Parse error messa
 
 ##### <function>CSV.from_string(str)</function>
 
-Parses CSV data and returns it as a list (i.e., an int-indexed table) of lists.
+Parses CSV data and returns it as a list (i.e., an integer-indexed table) of lists.
 
 ##### <function>CSV.unsafe_from_string(str)</function>
 
@@ -2557,8 +2563,8 @@ Converts CSV data returned by `CSV.from_string` into a list of string-indexed ta
 The data variable must have at least two rows, the first row is assumed to be the header
 and used for field names.
 
-All rows must have the same number of columns. If a row is malformed, this function raises an exception.
-There is no unsafe equivalent of it in soupault.
+All rows must have the same number of columns. If a row is malformed, plugin execution fails with an error.
+There is no unsafe equivalent of this function that would ignore row errors.
 
 </module>
 
@@ -2570,7 +2576,7 @@ Returns a UNIX timestamp (seconds passed since 1970-01-01 00:00 UTC).
 
 ##### <function>Date.now_format(fmt)</function>
 
-Returns as a string representation of the current datetime in UTC.
+Returns a string representation of the current datetime in UTC.
 
 Example: `Date.now_format("%Y-%m-%d %H:%M")`
 
@@ -2625,7 +2631,7 @@ Returns a BLAKE2-B digest of `str`.
 
 ##### <function>Table.has_key(table, key)</function>
 
-Returns `nil` if and only if `table` does not have a field `key`. 
+Returns `nil` if `table` does not have a field `key`. 
 
 ##### <function>Table.get_key_default(table, key, default_value)</function>
 
@@ -2661,7 +2667,7 @@ Table.iter(show_pair, my_table)
 ##### <function>Table.iter_values(func, table)</function>
 
 Executes a function `func(value)` for every `(key, value)` pair in a table.
-Handy for iterating over tables where keys don’t have any real meaning.
+Handy for iterating over tables where keys do not have any real meaning.
 
 ##### <function>Table.iter_ordered(func, table)</function>
 
@@ -2687,7 +2693,7 @@ in arbitrary ordering.
 
 [Folds](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) a table using a `func(key, value, accumulator)` function.
 
-Since tables are not ordered collections, the question whether it’s a left or right fold is meaningless:
+Since tables are not ordered collections, the question whether it is a left or right fold is meaningless:
 you should make sure that your operation is commutative.
 
 ##### <function>Table.fold_values(func, table, initial_value)</function>
@@ -2726,7 +2732,7 @@ Removes the first `count` items from `table` and return them as a list.
 
 ##### <function>Table.chunks(table, size)</function>
 
-Splits the `table` into a list of chunks of up to `size` items.
+Splits `table` into a list of chunks of up to `size` items.
 
 ##### <function>Table.length(table)</function> (since 4.6.0)
 
@@ -2734,12 +2740,12 @@ Returns the table size (the number of items in it).
 
 ##### <function>Table.is_empty(table)</function> (since 4.6.0)
 
-Returns true if `table` doesn't contain any items.
+Returns true if `table` does not contain any items.
 
 ##### <function>Table.copy(table)</function> (since 4.6.0)
 
 Returns a shallow copy of `table`.
-If a value is mutable (like a string or a sub-table) and it's mutated in the original table,
+If a value is mutable (like a string or a sub-table) and it is mutated in the original table,
 that change will also be reflected in all copies.
 
 Note: there is no deep copy functionality in Lua-ML or soupault's API yet.
@@ -2755,7 +2761,7 @@ Contains functions for working with Lua values in ways that PUC-Rio's Lua design
 Returns a string representation of a Lua value for debug output.
 
 As of soupault 4.0.0, it's fairly limited. For example,
-tables just produce `"table"`. The main advantage is that it's safe to use with any values.
+tables just produce `"table"`. The main advantage is that it is safe to use with any values.
 Lua's `str()` will fail for `nil`, tables etc. so it can't be used for logging values in debug prints.
 
 For dumping the contents of tables, you may want to use [`JSON.pretty_print()`](#JSON.pretty_print) instead.
