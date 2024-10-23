@@ -6,13 +6,13 @@
 
 <h3 id="other-ssgs">How does soupault compare to other static site generators?</h3>
 
-Like Hugo or Zola, soupault is available as a single self-contained executable (~17MB),
-so it's trivial to install and upgrade, and will not break easily.
+Like Hugo or Zola, soupault is available as a single self-contained executable (~21MB),
+so it's trivial to install, upgrade to a new version, and downgrade to an older version if necessary.
 
 Like Jekyll or Nikola, it's extensible with a scripting language
 and allows plugins to redefine its built-in features.
 
-Unlike any other SSG, it works on the HTML element tree level. This means that it:
+Unlike any other SSG, it works on the HTML element tree level. This means:
 
 * supports any format that can be converted to HTML;
 * features like [ToC](/reference-manual/#toc-widget) work consistently across all formats;
@@ -37,8 +37,9 @@ You can specify as many preprocessors as you want.
 <h3 id="processor-mode">Do I need to change my website to start using soupault?</h3>
 
 Not necessarily. With many other website generators, you need to create a theme/template in their
-own format to start using them. However, soupault can work also as an HTML processor for existing
-websites, so it's much easier to give it a try.
+own format to start using them. However, soupault can also work as an HTML processor,
+so you can try out its functionality on an existing website
+or use it in conjunction with a HTML generator.
 
 <h3 id="html-processor">Is soupault just an HTML processor?</h3>
 
@@ -54,7 +55,7 @@ in completely arbitrary ways that other SSGs do not support.
 Soupault does not have a built-in content model. Instead, it allows you to define your own.
 You can make a blog, a wiki, or anything else you want.
 
-If you want to quickly start a blog with soupault, you can use the [soupault-blog](https://github.com/PataphysicalSociety/soupault-blueprints-blog) application.
+If you want to quickly start a blog with soupault, you can use the [soupault-blog](https://github.com/PataphysicalSociety/soupault-blueprints-blog) blueprint.
 It comes with a blog content model and relevant plugins (post reading time, Atom feeds...) ready to use.
 
 <h3 id="performance">Is soupault fast?</h3>
@@ -69,11 +70,11 @@ If you add an external Markdown preprocessor (I tested with `cmark --smart --uns
 or ~3.2s with logging disabled.
 
 All in all, the UNIX-way approach with delegating some processing steps to external programs does have its cost,
-but for all but the largest websites it's not going to be a problem.
+but it's only going to be a problem for really large websites.
 
 <h3 id="themes">Are there themes?</h3>
 
-The problem with typical SSG/CMS "themes" is that they aren't really themes—most often they contain
+The problem with typical SSG/CMS "themes" is that they aren't really themes — most often they contain
 a mix of formatting, styling, and _logic_. Essentially, they are _applications_ written on top of a _framework_.
 
 One reason why many SSG frameworks rely heavily on theme catalogs is that writing a working website from scratch
@@ -82,7 +83,7 @@ is not trivial. The reason for that is heavy use of templates that are by defini
 Working at the HTML element tree level allows soupault to decouple the logic from presentation to a much greater extent,
 so it needs themes less.
 
-However, there are some ready to use blueprints, such as blog..
+However, there are some ready to use [blueprints](/blueprints).
 
 <h3 id="template-processor">Does soupault use a template processor?</h3>
 
