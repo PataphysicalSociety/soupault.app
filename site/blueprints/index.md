@@ -45,12 +45,3 @@ you can use it for inspiration.
 
 <img src="blueprint_book.png" alt="book blueprint screenshot with a chapters menu and a sample chapter">
 
-## Digital Garden
-
-This is a blueprint implementing digital garden, combination of blog and wikis. Inspired from [fromjason.xyz](https://fromjason.xyz) garden.
-
-You can see this template in action at [Digital Garden in Soupault](https://upgraded-octo-computing-machine.vercel.app/).
-
-* GitHub: <github>multidecay/soupault-digital-garden</github>
-
-<img src="blueprint_digital_garden.png" alt="digital garden homepage screenshoot with greeting and recent content">
