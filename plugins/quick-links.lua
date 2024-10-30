@@ -11,6 +11,7 @@
 -- All elements also support a short form where the content becomes the link data:
 --   <wikipedia>Philippe Soupault</wikipedia>
 --   <github>dmbaturin/soupault</github>
+--   <gitlab>dmbaturin</gitlab>
 --   <sourcehut>~dmbaturin/soupault</sourcehut>
 --   <mastodon>@dmbaturin@mastodon.social</mastodon>
 --   <twitter>@dmbaturin</twitter> -- "@" is optional
@@ -161,7 +162,7 @@ function make_twitter_link(element)
 end
 
 elements = HTML.select_all_of(page, {
-  "wikipedia", "github", "sourcehut", "codeberg", "mastodon", "twitter", "linkedin", "rfc"
+  "wikipedia", "github", "gitlab", "sourcehut", "codeberg", "mastodon", "twitter", "linkedin", "rfc"
 })
 
 local index = 1
@@ -173,6 +174,8 @@ while elements[index] do
     new_elem = make_wikipedia_link(elem)
   elseif (tag_name == "github") then
     new_elem = make_simple_link(elem, "project", "https://github.com/%s")
+  elseif (tag_name == "gitlab") then
+    new_elem = make_simple_link(elem, "project", "https://gitlab.com/%s")
   elseif (tag_name == "sourcehut") then
     -- SourceHut supports multiple version control systems as well as
     -- having a project page without a subdomain.
