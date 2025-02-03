@@ -2820,7 +2820,7 @@ There is no automatic discovery for hooks, they must always be configured explic
 Like widgets, hooks that run on every page can be limited to a subset of pages using any <term>limiting option</term>.
 They can also be limited to [build profiles](#build-profiles).
 
-<h3 id="hooks-pre-process">Startup</h3>
+<h3 id="hooks-startup">Startup</h3>
 
 The `startup` hook runs once, on soupault startup, before any pages are processed.
 
