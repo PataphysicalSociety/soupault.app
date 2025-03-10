@@ -24,8 +24,8 @@ post lists, tags, Atom feeds (global and per-tag).
 
 You can see a modified version at [baturin.org/blog](https://baturin.org/blog).
 
-* Codeberg: <codeberg>PataphysicalSociety/soupault-blueprints-blog</codeberg>
-* GitHub: <github>PataphysicalSociety/soupault-blueprints-blog</github>
+* Codeberg: <codeberg>PataphysicalSociety/soupault-blueprints-blog/</codeberg>
+* GitHub: <github>PataphysicalSociety/soupault-blueprints-blog/</github>
 
 <img src="blueprint_blog.png" alt="blog blueprint screenshot with an index of posts">
 
@@ -34,14 +34,14 @@ You can see a modified version at [baturin.org/blog](https://baturin.org/blog).
 This is a blueprint for online books comparable to [mdBook](https://rust-lang.github.io/mdBook/).
 
 The sidebar with a list of chapters is generated completely automatically. There's no need to write a ToC/summary of the book by hand.
-Chapter numbers are taken from file names. In the sample setup, there are book/00_preface.md and book/01_sample_chapter.md.
+Chapter numbers are taken from file names. In the sample setup, there are `book/00_preface.md and book/01_sample_chapter.md`.
 
 For a live version, check out the [OCaml From the Ground Up](https://ocamlbook.org) book.
 It also features automatic type checking for OCaml code snippets, so if you are writing a programming book,
 you can use it for inspiration.
 
-* Codeberg: <codeberg>PataphysicalSociety/soupault-blueprints-book</codeberg>
-* GitHub: <github>PataphysicalSociety/soupault-blueprints-book</github>
+* Codeberg: <codeberg>PataphysicalSociety/soupault-blueprints-book/</codeberg>
+* GitHub: <github>PataphysicalSociety/soupault-blueprints-book/</github>
 
 <img src="blueprint_book.png" alt="book blueprint screenshot with a chapters menu and a sample chapter">
 

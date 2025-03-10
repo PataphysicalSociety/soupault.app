@@ -11,14 +11,14 @@ over your website generation process.
 
 If you are already familiar with other static site generators, check out the
 [comparison with Hugo, Zola, and Jekyll](/tips-and-tricks/comparison/).
-You may also want to read the [FAQ](/tips-and-tricks/faq).
+You may also want to read the [FAQ](/tips-and-tricks/faq/).
 
 <h2 id="quick-start">Quick start</h2>
 
 Soupault is very simple to [install](/install/): if you are on Linux (x86-64), macOS, or Microsoft Windows,
 you can just download an executable.
 
-If you are starting a blog or an online book, you can grab a ready-to-use [blueprint](/blueprints).
+If you are starting a blog or an online book, you can grab a ready-to-use [blueprint](/blueprints/).
 
 If you want to make a custom setup, read a guide to get a feel of soupault's workflow:
 
@@ -159,4 +159,4 @@ So far just me, [Daniil Baturin](https://baturin.org), but everyone is welcome t
 It has grown out of the bunch of ad hoc scripts that used to power my own website, and then I thought I can as well make it usable
 for everyone who finds other generators too annoying or too limiting.
 
-Feel free to [contact](/support) me.
+Feel free to contact me for [support](/support/).
