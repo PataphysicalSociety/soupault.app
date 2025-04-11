@@ -1631,21 +1631,13 @@ Plugins have access to the following global variables:
   <dd>The index entry of the current page.</dd>
   <dt>site_dir, build_dir</dt>
   <dd>Convenience variables for the corresponding config options.</dd>
-  <dt>persistent_data</dt>
-  <dd>A table for values supposed to be persistent between different plugin runs.</dd>
-  <dt>global_data</dt>
-  <dd>A table for values shared between all plugins and hooks.</dd>
 </dl>
 
 <h4 id="plugin-persistent-data">Persistent data</h4>
 
-All of these variables _except for `persistent_data` and `global_data`_ are injected into the interpreter environment every time a plugin is executed.
+All of these variables are injected into the interpreter environment every time a plugin is executed.
 If you modify their values, it will only affect the instance of the plugin that is currently running. When soupault finishes processing the current page
 and moves on to a new page, the plugin will start in a clean environment.
-
-The `persistent_data` and `global_data` variables are exception. On soupault startup, their value is set to an empty table.
-When a plugin finishes running, soupault will retrieve it from the Lua interpreter state and pass it to the next plugin run.
-This can be used to avoid running some expensive calculations more than once, or for gathering data from all pages.
 
 ### Plugin API
 
