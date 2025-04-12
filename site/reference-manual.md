@@ -2726,7 +2726,7 @@ They have access to the same API functions as plugins, but their execution envir
 are somewhat different and vary between hooks.
 
 Hooks are configured in the `hooks` table. The following hooks are supported as of soupault 4.9.0:
-`startup`, `pre-parse`, `pre-process`, `post-index`, `render`, `save`, `post-save`, and `post-build`.
+`startup`, `pre-parse`, `pre-process`, `post-index`, `render`, `save`, and `post-build`.
 
 Two of those hooks are global: `startup` and `post-build` — they run before the build process is started
 and when it's finished, respectively. All other hooks run for every page.
@@ -2949,38 +2949,6 @@ For a trivial example, here’s how to just write the HTML to the default output
 [hooks.save]
   lua_source = '''
     Sys.write_file(target_file, page_source)
-  '''
-```
-
-Soupault takes back the following variables:
-
-* `global_data`
-
-<h3 id="hooks-post-save">Post-save</h3>
-
-The `post-save` hook runs after a page file is written to disk.
-
-It has the following variables in its environment:
-
-* `index_entry` — the complete index entry for the page (including internal variables and custom variables that hooks might have set).
-* `site_index` — the complete site index.* `site_index` — the complete site index.
-* `page_file` — path to the page source file.
-* `target_file` — full path to the output file for the generated page.
-* `target_dir` — path to the generated page output directory.
-* `config` (aka `hook_config`) — the hook config table.
-* `soupault_config` — the complete soupault config.
-* `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
-* `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
-* `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
-* `global_data` — the global shared data table.
-
-For a trivial example, here’s how to output generated file size using `du` (on UNIX-like systems):
-
-```toml
-[hooks.post-save]
-  lua_source = '''
-    page_size = Sys.get_program_output(format("du -h %s", target_file))
-    Log.info(format("Page size: %s", page_size))
   '''
 ```
 
