@@ -961,6 +961,33 @@ Since soupault 2.7.0, it is possible to disable a widget by adding `disabled = t
 
 These widgets include something into your page: a file, a snippet, or output of an external program.
 
+<h4 id="inclusion-widget-parse-options">HTML parsing options</h4>
+
+All widgets in this family can either parse the received data as HTML and include it in the element tree,
+or simply include it as text.
+
+The default behavior is to parse it. If you want to include the data as text, set the `parse` option to `false`.
+
+```toml
+parse = false
+```
+
+You can also specify an _HTML parsing context_. In most cases that is not necessary — soupault can infer the context.
+But in rare cases, you may need to specify it to prevent the HTML parser from attempting to correct the HTML.
+For example, a fragment that starts with `<link rel="stylesheet" href="...">` is not valid for an HTML `<body>`,
+and the parser may mangle it to make it valid. If you want to include a fragment in the `<head>`,
+that behavior would be wrong.
+
+You can prevent that by telling soupault what tag your fragment is for:
+
+```toml
+parse = true
+html_context = "head"
+```
+
+You can technically specify any tag name in that option, although only a few have a real effect,
+such as `body`, `head`, `table`, or `math`.
+
 <h4 id="include-widget">include</h4>
 
 The include widget simply reads a file and inserts its content into some element.
