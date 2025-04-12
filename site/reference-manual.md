@@ -207,10 +207,9 @@ Those options are not mutually exclusive and you can use them both at the same t
 Starting from 4.4.0, soupault supports caching the output of [page preprocessors](#page-preprocessors)
 and commands called by [preprocess_element](#preprocess-element-widget) widgets.
 
-Caching is disabled by default because many websites will not benefit from it at all.
-However, if you use external preprocessors extensively, it can make repeated builds a few times faster.
+If you use external preprocessors extensively, it can make repeated builds a few times faster.
 
-This is how to enable it:
+This is the implicit default configuration:
 
 ```toml
 [settings]
