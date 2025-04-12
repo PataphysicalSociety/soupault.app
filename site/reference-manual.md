@@ -2752,11 +2752,6 @@ It has the following variables in its environment:
 * `soupault_config` — the complete soupault config.
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
-* `global_data` — the global shared data table.
-
-Soupault takes back the following variables:
-
-* `global_data`
 
 <h3 id="hooks-pre-parse">Pre-parse</h3>
 
@@ -2770,7 +2765,6 @@ It has the following variables in its environment:
 * `soupault_config` — the complete soupault config.
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
-* `global_data` — the global shared data table.
 
 For example, this website uses a pre-parse hook to globally replace the `$SOUPAULT_RELEASE$` string
 with the latest soupault release version from custom options.
@@ -2799,14 +2793,12 @@ It has the following variables in its environment:
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
 * `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
-* `global_data` — the global shared data table.
 
 Soupault takes back the following variables:
 
 * `page`
 * `target_file`
 * `target_dir`
-* `global_data`
 
 This means you can adjust not only the element tree of the page, but also change the output path for it.
 
@@ -2861,13 +2853,11 @@ It has the following variables in its environment:
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
 * `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
-* `global_data` — the global shared data table.
 
 The following variables are taken back by soupault:
 
 * `index_fields`
 * `page`
-* `global_data`
 
 For example, if you store post tags like `<tags>foo, bar, baz</tags>`, you can convert tag strings to lists
 using this hook:
@@ -2907,12 +2897,10 @@ It has the following variables in its environment:
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
 * `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
-* `global_data` — the global shared data table.
 
 Soupault takes back the following variables:
 
 * `page_source` — string representation of the page element tree.
-* `global_data`
 
 For example, this is how you simply pretty-print the page:
 
@@ -2941,7 +2929,6 @@ It has the following variables in its environment:
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
 * `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
-* `global_data` — the global shared data table.
 
 For a trivial example, here’s how to just write the HTML to the default output file:
 
@@ -2951,10 +2938,6 @@ For a trivial example, here’s how to just write the HTML to the default output
     Sys.write_file(target_file, page_source)
   '''
 ```
-
-Soupault takes back the following variables:
-
-* `global_data`
 
 <h3 id="hooks-post-build">Post-build</h3>
 
@@ -2970,15 +2953,13 @@ It has the following variables in its environment:
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
 * `build_dir` — the output directory from `settings.build_dir` or the `--build-dir` option if present.
 * `site_index` — the complete site index.
-* `global_data` — the global shared data table.
 
 Example:
 
 ```toml
 [hooks.post-build]
   lua_source = '''
-    Log.debug("The final state of globao_data:")
-    Log.debug(JSON.to_string(global_data))
+    Log.debug("Number of pages in the site index: " .. (Table.length(site_index)))
   '''
 ```
 
