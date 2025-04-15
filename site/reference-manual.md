@@ -93,21 +93,26 @@ Note that inside double quotes, the backslash is an escape character, so you sho
 
 Soupault has two distinct modes: the _website generator mode_ and the _HTML processor mode_.
 
-In the website generator mode (the default), soupault takes a page "template" — an HTML file devoid of content, parses it into an element tree, and locates the content container element inside it (defined by the `settings.default_content_selector` option).
+In the website generator mode (the default), soupault takes a page "template" — an HTML file devoid of content, parses it into an element tree,
+and locates the content container element inside it (defined by the `settings.default_content_selector` option).
 
-By default, the content container is `<body>`, but you can use any selector, for example: `div#content` (a `<div id="content">` element), `article` (the HTML5 `<article>` element), `#post` (any element with `id="post"`)
-or any other valid CSS selector.
+By default, the content container is `<body>`, but you can use any selector, for example: `div#content` (a `<div id="content">` element),
+`article` (the HTML5 `<article>` element), `#post` (any element with `id="post"`) or any other valid CSS selector.
 
 Then it traverses your site directory where page source files are stored (by default, `site`), takes a page file, and parses it into an HTML element tree too.
-If the file is not a complete HTML document (doesn not have an `<html>` element in it), soupault inserts it into the content container element of the template. If it is a complete page, then it goes straight to the next step.
+If the file is not a complete HTML document (doesn not have an `<html>` element in it), soupault inserts it into the content container element of the template.
+If it is a complete page, then it goes straight to the next step.
 
-The new HTML tree is then passed to widgets — HTML rewriting modules that manipulate it in different ways. Widgets can be built-in or can be implemented by plugins.
+The new HTML tree is then passed to widgets — HTML rewriting modules that manipulate it in different ways.
+Widgets can be built-in or can be implemented by plugins.
 
-Processed pages are then written to disk, into a directory structure that mirrors your source directory structure.
+Soupault may also [extract metadata from the website](#metadata-extraction-and-rendering), if that feature is enabled.
+Unlike most static site generators, soupault doesn't use front matter and doesn't have a built-in content model,
+but allows you to extract metadata from HTML itself and map content model fields to CSS selectors.
+It can then render that metadata using a template, a Lua plugin, or an external helper.
 
-Here is a simplified flowchart:
-
-<img src="/images/soupault_flowchart.png" alt="soupault flowchart">
+Processed pages are then written to disk, into a directory structure that normally mirrors your source directory structure,
+although you can also tell it to use a different path, using the [pre-process hook](#hooks-pre-process).
 
 ## Basic configuration
 
