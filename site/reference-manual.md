@@ -1040,7 +1040,14 @@ Simple example: page generation timestamp.
   widget = "exec"
   selector = "#generated-on"
   command = "date -R"
-  parse = true
+
+  # There're no HTML tags in the output of `date -R`
+  # so there's no reason to parse it as HTML
+  parse = false
+
+  # Set to "unix" or "windows" if you want the widget
+  # to run only on specific operating systems
+  # os_family = 
 ```
 
 <h4 id="preprocess-element-widget">preprocess_element</h4>
@@ -1058,7 +1065,13 @@ For example, this is how you can run the content of `<pre>` elements through `ca
   widget = "preprocess_element"
   selector = "pre"
   command = "cat -n"
+
+  # Prevent the widget from mangling preformatted text
   parse = false
+
+  # Set to "unix" or "windows" if you want the widget
+  # to run only on specific operating systems
+  # os_family = 
 ```
 
 You can pass element metadata to the program for better control.
