@@ -89,6 +89,14 @@ So, if you are on Windows, remember to adjust the paths if needed. For example:
 
 Note that inside double quotes, the backslash is an escape character, so you should either use single quotes for such paths (`'scripts\myscript.bat'`) or use a double backslash (`"scripts\\myscript.bat"`).
 
+#### ANSI colors
+
+Since soupault 5.0.0, ANSI colors are enabled by default in the output. Windows Terminal supports them out of the box,
+so if you are using Windows Terminal, logs should be more easily readable for you now.
+
+If you are using an older built-in terminal for `cmd.exe` or PowerShell, you can either enable ANSI colors
+in them in Windows settings or disable coloring in soupault using the `NO_COLOR` environment variable.
+
 ## Overview
 
 Soupault has two distinct modes: the _website generator mode_ and the _HTML processor mode_.
