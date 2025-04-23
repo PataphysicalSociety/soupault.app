@@ -1509,6 +1509,53 @@ just to be able to use this widget.
 In that case you can set `check_file = true` and this widget will rewrite such links only if there is no such file
 in the directory with the page.
 
+#### element_template
+
+This widget takes a template, renders it using data from an HTML element, and replaces the element
+with the rendered template.
+
+Its goal is to simplify creating "shortcodes". For example, suppose you want to add a shortcut
+for embedding YouTube videos. You can add the following configuration:
+
+```toml
+[widgets.youtube-embed]
+  widget = "element_template"
+  selector = "youtube"
+  template = '''
+    {# Enable iframe border by default, if not given #}
+    {% if not border %}
+      {% set border = 1 %}
+    {% endif %}
+
+    <div class="youtube-video" style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
+      <iframe src="https://www.youtube.com/embed/{{content}}"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+        title="{{title}}"
+        frameborder="{{border}}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  '''
+```
+
+Now, suppose you want to embed "Sintel" by Blender Foundation in your page.
+You only need to write `<youtube title="Sintel">eRsGyueVLvQ</youtube>` and it will be translated
+to an actual YouTube embed.
+
+In the case above, the template environment will be:
+
+```json
+{
+  "title": "Sintel",
+  "content": "eRsGyueVLvQ"
+}
+```
+
+All element attributes are added to the environment, and the inner HTML is placed in a variable named `content`.
+
+If you want to use an attribute called `content`, you can redefine the name of the variable that stores
+element content using the `content_key` option.
+
 #### absolute_links
 
 This widget is prepends a prefix to every internal link. A polar opposite of the `relative-links` widget.
