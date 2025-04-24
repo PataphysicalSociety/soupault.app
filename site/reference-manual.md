@@ -7,10 +7,10 @@
 
 # Reference manual
 
-This manual applies to soupault $SOUPAULT_RELEASE$.
+This manual applies to soupault $SOUPAULT_RELEASE.
 Earlier versions may not support some of the features described here and may have different configuration syntax.
 
-If you are running soupault older than $SOUPAULT_RELEASE$, consider upgrading to the latest version.
+If you are running soupault older than $SOUPAULT_RELEASE, consider upgrading to the latest version.
 
 ## Installation
 
