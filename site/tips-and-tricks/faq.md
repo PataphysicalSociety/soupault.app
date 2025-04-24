@@ -14,7 +14,7 @@ and allows plugins to redefine its built-in features.
 
 Unlike any other SSG, it works on the HTML element tree level. This means:
 
-* supports any format that can be converted to HTML;
+* it supports any format that can be converted to HTML;
 * features like [ToC](/reference-manual/#toc-widget) work consistently across all formats;
 * it offers unique capabilities such as piping HTML element content through an external program.
 
@@ -22,24 +22,26 @@ For details, check out the [comparison table](/tips-and-tricks/comparison/).
 
 <h3 id="page-format-support">What markup languages/Markdown flavors does soupault support?</h3>
 
-The only built-in supported format is HTML. However, you can automatically import
-pages in any format if you install and configure a [convertor](/reference-manual/#page-preprocessors) for it.
+Soupault has built-in support for HTML and Markdown.
 
-For example, if you want `*.md` files to be processed with [Pandoc](https://pandoc.org) in CommonMark mode:
+However, you can write pages in any format if you install and configure a [convertor](/reference-manual/#page-preprocessors) for it.
+
+For example, if you want `*.rst` files to be processed with [Pandoc](https://pandoc.org),
+you can associate this command with the `rst` extension in the configuration file:
 
 ```toml
 [preprocessors]
-  md = 'pandoc -f commonmark+smart -t html'
+  md = 'pandoc -f rst -t html'
 ```
 
-You can specify as many preprocessors as you want.
+You can specify as many preprocessors for different file extensions as you want.
 
 <h3 id="processor-mode">Do I need to change my website to start using soupault?</h3>
 
 Not necessarily. With many other website generators, you need to create a theme/template in their
 own format to start using them. However, soupault can also work as an HTML processor,
 so you can try out its functionality on an existing website
-or use it in conjunction with a HTML generator.
+or use it in conjunction with a HTML generator. 
 
 <h3 id="html-processor">Is soupault just an HTML processor?</h3>
 
@@ -65,9 +67,6 @@ It's subjective, but here are some tests I once ran on an 8th gen Intel NUC mach
 but the initial build takes maybe a couple of ms longer. For machines with magnetic drives reading pages from disk may take longer.</fn>
 
 Assembling 1000 HTML pages (~4kbytes each) takes ~2s (with `verbose = true`) or ~1.6s (with progress logging disabled).
-
-If you add an external Markdown preprocessor (I tested with `cmark --smart --unsafe`), it takes ~3.5s in the verbose mode
-or ~3.2s with logging disabled.
 
 All in all, the UNIX-way approach with delegating some processing steps to external programs does have its cost,
 but it's only going to be a problem for really large websites.
@@ -101,6 +100,10 @@ No. Instead, soupault allows you to write "fake" HTML elements and make them rea
 It can be as simple as translating `<wikipedia lang="en">HTML</wikipedia>` to `<a href="https://en.wikipedia.org/wiki/HTML>HTML</a>`
 or much more complex, e.g. you can create hyperlinked glossaries. See examples in the [Augmented HTML](/plugins/#augmented-html)
 plugin catalog category.
+
+Since soupault 5.0.o, there's [`element_template` widget](/reference-manual/#element-template)
+that allows you to just write a template that will be rendered using data from intermdiate HTML elements
+and will replace them in the element tree.
 
 <h2 id="usage">Using soupault</h2>
 
@@ -151,9 +154,11 @@ is up to the user.
 <h3 id="assets">How to add assets (pictures, CSS...)</h3>
 
 You can just drop files in the `site/` directory together with pages. Files with extensions
-matching the `settings.page_file_extensions` option are considered pages and processed, by default that's
-`["html", "htm", "md", "rst", "adoc"]`. All other files are just copied to the `build/`
-directory unchanged.
+matching the `settings.page_file_extensions` option are considered pages and processed,
+and so are files from `settings.markdown_extensions` and any files that have configured preprocessors.
+
+All other files are either just copied to the `build/` directory unchanged or processed using
+[asset processors](/reference-manual/#asset-processing).
 
 <h3 id="sections">How to create a site section?</h3>
 
@@ -195,7 +200,7 @@ to `templates/main.html`, find that option in `soupault.toml`,
 and set `settings.default_content_selector = "div#content"`.
 </p>
 
-<h3 id="unique-layout">How to create a page with unique layout?</h3>
+<h3 id="unique-layout">How to create a page with a unique layout?</h3>
 
 Using a template saves time and allows easily changing the website layout. However, what if you want to make a page
 with a unique layout different from the template?

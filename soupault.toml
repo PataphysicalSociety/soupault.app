@@ -12,6 +12,8 @@
 
   page_file_extensions = ["htm", "html", "md"]
 
+  markdown_extensions = ["md"]
+
   ignore_extensions = ["draft"]
 
   plugin_discovery = true
@@ -19,15 +21,12 @@
 
   caching = true
 
-  soupault_version = "4.11.0"
-
-[preprocessors]
-  md = 'pandoc -f commonmark+smart -t html --no-highlight --lua-filter=helpers/cmark-code-blocks.lua'
+  soupault_version = "5.0.0"
 
 [custom_options]
   site_url = "https://soupault.app"
 
-  latest_soupault_version = "4.11.0"
+  latest_soupault_version = "5.0.0"
 
 [index]
   index = true

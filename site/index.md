@@ -35,10 +35,10 @@ Soupault treats HTML as a first-class format and that enables many use cases and
 ### Store pages in any format
 
 Soupault works with HTML element trees, so you can store your pages in any format
-that can be converted to HTML.
+that can be converted to HTML — all features will work the same no matter what the source format was.
 
-You can configure HTML conversion commands for different file extensions and soupault will call them
-automatically when it loads your pages.
+There's built-in Markdown support, but you can also configure HTML conversion commands for different file extensions
+and soupault will call them automatically when it loads your pages.
 
 Whatever formats and tools you want to use, you can easily do it. Want to use [cmark](https://github.com/commonmark/cmark) for Markdown,
 [pandoc](https://pandoc.org) for reStructuredText, and [Asciidoctor](https://asciidoctor.org/) for AsciiDoc? That's simple:

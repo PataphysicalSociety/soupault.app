@@ -1,7 +1,7 @@
 <h1>Comparison with other static site generators</h1>
 
 <p>
-This table was compiled in the spring of 2022 (Soupault 4.0.0, Jekyll 4.2.1, Hugo 0.91.2, Zola 0.15.3).
+This table was compiled in the spring of 2025 (Soupault 5.0.0, Jekyll 4.4.1, Hugo 0.146.7, Zola 0.20.0).
 If you spot outdated or incorrect information, let me know!
 </p>
 
@@ -19,6 +19,13 @@ If you spot outdated or incorrect information, let me know!
     <td>Yes</td>
     <td>No</td>
     <td>Yes</td>
+  </tr>
+  <tr>
+    <th>Installed size<fn id="installed-size">On Linux for x86-64, may be slightly different for other platforms.</fn></th>
+    <td>50 MB</td>
+    <td>40 MB</td>
+    <td>~3 MB by itself, ~57 MB with the Ruby runtime and dependencies</td>
+    <td>24 MB</td>
   </tr>
   <tr>
     <th>Extensibility</th>
@@ -41,20 +48,20 @@ If you spot outdated or incorrect information, let me know!
   <tr>
     <th>Page formats</th>
     <td>
-      Markdown, Org Mode (built-in); AsciiDoc, RST, Pandoc (external helpers, hardcoded<fn id="hugo-helpers">For some of the helpers, Hugo offers a limited range
+      Markdown (built-in or Pandoc), Org Mode (built-in); AsciiDoc, reStructuredText (external helpers, hardcoded<fn id="hugo-helpers">For some of the helpers, Hugo offers a limited range
       of built-in options, e.g., for AsciiDoc (see <a href="https://github.com/gohugoio/hugo/blob/master/markup/asciidocext/internal/converter.go">markup/asciidocext/internal/converter.go</a>).
       However, it's impossible to add new helpers or pass new options to existing helpers without modifying the Hugo source code.</fn>)
     </td>
     <td>Markdown</td>
     <td>Markdown (built-in), any (via <a href="https://jekyllrb.com/docs/plugins/converters/">convertor plugins</a>)</td>
-    <td>HTML (built-in), any (via <a href="/reference-manual/#page-preprocessors">page preprocessors</a>)</td>
+    <td>HTML (built-in), Markdown (built-in), any (via <a href="/reference-manual/#page-preprocessors">page preprocessors</a>)</td>
   </tr>
   <tr>
     <th>Markdown processor</th>
-    <td> <a href="https://github.com/yuin/goldmark/">GoldMark</a>, <a href="https://github.com/russross/blackfriday">BlackFriday</a> </td>
+    <td> <a href="https://github.com/yuin/goldmark/">GoldMark</a> (built-in), pandoc (hardcoded options)</td>
     <td> <a href="https://crates.io/crates/pulldown-cmark">pulldown-cmark</a> </td>
     <td> <a href="https://kramdown.gettalong.org/">kramdown</a> (built-in), any (via plugins)</td>
-    <td>No built-in, any (via page preprocessors)</td>
+    <td><a href="https://erratique.ch/software/cmarkit">Cmarkit</a> (built-in), any (via page preprocessors)</td>
   </tr>
   <tr>
     <th>Config format</th>
