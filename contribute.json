@@ -1,0 +1,27 @@
+{
+  "name": "Soupault",
+  "description": "Soupault is a tool that helps you create and manage static websites.",
+  "repository": {
+    "clone": "git@github.com:dmbaturin/soupault.git",
+    "license": "MIT",
+    "type": "git",
+    "url": "https://github.com/dmbaturin/soupault"
+  },
+  "bugs": {
+    "list": "https://github.com/dmbaturin/soupault/issues",
+    "report": "https://github.com/dmbaturin/soupault/issues/new"
+  },
+  "participate": {
+    "docs": "https://soupault.app/reference-manual/",
+    "home": "https://soupault.app/support/",
+    "irc": "ircs://irc.libera.chat:6697/soupault",
+    "mailing-list": "https://lists.sr.ht/~dmbaturin/soupault"
+  },
+  "keywords": [
+    "static-site-generator",
+    "web",
+    "lua",
+    "ocaml",
+    "html-processor"
+  ]
+}
