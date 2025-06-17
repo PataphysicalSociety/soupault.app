@@ -519,23 +519,13 @@ and allows you to automatically generate index pages for existing websites, with
 What you do with extracted metadata is up to you. You can simply export it to JSON for further processing, like generating an RSS/Atom feed,
 or creating taxonomy pages with an external script. Or you can tell soupault to generate HTML from the index data. You can also combine both approaches.
 
-Metadata extraction is disabled by default. You need to enable it first:
-
-```toml
-[index]
-  index = true
-```
-
+Metadata extraction is always enabled in the webgenerator mode but disabled in the HTML processor mode.
 ### Index settings
 
 These are the basic settings and their default values:
 
 ```toml
 [index]
-  # Whether to extract metadata and generate indices or not
-  # Default is false, set to true to enable
-  index = false
-
   # Which index field to use as a sorting key.
   # There is no default because there’s no built-in content model: it’s up to you.
   # sort_by =
@@ -569,6 +559,13 @@ These are the basic settings and their default values:
   # However, you can make if fail the build if it encounters invalid values using this option:
   strict_sort = false
 
+  # Whether to always strip HTML tags from field data
+  # You can also enable that for individual fields.
+  # The default is false.
+  strip_tags = false
+
+  # If you want widget outputs to serve as index data inputs,
+  # you can schedule those widgets to run before metadata extraction.
   # extract_after_widgets = []
 ```
 
@@ -610,6 +607,8 @@ As you can see from the `date` field definition, it is possible to make soupault
 rather than its content. The `fallback_to_content` option defines what soupault will do if an element has
 no such attribute. With `fallback_to_content = true` it will extract the element content instead.
 If it is false, it will leave the field undefined.
+
+It is also possible to strip HTML tags from specific fields by setting `strip_tags = true` in the field configuration.
 
 ### Built-in index fields
 
@@ -1605,6 +1604,8 @@ All element attributes are added to the environment, and the inner HTML is place
 If you want to use an attribute called `content`, you can redefine the name of the variable that stores
 element content using the `content_key` option.
 
+Since soupault 5.1.0, this widget provides `site_index` and `index_entry` variables to templates.
+
 #### absolute_links
 
 This widget is prepends a prefix to every internal link. A polar opposite of the `relative-links` widget.
@@ -2305,6 +2306,30 @@ and `String.starts_with("maintenance", "fun")` is false.
 
 Like `String.starts_with`, but checks if a string ends with given suffix.
 
+##### <function>String.lowercase_ascii(string)</function>
+
+Converts the case of ASCII characters in a string from upper to lower.
+
+Unicode characters outside of the ASCII range are left unchanged.
+
+##### <function>String.uppercase_ascii(string)</function>
+
+Converts the case of ASCII characters in a string from lower to upper.
+
+Unicode	characters outside of the ASCII	range are left unchanged.
+
+##### <function>String.capitalize_ascii(string)</function>
+
+Converts the case of the first character in a string from lower to upper
+
+Unicode	characters outside of the ASCII	range are left unchanged.
+
+##### <function>String.uncapitalize_ascii(string)</function>
+
+Converts the case of the first character in a string from upper to lower.
+
+Unicode characters outside of the ASCII range are left unchanged.
+
 </module>
 
 <module name="Sys">
@@ -2549,6 +2574,10 @@ You can use a full version like `1.9.0` or a short version like `1.9`. This func
 ##### <function>Plugin.soupault_version()</function>
 
 Returns soupault version string (e.g., `"2.2.0"`).
+
+##### <function>Plugin.get_global_data(key)</function>
+
+Retrieves a value from the global data table that the [startup hook](#hooks-startup) may populate.
 
 </module>
 
@@ -2917,6 +2946,11 @@ It has the following variables in its environment:
 * `soupault_config` — the complete soupault config.
 * `force` — true when soupault is called with `--force` option, plugins are free to interpret it.
 * `site_dir` — the value from `settings.site_dir` or the `--site-dir` option if present.
+
+Soupault retrieves the following variables from this hook's environment:
+
+* `global_data` — must be a table with string keys.
+  Soupault makes data from it available to all Lua code via `Plugin.get_global_data(key)` function.
 
 <h3 id="hooks-pre-parse">Pre-parse</h3>
 
