@@ -2165,7 +2165,7 @@ so you don’t need to check for `nil` at every step and can safely chain calls 
 </module>
 
 <module name="Regex">
-Regular expressions used by this module are mostly Perl-compatible. However, capturing groups and back references are not supported yet.
+Regular expressions used by this module are mostly Perl-compatible. Capturing groups can be used, but back references are not supported yet. Modifiers (dotall, multiline, anchored, etc.) are also not supported.
 
 ##### <function>Regex.match(string, regex)</function>
 
@@ -2678,6 +2678,7 @@ There is no unsafe equivalent of this function that would ignore row errors.
 </module>
 
 <module name="Date">
+Supported date formats come from the OCaml/opalang ODate library, derived from the Unix `date` command. All possible format options can be seen in [the ODate source (line 846–917)](https://github.com/MLstate/opalang/blob/424b369160ce693406cece6ac033d75d85f5df4f/lib/stdlib/core/date/date.opa#L846).
 
 ##### <function>Date.now_timestamp()</function>
 
