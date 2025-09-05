@@ -215,6 +215,14 @@ Those options are not mutually exclusive and you can use them both at the same t
   ignore_path_regexes = ["^\.(.*)"]
 ```
 
+You can also ignore all files with certain extensions.
+
+```toml
+[settings]
+  # Ignore draft files like foo.html.draft
+  ignore_extensions = ["draft"]
+```
+
 ### Caching
 
 Starting from 4.4.0, soupault supports caching the output of [page preprocessors](#page-preprocessors)
