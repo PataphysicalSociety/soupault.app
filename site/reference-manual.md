@@ -2402,11 +2402,14 @@ Returns the last extension of the file at `path`, if it has any extensions.
 For files without any extensions it returns an empty string.
 For files with multiple extensions like `.tar.bz2`, it returns the last extension.
 
+All functions that return parts of paths treat a portion of a file beginning with a dot as part of its base name, rather than an extension.
+
 Examples:
 
 * `"cat.jpg" → "jpg"`
 * `"/bin/bash" → ""`
 * `"soupault.tar.gz" → "gz"`
+* `".bashrc" → ""`
 
 ##### <function>Sys.get_extensions(path)</function>
 
@@ -2415,6 +2418,7 @@ Returns the list of all extensions of the file, or an empty list if the file has
 * `"/bin/bash" → {}`
 * `"cat.jpg → {"jpg"}`
 * `"soupault.tar.gz" → {"tar", "gz"}`
+* `".bashrc" → {}`
 
 ##### <function>Sys.has_extension(path, extension)</function>
 
@@ -2422,6 +2426,10 @@ Check if the file at `path` has `extension` in its list of extensions.
 
 For example, `Sys.has_extension("file.tar.gz", "tar")` is true,
 and `Sys.has_extension("file.tar.gz", "gz")` is also true.
+
+##### <function>Sys.strip_extension(path)</function>
+
+Removes the last extension from a file name. For example, the result of `Sys.strip_extensions("file.tar.gz")` is `"file.tar"`. Behaves the same as `Sys.strip_extensions` if there is only a single extension or no extension.
 
 ##### <function>Sys.strip_extensions(path)</function>
 
