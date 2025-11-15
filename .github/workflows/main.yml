@@ -55,10 +55,10 @@ jobs:
       run: |
         # Write the private key from repository secrets to a file
         mkdir -p $HOME/.ssh/
-        echo $SSH_PRIV_KEY > $HOME/.ssh/id_ecdsa
+        echo $SSH_PRIV_KEY > $HOME/.ssh/id_ed25519
 
         # Change the permissions so that SSH doesn't complain
-        chmod 600 $HOME/.ssh/id_ecdsa
+        chmod 600 $HOME/.ssh/id_ed25519
 
         # Deploy via rsync
-        rsync --recursive --force --links --safe-links --delete --compress -e ssh build/ $SSH_USER@$WEB_HOST:$WEB_PATH
+        rsync --recursive --force --links --safe-links --delete --compress -e 'ssh -o StrictHostKeyChecking=no' build/ $SSH_USER@$WEB_HOST:$WEB_PATH
