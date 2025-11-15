@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
@@ -27,7 +25,7 @@ jobs:
       run: |
         echo Installing build dependencies
         sudo apt-get update
-        sudo apt-get -y install pandoc highlight make
+        sudo apt-get -y install pandoc highlight make rsync
 
     # Fixup for old highlight that doesn't have a TOML syntax definition
     - name: Install TOML syntax definition for highlight
@@ -47,11 +45,20 @@ jobs:
     - name: Build the site
       run: |
         make all
-        zip -r soupault-website.zip build/
 
-    - name: Deploy to Netlify
+    - name: Deploy to the web server
       env:
-        NETLIFY_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+        SSH_USER: ${{ secrets.SSH_USER }}
+        SSH_PRIV_KEY: ${{ secrets.SSH_PRIV_KEY }}
+        WEB_HOST: ${{ secrets.WEB_HOST }}
+        WEB_PATH: ${{ secrets.WEB_PATH }}
       run: |
-        curl --fail --show-error -H "Content-Type: application/zip" -H "Authorization: Bearer $NETLIFY_TOKEN" --data-binary "@soupault-website.zip" https://api.netlify.com/api/v1/sites/soupault.netlify.app/deploys
+        # Write the private key from repository secrets to a file
+        mkdir -p $HOME/.ssh/
+        echo $SSH_PRIV_KEY > $HOME/.ssh/id_ecdsa
 
+        # Change the permissions so that SSH doesn't complain
+        chmod 600 $HOME/.ssh/id_ecdsa
+
+        # Deploy via rsync
+        rsync --recursive --force --links --safe-links --delete --compress -e ssh build/ $SSH_USER@$WEB_HOST:$WEB_PATH
