@@ -55,7 +55,10 @@ jobs:
         WEB_PATH: ${{ secrets.WEB_PATH }}
       run: |
         # Write the private key from repository secrets to a file
+        # Ensure the resulting file has at least one newline at the end,
+        # otherwise it will fail to load
         echo $SSH_PRIV_KEY > $SSH_KEY_FILE
+        echo "" >> $SSH_KEY_FILE
 
         # Change the permissions so that SSH doesn't complain
         chmod 600 $SSH_KEY_FILE
