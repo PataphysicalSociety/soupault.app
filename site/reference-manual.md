@@ -2173,7 +2173,7 @@ so you don’t need to check for `nil` at every step and can safely chain calls 
 </module>
 
 <module name="Regex">
-Regular expressions used by this module are mostly Perl-compatible. However, capturing groups and back references are not supported yet.
+Regular expressions used by this module are mostly Perl-compatible. Capturing groups can be used, but back references are not supported yet. Modifiers (dotall, multiline, anchored, etc.) are also not supported.
 
 ##### <function>Regex.match(string, regex)</function>
 
@@ -2402,11 +2402,14 @@ Returns the last extension of the file at `path`, if it has any extensions.
 For files without any extensions it returns an empty string.
 For files with multiple extensions like `.tar.bz2`, it returns the last extension.
 
+All functions that return parts of paths treat a portion of a file beginning with a dot as part of its base name, rather than an extension.
+
 Examples:
 
 * `"cat.jpg" → "jpg"`
 * `"/bin/bash" → ""`
 * `"soupault.tar.gz" → "gz"`
+* `".bashrc" → ""`
 
 ##### <function>Sys.get_extensions(path)</function>
 
@@ -2415,6 +2418,7 @@ Returns the list of all extensions of the file, or an empty list if the file has
 * `"/bin/bash" → {}`
 * `"cat.jpg → {"jpg"}`
 * `"soupault.tar.gz" → {"tar", "gz"}`
+* `".bashrc" → {}`
 
 ##### <function>Sys.has_extension(path, extension)</function>
 
@@ -2422,6 +2426,10 @@ Check if the file at `path` has `extension` in its list of extensions.
 
 For example, `Sys.has_extension("file.tar.gz", "tar")` is true,
 and `Sys.has_extension("file.tar.gz", "gz")` is also true.
+
+##### <function>Sys.strip_extension(path)</function>
+
+Removes the last extension from a file name. For example, the result of `Sys.strip_extensions("file.tar.gz")` is `"file.tar"`. Behaves the same as `Sys.strip_extensions` if there is only a single extension or no extension.
 
 ##### <function>Sys.strip_extensions(path)</function>
 
@@ -2686,6 +2694,7 @@ There is no unsafe equivalent of this function that would ignore row errors.
 </module>
 
 <module name="Date">
+Supported date formats come from the OCaml/opalang ODate library, derived from the Unix `date` command. All possible format options can be seen in [the ODate source (line 846–917)](https://github.com/MLstate/opalang/blob/424b369160ce693406cece6ac033d75d85f5df4f/lib/stdlib/core/date/date.opa#L846).
 
 ##### <function>Date.now_timestamp()</function>
 
