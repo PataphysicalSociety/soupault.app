@@ -141,7 +141,7 @@ Soupault is named after <wikipedia>Philippe Soupault</wikipedia>, a French dadai
 because it's based on the <github project="aantron/lambdasoup">lambdasoup</github> library.
 
 Its development is sponsored by the [College of 'Pataphysics](http://www.college-de-pataphysique.org/) and the
-[International Hobby Horsing Association](https://en.wikipedia.org/wiki/Hobby_horsing).<fn id="sponsors">Not really.</fn>
+[IHHF](https://hobbyhorsefederation.com/) (the International [Hobbyhorse](https://en.wikipedia.org/wiki/Hobby_horsing) Federation).<fn id="sponsors">Not really.</fn>
 
 <h2 id="graphics">Graphics</h2>
 
