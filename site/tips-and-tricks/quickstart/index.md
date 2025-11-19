@@ -457,7 +457,7 @@ First, create a `plugins/` directory (if you haven’t created it already) and d
 
 ```shell-session
 $ mkdir plugins/
-$ wget https://soupault.app/files/plugins/quick-links.lua -O plugins/quick-links.lua
+$ wget https://soupault.net/files/plugins/quick-links.lua -O plugins/quick-links.lua
 ```
 
 Since we have plugin discovery enabled in `[settings]`, soupault will automatically find a new `quick-links` widget

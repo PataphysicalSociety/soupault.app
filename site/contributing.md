@@ -18,13 +18,13 @@ it’s better to discuss the idea with the maintainer first rather than make a p
 
 The website source code is also public and open for contributions:
 
-* GitHub: <github>PataphysicalSociety/soupault.app</github>
-* Codeberg: <codeberg>PataphysicalSociety/soupault.app</codeberg>
+* GitHub: <github>PataphysicalSociety/soupault-website</github>
+* Codeberg: <codeberg>PataphysicalSociety/soupault-website</codeberg>
 
 ## Contributing plugins
 
 If you wrote a plugin that can be useful for other people, feel free to nominate it for the [plugin directory](/plugins).
 
-At the moment, plugins are in the [assets/files/plugins](https://github.com/PataphysicalSociety/soupault.app/tree/master/assets/files/plugins) directory.
+At the moment, plugins are in the [assets/files/plugins](https://github.com/PataphysicalSociety/soupault-website/tree/master/assets/files/plugins) directory.
 
 You can either open a pull request on GitHub or [send a message](/support) to the mailing list or to me personally.
