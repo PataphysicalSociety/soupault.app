@@ -2376,7 +2376,7 @@ Checks if a file exists.
 
 Checks if a path is a regular file (not a directory). Returns `nil` if it's a directory or the path does not exist at all.
 
-##### <function>Sys.get_file_modification_date(file_path)
+##### <function>Sys.get_file_modification_time(file_path)
 
 Returns the UNIX timestamp of the moment when the file was last modified.
 
